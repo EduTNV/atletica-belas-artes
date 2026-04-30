@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "treinos",
+  "info": {
+    "singularName": "treino",
+    "pluralName": "treinos",
+    "displayName": "Treino"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "modalidade": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::modalidade.modalidade"
+    },
+    "dia_semana": {
+      "type": "enumeration",
+      "enum": [
+        "segunda",
+        "terca",
+        "quarta",
+        "quinta",
+        "sexta",
+        "sabado",
+        "domingo"
+      ],
+      "required": true
+    },
+    "hora_inicio": {
+      "type": "string"
+    },
+    "hora_fim": {
+      "type": "string"
+    },
+    "local": {
+      "type": "string"
+    }
+  }
+}

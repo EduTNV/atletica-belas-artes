@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "eventos",
+  "info": {
+    "singularName": "evento",
+    "pluralName": "eventos",
+    "displayName": "Evento"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true
+    },
+    "data": {
+      "type": "datetime",
+      "required": true
+    },
+    "local": {
+      "type": "string",
+      "required": true
+    },
+    "endereco": {
+      "type": "string"
+    },
+    "arte": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "status_lote": {
+      "type": "enumeration",
+      "enum": [
+        "vendas_abertas",
+        "lote_2",
+        "lote_3",
+        "esgotado"
+      ]
+    },
+    "link_ingresso": {
+      "type": "string"
+    },
+    "aftermovie_url": {
+      "type": "string"
+    },
+    "ativo": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "singleType",
+  "collectionName": "config_homes",
+  "info": {
+    "singularName": "config-home",
+    "pluralName": "config-homes",
+    "displayName": "ConfigHome"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "texto_quem_somos_resumo": {
+      "type": "text"
+    },
+    "texto_quem_somos_completo": {
+      "type": "richtext"
+    },
+    "ano_fundacao": {
+      "type": "integer"
+    },
+    "link_seja_socio": {
+      "type": "string"
+    },
+    "link_produtos": {
+      "type": "string"
+    },
+    "link_whatsapp_contato": {
+      "type": "string"
+    }
+  }
+}

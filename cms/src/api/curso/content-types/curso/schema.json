@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cursos",
+  "info": {
+    "singularName": "curso",
+    "pluralName": "cursos",
+    "displayName": "Curso"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true
+    },
+    "emoji": {
+      "type": "string"
+    },
+    "cor": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "nome"
+    },
+    "modalidades": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::modalidade.modalidade",
+      "mappedBy": "curso"
+    }
+  }
+}

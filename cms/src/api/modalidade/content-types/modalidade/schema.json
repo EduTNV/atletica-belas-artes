@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "modalidades",
+  "info": {
+    "singularName": "modalidade",
+    "pluralName": "modalidades",
+    "displayName": "Modalidade"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true
+    },
+    "curso": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::curso.curso",
+      "inversedBy": "modalidades"
+    },
+    "emoji": {
+      "type": "string"
+    },
+    "capitao_nome": {
+      "type": "string"
+    },
+    "capitao_whatsapp": {
+      "type": "string"
+    },
+    "foto_time": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "historico": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "conquistas",
+  "info": {
+    "singularName": "conquista",
+    "pluralName": "conquistas",
+    "displayName": "Conquista"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "modalidade": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::modalidade.modalidade"
+    },
+    "titulo": {
+      "type": "string",
+      "required": true
+    },
+    "ano": {
+      "type": "integer"
+    },
+    "medalha": {
+      "type": "enumeration",
+      "enum": [
+        "ouro",
+        "prata",
+        "bronze",
+        "premio"
+      ]
+    }
+  }
+}

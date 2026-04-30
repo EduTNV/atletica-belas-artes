@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "resultados",
+  "info": {
+    "singularName": "resultado",
+    "pluralName": "resultados",
+    "displayName": "Resultado"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "modalidade": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::modalidade.modalidade"
+    },
+    "adversario": {
+      "type": "string",
+      "required": true
+    },
+    "competicao": {
+      "type": "string"
+    },
+    "placar_nos": {
+      "type": "integer"
+    },
+    "placar_adversario": {
+      "type": "integer"
+    },
+    "data": {
+      "type": "date"
+    }
+  }
+}
