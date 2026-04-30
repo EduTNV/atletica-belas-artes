@@ -10,6 +10,10 @@
     "draftAndPublish": false
   },
   "attributes": {
+    "nome_interno": {
+      "type": "string",
+      "required": true
+    },
     "nome": {
       "type": "string",
       "required": true

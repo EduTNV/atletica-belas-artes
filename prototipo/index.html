@@ -1,0 +1,2823 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --crimson: #8b1a1a;
+            --crimson-dark: #6a1212;
+            --crimson-light: #b52222;
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface2: #222222;
+            --text: #f0ece4;
+            --text2: #a8a49c;
+            --text3: #6e6a64;
+            --radius: 14px;
+            --tab-h: 64px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px 0 0;
+        }
+
+        .phone {
+            width: 375px;
+            min-height: 780px;
+            background: var(--bg);
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            border: 1.5px solid #2a2a2a;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.6);
+        }
+
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--tab-h);
+            background: rgba(15, 15, 15, 0.96);
+            backdrop-filter: blur(12px);
+            border-top: 0.5px solid #2a2a2a;
+            display: flex;
+            z-index: 100;
+        }
+
+        .tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            color: var(--text3);
+        }
+
+        .tab.active {
+            color: var(--crimson-light);
+        }
+
+        .tab svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s;
+        }
+
+        .tab.active svg {
+            transform: scale(1.1);
+        }
+
+        .tab span {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .hero {
+            position: relative;
+            height: 260px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .hero-bg {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(160deg,
+                    #2a0808 0%,
+                    #1a0505 40%,
+                    #0f0f0f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.06;
+            background-image: repeating-linear-gradient(45deg,
+                    var(--gold) 0,
+                    var(--gold) 1px,
+                    transparent 0,
+                    transparent 50%);
+            background-size: 12px 12px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 24px 24px 20px;
+            width: 100%;
+        }
+
+        .hero-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .hero-logo-mark {
+            width: 36px;
+            height: 36px;
+            background: var(--crimson);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 18px;
+            color: var(--gold);
+        }
+
+        .hero-logo-text {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 20px;
+            letter-spacing: 1.5px;
+            color: var(--text);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(139, 26, 26, 0.3);
+            border: 0.5px solid rgba(139, 26, 26, 0.6);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        .hero-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .hero-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 34px;
+            line-height: 1.05;
+            letter-spacing: 0.5px;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--crimson);
+            color: var(--text);
+            padding: 9px 18px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .hero-cta:hover {
+            background: var(--crimson-light);
+        }
+
+        .section-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .section-text {
+            font-size: 14px;
+            line-height: 1.65;
+            color: var(--text2);
+        }
+
+        .expand-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: 0.5px solid var(--text3);
+            border-radius: 20px;
+            padding: 7px 14px;
+            color: var(--text2);
+            font-size: 12px;
+            font-family: "DM Sans", sans-serif;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+
+        .expand-btn:hover {
+            border-color: var(--text);
+            color: var(--text);
+        }
+
+        .expand-content {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s ease;
+        }
+
+        .expand-content.open {
+            max-height: 400px;
+        }
+
+        .expand-text {
+            font-size: 14px;
+            line-height: 1.65;
+            color: var(--text2);
+            padding-top: 12px;
+        }
+
+        .chevron {
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        .qa-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .qa-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 18px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            border: 0.5px solid #2a2a2a;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .qa-card:hover {
+            border-color: var(--crimson);
+            background: var(--surface2);
+        }
+
+        .qa-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qa-icon.red {
+            background: rgba(139, 26, 26, 0.2);
+        }
+
+        .qa-icon.gold {
+            background: rgba(201, 168, 76, 0.15);
+        }
+
+        .qa-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .qa-card-sub {
+            font-size: 11px;
+            color: var(--text3);
+            line-height: 1.4;
+        }
+
+        .divider {
+            height: 0.5px;
+            background: #2a2a2a;
+            margin: 0 20px;
+        }
+
+        .tabs-top {
+            display: flex;
+            border-bottom: 0.5px solid #2a2a2a;
+            flex-shrink: 0;
+        }
+
+        .tab-top {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text3);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-top.active {
+            color: var(--text);
+            border-bottom-color: var(--crimson);
+        }
+
+        .events-list {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .event-tab-content {
+            display: none;
+        }
+
+        .event-tab-content.active {
+            display: block;
+        }
+
+        .event-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 0.5px solid #2a2a2a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .event-card:hover {
+            border-color: var(--crimson);
+        }
+
+        .event-art {
+            height: 140px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .event-art-bg {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .event-art-text {
+            position: relative;
+            z-index: 2;
+            padding: 12px;
+            width: 100%;
+        }
+
+        .event-name {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .event-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+        }
+
+        .event-date {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .event-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .event-badge.open {
+            background: rgba(76, 175, 80, 0.15);
+            color: #81c784;
+            border: 0.5px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .event-badge.soon {
+            background: rgba(201, 168, 76, 0.15);
+            color: var(--gold-light);
+            border: 0.5px solid rgba(201, 168, 76, 0.3);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+            padding: 3px;
+        }
+
+        .gallery-item {
+            height: 140px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top,
+                    rgba(0, 0, 0, 0.7) 0%,
+                    transparent 60%);
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+        }
+
+        .gallery-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .event-detail {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            z-index: 200;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - var(--tab-h));
+            overflow-y: auto;
+        }
+
+        .event-detail.open {
+            transform: translateX(0);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            gap: 12px;
+            border-bottom: 0.5px solid #2a2a2a;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 10;
+        }
+
+        .detail-art {
+            height: 200px;
+            position: relative;
+        }
+
+        .detail-body {
+            padding: 20px;
+        }
+
+        .detail-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 32px;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-date-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .detail-info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            border-bottom: 0.5px solid #2a2a2a;
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .detail-info-row svg {
+            color: var(--crimson-light);
+            flex-shrink: 0;
+        }
+
+        .sticky-buy {
+            position: sticky;
+            bottom: 0;
+            padding: 12px 16px;
+            background: rgba(15, 15, 15, 0.97);
+            border-top: 0.5px solid #2a2a2a;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--crimson);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: "DM Sans", sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .buy-btn:hover {
+            background: var(--crimson-light);
+        }
+
+        .times-header {
+            padding: 20px 20px 12px;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 16px 16px;
+        }
+
+        .course-card {
+            border-radius: var(--radius);
+            padding: 20px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 0.5px solid #2a2a2a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 0 var(--radius) 0 60px;
+            opacity: 0.15;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .course-card.direito {
+            background: rgba(139, 26, 26, 0.12);
+            border-color: rgba(139, 26, 26, 0.3);
+        }
+
+        .course-card.direito::before {
+            background: #8b1a1a;
+        }
+
+        .course-card.design {
+            background: rgba(201, 168, 76, 0.08);
+            border-color: rgba(201, 168, 76, 0.25);
+        }
+
+        .course-card.design::before {
+            background: #c9a84c;
+        }
+
+        .course-card.eng {
+            background: rgba(41, 98, 255, 0.08);
+            border-color: rgba(41, 98, 255, 0.25);
+        }
+
+        .course-card.eng::before {
+            background: #2962ff;
+        }
+
+        .course-card.arqs {
+            background: rgba(76, 175, 80, 0.08);
+            border-color: rgba(76, 175, 80, 0.25);
+        }
+
+        .course-card.arqs::before {
+            background: #4caf50;
+        }
+
+        .course-emoji {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .course-name {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            color: var(--text);
+        }
+
+        .course-count {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 2px;
+        }
+
+        .level2 {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            z-index: 150;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - var(--tab-h));
+            overflow-y: auto;
+        }
+
+        .level2.open {
+            transform: translateX(0);
+        }
+
+        .level2-header {
+            padding: 14px 16px;
+            border-bottom: 0.5px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 10;
+        }
+
+        .level2-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 0.5px solid #2a2a2a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-card:hover {
+            border-color: var(--crimson);
+        }
+
+        .modal-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .modal-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .modal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 4px;
+            width: fit-content;
+        }
+
+        .modal-badge.treino {
+            background: rgba(41, 182, 246, 0.1);
+            color: #4fc3f7;
+            border: 0.5px solid rgba(41, 182, 246, 0.3);
+        }
+
+        .modal-badge.jogo {
+            background: rgba(239, 83, 80, 0.1);
+            color: #ef9a9a;
+            border: 0.5px solid rgba(239, 83, 80, 0.3);
+        }
+
+        .modal-badge.ok {
+            background: rgba(76, 175, 80, 0.1);
+            color: #a5d6a7;
+            border: 0.5px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .modal-right svg {
+            color: var(--text3);
+        }
+
+        .sheet-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0);
+            z-index: 300;
+            pointer-events: none;
+            transition: background 0.3s;
+        }
+
+        .sheet-overlay.open {
+            background: rgba(0, 0, 0, 0.6);
+            pointer-events: all;
+        }
+
+        .bottom-sheet {
+            position: absolute;
+            bottom: var(--tab-h);
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-radius: 20px 20px 0 0;
+            padding: 12px 0 8px;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            border-top: 0.5px solid #2a2a2a;
+        }
+
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--text3);
+            border-radius: 2px;
+            margin: 0 auto 16px;
+            opacity: 0.4;
+        }
+
+        .sheet-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .sheet-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+            font-size: 14px;
+        }
+
+        .sheet-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .sheet-item svg {
+            color: var(--text3);
+            flex-shrink: 0;
+        }
+
+        .sheet-divider {
+            height: 0.5px;
+            background: #2a2a2a;
+            margin: 6px 20px;
+        }
+
+        .sheet-sub {
+            font-size: 12px;
+            color: var(--text3);
+            display: block;
+            margin-top: 1px;
+        }
+
+        .entities-list {
+            display: none;
+            flex-direction: column;
+        }
+
+        .entities-list.open {
+            display: flex;
+        }
+
+        .entity-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            font-size: 13px;
+            color: var(--text2);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: "DM Sans", sans-serif;
+        }
+
+        * {
+            scrollbar-width: none;
+        }
+
+        .screen {
+            animation: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .screen.active {
+            animation: fadeIn 0.25s ease;
+        }
+
+        .l3 {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .l3.open {
+            transform: translateX(0);
+        }
+
+        .l3-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .l3-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .l3-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            gap: 10px;
+            border-bottom: 0.5px solid #2a2a2a;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 15, 15, 0.96);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-family: "DM Sans", sans-serif;
+            padding: 0;
+        }
+
+        .l3-course-tag {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--crimson-light);
+            background: rgba(139, 26, 26, 0.15);
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 0.5px solid rgba(139, 26, 26, 0.3);
+        }
+
+        .team-hero {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .team-hero-bg {
+            position: absolute;
+            inset: 0;
+        }
+
+        .team-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top,
+                    rgba(15, 15, 15, 1) 0%,
+                    rgba(15, 15, 15, 0.4) 60%,
+                    transparent 100%);
+        }
+
+        .team-hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+        }
+
+        .team-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .team-sport-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--crimson);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .team-modal-name {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 30px;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .team-season {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 4px;
+        }
+
+        .stats-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1px;
+            background: #2a2a2a;
+            border-bottom: 0.5px solid #2a2a2a;
+            flex-shrink: 0;
+        }
+
+        .stat-cell {
+            background: var(--surface);
+            padding: 14px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .stat-num {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .stat-num.green {
+            color: #81c784;
+        }
+
+        .stat-num.red {
+            color: #ef9a9a;
+        }
+
+        .stat-num.draw {
+            color: var(--gold-light);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text3);
+            letter-spacing: 0.5px;
+        }
+
+        .section {
+            padding: 20px 16px 0;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--crimson-light);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .trophies-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .trophies-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .trophy-card {
+            background: var(--surface);
+            border: 0.5px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 10px 14px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trophy-icon {
+            font-size: 18px;
+        }
+
+        .trophy-info {}
+
+        .trophy-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .trophy-year {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .result-row {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 0.5px solid #2a2a2a;
+        }
+
+        .result-indicator {
+            width: 4px;
+            height: 40px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .result-indicator.win {
+            background: var(--win);
+        }
+
+        .result-indicator.loss {
+            background: var(--loss);
+        }
+
+        .result-indicator.draw {
+            background: var(--draw);
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-opponent {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .result-comp {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 1px;
+        }
+
+        .result-score-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .result-score {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .result-score.win {
+            color: #81c784;
+        }
+
+        .result-score.loss {
+            color: #ef9a9a;
+        }
+
+        .result-score.draw {
+            color: var(--gold-light);
+        }
+
+        .result-outcome {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .result-outcome.win {
+            color: #81c784;
+        }
+
+        .result-outcome.loss {
+            color: #ef9a9a;
+        }
+
+        .result-outcome.draw {
+            color: var(--gold-light);
+        }
+
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .schedule-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: var(--surface);
+            border-radius: 10px;
+            border: 0.5px solid #2a2a2a;
+        }
+
+        .schedule-day {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .schedule-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .schedule-time {
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        .schedule-local {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .roster-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            margin-top: 4px;
+        }
+
+        .roster-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .roster-card {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 68px;
+        }
+
+        .roster-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 16px;
+            border: 1.5px solid #2a2a2a;
+        }
+
+        .roster-name {
+            font-size: 10px;
+            color: var(--text2);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .roster-pos {
+            font-size: 9px;
+            color: var(--text3);
+            text-align: center;
+        }
+
+        .sticky-cta {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            background: rgba(15, 15, 15, 0.97);
+            backdrop-filter: blur(12px);
+            border-top: 0.5px solid #2a2a2a;
+            display: flex;
+            gap: 10px;
+        }
+
+        .cta-primary {
+            flex: 1;
+            padding: 13px;
+            background: var(--crimson);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: "DM Sans", sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .cta-primary:hover {
+            background: var(--crimson-light);
+        }
+
+        .cta-secondary {
+            padding: 13px 14px;
+            background: var(--surface);
+            border: 0.5px solid #3a3a3a;
+            border-radius: 12px;
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: "DM Sans", sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .cta-secondary:hover {
+            border-color: var(--text3);
+            color: var(--text);
+        }
+
+        .inner-tabs {
+            display: flex;
+            gap: 6px;
+            padding: 0 16px;
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+
+        .inner-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .inner-tab {
+            flex-shrink: 0;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 0.5px solid #2a2a2a;
+            color: var(--text3);
+            background: none;
+            font-family: "DM Sans", sans-serif;
+            transition: all 0.2s;
+        }
+
+        .inner-tab.active {
+            background: var(--crimson);
+            border-color: var(--crimson);
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .next-game {
+            background: rgba(139, 26, 26, 0.1);
+            border: 0.5px solid rgba(139, 26, 26, 0.3);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 0 16px;
+            margin-top: 16px;
+        }
+
+        .next-game-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--crimson-light);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .next-game-teams {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .next-game-team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .next-game-team-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .next-game-team-sub {
+            font-size: 10px;
+            color: var(--text3);
+        }
+
+        .next-game-vs {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 22px;
+            color: var(--text3);
+            padding: 0 10px;
+        }
+
+        .next-game-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .next-game-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone" id="phone">
+        <div class="screen active" id="screen-home">
+            <div class="hero">
+                <div class="hero-bg">
+                    <div class="hero-pattern"></div>
+                </div>
+                <div class="hero-content">
+                    <div class="hero-logo">
+                        <div class="hero-logo-mark">BA</div>
+                        <div class="hero-logo-text">Atlética Belas Artes</div>
+                    </div>
+                    <div class="hero-badge">Próximo Evento</div>
+                    <div class="hero-title">Balada da<br />Virada 2025</div>
+                    <button class="hero-cta" onclick="openEventDetail('balada')">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                        Ver detalhes
+                    </button>
+                </div>
+            </div>
+
+            <div class="section" style="margin-top: 4px">
+                <div class="section-label">Sobre</div>
+                <div class="section-title">Desde 2008, dominando as quadras</div>
+                <div class="section-text">
+                    A Atlética Belas Artes nasceu da vontade de transformar energia
+                    criativa em competição de alto nível. Representamos todos os cursos
+                    da faculdade em modalidades esportivas, eventos e cultura.
+                </div>
+                <button class="expand-btn" onclick="toggleExpand()">
+                    <span class="chevron" id="chevron">↓</span>
+                    <span id="expand-label">Ler história completa</span>
+                </button>
+                <div class="expand-content" id="expand-content">
+                    <div class="expand-text">
+                        Fundada em 2008 por um grupo de estudantes que acreditavam que
+                        arte e esporte não eram opostos — eram a mesma coisa. Em mais de
+                        15 anos, acumulamos títulos no Interartes, Interfau e disputamos
+                        as principais competições universitárias do estado de São
+                        Paulo.<br /><br />Hoje a atlética representa mais de 800 alunos
+                        ativos, com times em mais de 12 modalidades esportivas e uma das
+                        festas universitárias mais reconhecidas de SP.
+                    </div>
+                </div>
+            </div>
+
+            <div class="qa-grid">
+                <a class="qa-card" href="#" onclick="return false;">
+                    <div class="qa-icon red">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#b52222" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <div class="qa-card-title">Seja Sócio</div>
+                    <div class="qa-card-sub">
+                        Acesso a benefícios e descontos exclusivos
+                    </div>
+                </a>
+                <a class="qa-card" href="#" onclick="return false;">
+                    <div class="qa-icon gold">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#C9A84C" stroke-width="2">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                    </div>
+                    <div class="qa-card-title">Nossos Produtos</div>
+                    <div class="qa-card-sub">
+                        Uniformes, camisetas e acessórios oficiais
+                    </div>
+                </a>
+            </div>
+            <div style="height: 20px"></div>
+        </div>
+
+        <div class="screen" id="screen-eventos">
+            <div class="tabs-top">
+                <div class="tab-top active" id="ev-tab-proximos" onclick="switchEvTab('proximos')">
+                    Próximos
+                </div>
+                <div class="tab-top" id="ev-tab-galeria" onclick="switchEvTab('galeria')">
+                    Galeria
+                </div>
+            </div>
+
+            <div class="event-tab-content active" id="ev-proximos">
+                <div class="events-list">
+                    <div class="event-card" onclick="openEventDetail('balada')">
+                        <div class="event-art" style="
+                  background: linear-gradient(
+                    135deg,
+                    #1a0028,
+                    #3d0066,
+                    #8b1a1a
+                  );
+                ">
+                            <div class="event-art-text">
+                                <div class="event-name">Balada da Virada</div>
+                            </div>
+                        </div>
+                        <div class="event-meta">
+                            <div class="event-date">31 Dez · 22h · Club X</div>
+                            <div class="event-badge soon">Lote 2</div>
+                        </div>
+                    </div>
+
+                    <div class="event-card" onclick="openEventDetail('copa')">
+                        <div class="event-art" style="
+                  background: linear-gradient(
+                    135deg,
+                    #001a3d,
+                    #003380,
+                    #1a4080
+                  );
+                ">
+                            <div class="event-art-text">
+                                <div class="event-name">Copa Belas Artes</div>
+                            </div>
+                        </div>
+                        <div class="event-meta">
+                            <div class="event-date">15 Jan · 08h · Ginásio BA</div>
+                            <div class="event-badge open">Inscrições abertas</div>
+                        </div>
+                    </div>
+
+                    <div class="event-card" onclick="openEventDetail('open')">
+                        <div class="event-art" style="
+                  background: linear-gradient(
+                    135deg,
+                    #1a1200,
+                    #3d2c00,
+                    #6b4e00
+                  );
+                ">
+                            <div class="event-art-text">
+                                <div class="event-name">Open Bar Calouros</div>
+                            </div>
+                        </div>
+                        <div class="event-meta">
+                            <div class="event-date">22 Jan · 21h · Espaço Aurora</div>
+                            <div class="event-badge open">Vendas abertas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-tab-content" id="ev-galeria">
+                <div class="gallery-grid">
+                    <div class="gallery-item" style="background: linear-gradient(135deg, #2a0a0a, #8b1a1a)">
+                        <div class="gallery-overlay">
+                            <div class="gallery-title">Interfau 2024</div>
+                        </div>
+                    </div>
+                    <div class="gallery-item" style="background: linear-gradient(135deg, #0a1a2a, #1a4080)">
+                        <div class="gallery-overlay">
+                            <div class="gallery-title">Festa Junina</div>
+                        </div>
+                    </div>
+                    <div class="gallery-item" style="background: linear-gradient(135deg, #1a1200, #6b4e00)">
+                        <div class="gallery-overlay">
+                            <div class="gallery-title">Rodeio BA 2024</div>
+                        </div>
+                    </div>
+                    <div class="gallery-item" style="background: linear-gradient(135deg, #0a2a0a, #1a6b1a)">
+                        <div class="gallery-overlay">
+                            <div class="gallery-title">Interartes 2024</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-detail" id="event-detail">
+                <div class="detail-header">
+                    <button class="back-btn" onclick="closeEventDetail()">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        Eventos
+                    </button>
+                </div>
+                <div class="detail-art" id="detail-art" style="
+              background: linear-gradient(135deg, #1a0028, #3d0066, #8b1a1a);
+            "></div>
+                <div class="detail-body">
+                    <div class="detail-title" id="detail-title">Balada da Virada</div>
+                    <div class="detail-date-row">
+                        <div class="event-badge soon" id="detail-badge">Lote 2</div>
+                        <div style="font-size: 12px; color: var(--text3)" id="detail-date">
+                            31 Dez 2024
+                        </div>
+                    </div>
+                    <div class="detail-info-row">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        <span id="detail-time">22h00 – 04h00</span>
+                    </div>
+                    <div class="detail-info-row">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span id="detail-loc">Club X — Av. Paulista, 900</span>
+                    </div>
+                    <div class="detail-info-row" style="border: none">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-4-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        <span>Evento aberto a todos os alunos</span>
+                    </div>
+                    <div style="
+                background: var(--surface);
+                border-radius: var(--radius);
+                height: 120px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 12px;
+                border: 0.5px solid #2a2a2a;
+              ">
+                        <span style="font-size: 12px; color: var(--text3)">Mapa do local</span>
+                    </div>
+                </div>
+                <div class="sticky-buy">
+                    <button class="buy-btn">Comprar Ingresso</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-times">
+            <div class="times-header">
+                <div class="section-label">Modalidades</div>
+                <div class="section-title">Escolha seu Curso</div>
+            </div>
+            <div class="courses-grid">
+                <div class="course-card direito" onclick="openLevel2('direito')">
+                    <div class="course-emoji">⚖️</div>
+                    <div class="course-name">Direito</div>
+                    <div class="course-count">5 modalidades</div>
+                </div>
+                <div class="course-card design" onclick="openLevel2('design')">
+                    <div class="course-emoji">🎨</div>
+                    <div class="course-name">Design</div>
+                    <div class="course-count">4 modalidades</div>
+                </div>
+                <div class="course-card eng" onclick="openLevel2('eng')">
+                    <div class="course-emoji">⚙️</div>
+                    <div class="course-name">Engenharia</div>
+                    <div class="course-count">6 modalidades</div>
+                </div>
+                <div class="course-card arqs" onclick="openLevel2('arqs')">
+                    <div class="course-emoji">🏛️</div>
+                    <div class="course-name">Arq. & Urb.</div>
+                    <div class="course-count">3 modalidades</div>
+                </div>
+            </div>
+
+            <div class="level2" id="level2">
+                <div class="level2-header">
+                    <button class="back-btn" onclick="closeLevel2()">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <div class="level2-title" id="level2-title">Times</div>
+                </div>
+                <div class="modal-list" id="modal-list"></div>
+            </div>
+
+            <div class="l3" id="l3">
+                <div class="l3-header">
+                    <button class="back-btn" onclick="closeLevel3()">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        Times
+                    </button>
+                    <div class="l3-course-tag">Design</div>
+                </div>
+
+                <div class="l3-scroll">
+                    <div class="team-hero">
+                        <div class="team-hero-bg" style="
+                  background: linear-gradient(
+                    135deg,
+                    #1a1200 0%,
+                    #3d2c00 40%,
+                    #6b4e00 70%,
+                    #8b1a1a 100%
+                  );
+                ">
+                            <svg style="
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0.07;
+                  " viewBox="0 0 375 220">
+                                <defs>
+                                    <pattern id="hex" x="0" y="0" width="40" height="46" patternUnits="userSpaceOnUse">
+                                        <polygon points="20,2 38,12 38,34 20,44 2,34 2,12" fill="none" stroke="#C9A84C"
+                                            stroke-width="1" />
+                                    </pattern>
+                                </defs>
+                                <rect width="375" height="220" fill="url(#hex)" />
+                            </svg>
+                        </div>
+                        <div class="team-hero-overlay"></div>
+                        <div class="team-hero-content">
+                            <div class="team-badge-row">
+                                <div class="team-sport-icon">⚽</div>
+                                <div style="
+                      font-size: 11px;
+                      font-weight: 600;
+                      color: var(--gold-light);
+                      letter-spacing: 1px;
+                    ">
+                                    FUTSAL MASCULINO
+                                </div>
+                            </div>
+                            <div class="team-modal-name" id="l3-title">Design FC</div>
+                            <div class="team-season">
+                                Temporada 2024 · Interartes & Interfau
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-strip">
+                        <div class="stat-cell">
+                            <div class="stat-num">12</div>
+                            <div class="stat-label">JOGOS</div>
+                        </div>
+                        <div class="stat-cell">
+                            <div class="stat-num green">8</div>
+                            <div class="stat-label">VITÓRIAS</div>
+                        </div>
+                        <div class="stat-cell">
+                            <div class="stat-num red">3</div>
+                            <div class="stat-label">DERROTAS</div>
+                        </div>
+                        <div class="stat-cell">
+                            <div class="stat-num draw">1</div>
+                            <div class="stat-label">EMPATES</div>
+                        </div>
+                    </div>
+
+                    <div class="next-game">
+                        <div class="next-game-label">🔴 Próximo Jogo</div>
+                        <div class="next-game-teams">
+                            <div class="next-game-team">
+                                <div class="next-game-team-name">Design FC</div>
+                                <div class="next-game-team-sub">Belas Artes</div>
+                            </div>
+                            <div class="next-game-vs">VS</div>
+                            <div class="next-game-team">
+                                <div class="next-game-team-name">Direito FA</div>
+                                <div class="next-game-team-sub">Belas Artes</div>
+                            </div>
+                        </div>
+                        <div class="next-game-meta">
+                            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            Amanhã, 20h00
+                            <div class="next-game-dot"></div>
+                            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            Ginásio BA — Piso 2
+                        </div>
+                    </div>
+
+                    <div class="inner-tabs">
+                        <button class="inner-tab active" onclick="switchInner('resultados', this)">
+                            Resultados
+                        </button>
+                        <button class="inner-tab" onclick="switchInner('treinos', this)">
+                            Treinos
+                        </button>
+                        <button class="inner-tab" onclick="switchInner('conquistas', this)">
+                            Conquistas
+                        </button>
+                        <button class="inner-tab" onclick="switchInner('elenco', this)">
+                            Elenco
+                        </button>
+                    </div>
+
+                    <div class="tab-content active" id="tab-resultados">
+                        <div class="section" style="padding-bottom: 8px">
+                            <div class="section-label">Últimos Resultados</div>
+                            <div class="results-list">
+                                <div class="result-row">
+                                    <div class="result-indicator win"></div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">vs Eng. Civil</div>
+                                        <div class="result-comp">Interfau · Fase de grupos</div>
+                                    </div>
+                                    <div class="result-score-col">
+                                        <div class="result-score win">5–2</div>
+                                        <div class="result-outcome win">VITÓRIA</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-row">
+                                    <div class="result-indicator win"></div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">vs Arq. & Urb.</div>
+                                        <div class="result-comp">Interartes · Semifinal</div>
+                                    </div>
+                                    <div class="result-score-col">
+                                        <div class="result-score win">3–1</div>
+                                        <div class="result-outcome win">VITÓRIA</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-row">
+                                    <div class="result-indicator loss"></div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">vs Direito</div>
+                                        <div class="result-comp">Interartes · Final</div>
+                                    </div>
+                                    <div class="result-score-col">
+                                        <div class="result-score loss">2–4</div>
+                                        <div class="result-outcome loss">DERROTA</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-row">
+                                    <div class="result-indicator draw"></div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">vs Medicina USP</div>
+                                        <div class="result-comp">Amistoso</div>
+                                    </div>
+                                    <div class="result-score-col">
+                                        <div class="result-score draw">2–2</div>
+                                        <div class="result-outcome draw">EMPATE</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-row">
+                                    <div class="result-indicator win"></div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">vs Publicidade</div>
+                                        <div class="result-comp">Interfau · Quartas</div>
+                                    </div>
+                                    <div class="result-score-col">
+                                        <div class="result-score win">4–0</div>
+                                        <div class="result-outcome win">VITÓRIA</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-treinos">
+                        <div class="section" style="padding-bottom: 8px">
+                            <div class="section-label">Horários de Treino</div>
+                            <div class="schedule-list">
+                                <div class="schedule-row">
+                                    <div class="schedule-day">Terça-feira</div>
+                                    <div class="schedule-right">
+                                        <div class="schedule-local">Ginásio BA</div>
+                                        <div class="schedule-time">19h – 21h</div>
+                                    </div>
+                                </div>
+                                <div class="schedule-row">
+                                    <div class="schedule-day">Quinta-feira</div>
+                                    <div class="schedule-right">
+                                        <div class="schedule-local">Ginásio BA</div>
+                                        <div class="schedule-time">19h – 21h</div>
+                                    </div>
+                                </div>
+                                <div class="schedule-row">
+                                    <div class="schedule-day">Sábado</div>
+                                    <div class="schedule-right">
+                                        <div class="schedule-local">Quadra Ext.</div>
+                                        <div class="schedule-time">09h – 11h</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="
+                    margin-top: 14px;
+                    padding: 12px 14px;
+                    background: rgba(201, 168, 76, 0.06);
+                    border: 0.5px solid rgba(201, 168, 76, 0.2);
+                    border-radius: 10px;
+                    font-size: 12px;
+                    color: var(--text2);
+                    line-height: 1.5;
+                  ">
+                                ⚠️ Treinos abertos a novos atletas. Apareça com chuteira de
+                                futsal e roupa esportiva. Sem necessidade de agendamento.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-conquistas">
+                        <div class="section" style="padding-bottom: 8px">
+                            <div class="section-label">Palmarés</div>
+                            <div class="results-list">
+                                <div class="result-row" style="align-items: center">
+                                    <div style="
+                        font-size: 22px;
+                        width: 36px;
+                        text-align: center;
+                        flex-shrink: 0;
+                      ">
+                                        🥇
+                                    </div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">Campeões Interartes</div>
+                                        <div class="result-comp">2022 · Futsal Masculino</div>
+                                    </div>
+                                    <div style="
+                        font-size: 11px;
+                        font-weight: 600;
+                        color: var(--gold-light);
+                        padding: 3px 8px;
+                        background: rgba(201, 168, 76, 0.1);
+                        border-radius: 8px;
+                        border: 0.5px solid rgba(201, 168, 76, 0.3);
+                      ">
+                                        OURO
+                                    </div>
+                                </div>
+
+                                <div class="result-row" style="align-items: center">
+                                    <div style="
+                        font-size: 22px;
+                        width: 36px;
+                        text-align: center;
+                        flex-shrink: 0;
+                      ">
+                                        🥈
+                                    </div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">
+                                            Vice-campeões Interartes
+                                        </div>
+                                        <div class="result-comp">2024 · Futsal Masculino</div>
+                                    </div>
+                                    <div style="
+                        font-size: 11px;
+                        font-weight: 600;
+                        color: var(--text2);
+                        padding: 3px 8px;
+                        background: rgba(168, 164, 156, 0.1);
+                        border-radius: 8px;
+                        border: 0.5px solid rgba(168, 164, 156, 0.3);
+                      ">
+                                        PRATA
+                                    </div>
+                                </div>
+
+                                <div class="result-row" style="align-items: center">
+                                    <div style="
+                        font-size: 22px;
+                        width: 36px;
+                        text-align: center;
+                        flex-shrink: 0;
+                      ">
+                                        🏅
+                                    </div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">3º lugar Interfau</div>
+                                        <div class="result-comp">2023 · Futsal Masculino</div>
+                                    </div>
+                                    <div style="
+                        font-size: 11px;
+                        font-weight: 600;
+                        color: #cd7f32;
+                        padding: 3px 8px;
+                        background: rgba(205, 127, 50, 0.1);
+                        border-radius: 8px;
+                        border: 0.5px solid rgba(205, 127, 50, 0.3);
+                      ">
+                                        BRONZE
+                                    </div>
+                                </div>
+
+                                <div class="result-row" style="align-items: center">
+                                    <div style="
+                        font-size: 22px;
+                        width: 36px;
+                        text-align: center;
+                        flex-shrink: 0;
+                      ">
+                                        ⭐
+                                    </div>
+                                    <div class="result-info">
+                                        <div class="result-opponent">Artilheiro do torneio</div>
+                                        <div class="result-comp">Interartes 2024 · Lucas M.</div>
+                                    </div>
+                                    <div style="
+                        font-size: 11px;
+                        font-weight: 600;
+                        color: var(--crimson-light);
+                        padding: 3px 8px;
+                        background: rgba(139, 26, 26, 0.1);
+                        border-radius: 8px;
+                        border: 0.5px solid rgba(139, 26, 26, 0.3);
+                      ">
+                                        PRÊMIO
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-elenco">
+                        <div class="section" style="padding-bottom: 8px">
+                            <div class="section-label">Capitão</div>
+                            <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    background: var(--surface);
+                    border: 0.5px solid rgba(139, 26, 26, 0.3);
+                    border-radius: var(--radius);
+                    padding: 14px;
+                  ">
+                                <div style="
+                      width: 52px;
+                      height: 52px;
+                      border-radius: 50%;
+                      background: rgba(139, 26, 26, 0.2);
+                      border: 1.5px solid rgba(139, 26, 26, 0.4);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-family: &quot;Bebas Neue&quot;, sans-serif;
+                      font-size: 18px;
+                      color: var(--crimson-light);
+                      flex-shrink: 0;
+                    ">
+                                    LM
+                                </div>
+                                <div>
+                                    <div style="
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: var(--text);
+                      ">
+                                        Lucas Mendes
+                                    </div>
+                                    <div style="
+                        font-size: 11px;
+                        color: var(--text3);
+                        margin-top: 2px;
+                      ">
+                                        Fixo · Design Gráfico 3º ano
+                                    </div>
+                                    <div style="
+                        font-size: 11px;
+                        color: var(--crimson-light);
+                        margin-top: 4px;
+                      ">
+                                        Artilheiro Interartes 2024
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-label" style="margin-top: 16px">Elenco</div>
+                            <div style="
+                    display: grid;
+                    grid-template-columns: repeat(5, 1fr);
+                    gap: 8px;
+                  ">
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(41, 98, 255, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #7986cb;
+                      ">
+                                        GV
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Gabriel V.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">
+                                        Goleiro
+                                    </div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(201, 168, 76, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: var(--gold-light);
+                      ">
+                                        FS
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Felipe S.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Ala</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(76, 175, 80, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #a5d6a7;
+                      ">
+                                        RA
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Rafael A.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Pivô</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(239, 83, 80, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #ef9a9a;
+                      ">
+                                        TC
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Thiago C.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Ala</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(156, 39, 176, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #ce93d8;
+                      ">
+                                        MO
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Mateus O.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Fixo</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(0, 188, 212, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #80deea;
+                      ">
+                                        BL
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Bruno L.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Ala</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(255, 152, 0, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #ffcc80;
+                      ">
+                                        JP
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        João P.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">
+                                        Goleiro
+                                    </div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(233, 30, 99, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #f48fb1;
+                      ">
+                                        AN
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Andre N.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Pivô</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                    ">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        background: rgba(0, 150, 136, 0.1);
+                        border: 1.5px solid #2a2a2a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: &quot;Bebas Neue&quot;, sans-serif;
+                        font-size: 14px;
+                        color: #80cbc4;
+                      ">
+                                        KS
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text2);
+                        text-align: center;
+                      ">
+                                        Kaique S.
+                                    </div>
+                                    <div style="font-size: 9px; color: var(--text3)">Ala</div>
+                                </div>
+
+                                <div style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                      gap: 5px;
+                      opacity: 0.4;
+                      cursor: pointer;
+                    " onclick="alert('Vaga aberta! Fale com o capitão.')">
+                                    <div style="
+                        width: 52px;
+                        height: 52px;
+                        border-radius: 50%;
+                        border: 1.5px dashed #3a3a3a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 20px;
+                        color: var(--text3);
+                      ">
+                                        +
+                                    </div>
+                                    <div style="
+                        font-size: 10px;
+                        color: var(--text3);
+                        text-align: center;
+                      ">
+                                        Vaga aberta
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sticky-cta">
+                    <button class="cta-primary" onclick="alert('Abrindo WhatsApp do Capitão...')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        Falar com o Capitão
+                    </button>
+                    <button class="cta-secondary" onclick="alert('Adicionado ao calendário!')">
+                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Agenda
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-menu"></div>
+
+        <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+        <div class="bottom-sheet" id="bottom-sheet">
+            <div class="sheet-handle"></div>
+
+            <div id="sheet-main">
+                <div class="sheet-title">Menu</div>
+                <button class="sheet-item" onclick="alert('Página Sobre')">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    Sobre a Atlética
+                    <svg style="margin-left: auto" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+                <button class="sheet-item" onclick="openEntidades()">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-4-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Outras Entidades
+                    <svg style="margin-left: auto" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+                <div class="sheet-divider"></div>
+                <button class="sheet-item" onclick="alert('WhatsApp da Atlética')">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Contato
+                </button>
+                <button class="sheet-item" onclick="alert('Login — Fase 3')">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Área do Diretor
+                    <span class="sheet-sub" style="margin-left: auto; font-size: 10px; color: var(--text3)">Em
+                        breve</span>
+                </button>
+            </div>
+
+            <div id="sheet-entities" style="display: none">
+                <button class="entity-back" onclick="closeEntidades()">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    Menu
+                </button>
+                <div class="sheet-title">Entidades</div>
+                <button class="sheet-item" onclick="alert('Centro Acadêmico')">
+                    🎓 Centro Acadêmico
+                    <svg style="margin-left: auto" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+                <button class="sheet-item" onclick="alert('Bateria Belas Artes')">
+                    🥁 Bateria
+                    <svg style="margin-left: auto" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+                <button class="sheet-item" onclick="alert('República BA')">
+                    🏠 República BA
+                    <svg style="margin-left: auto" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <button class="tab active" id="tab-home" onclick="switchTab('home')">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Início</span>
+            </button>
+            <button class="tab" id="tab-eventos" onclick="switchTab('eventos')">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>Eventos</span>
+            </button>
+            <button class="tab" id="tab-times" onclick="switchTab('times')">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
+                </svg>
+                <span>Times</span>
+            </button>
+            <button class="tab" id="tab-menu" onclick="openSheet()">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+                <span>Menu</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const eventData = {
+            balada: {
+                title: "Balada da Virada",
+                badge: "Lote 2",
+                badgeClass: "soon",
+                date: "31 Dez 2024",
+                time: "22h00 – 04h00",
+                loc: "Club X — Av. Paulista, 900",
+                bg: "linear-gradient(135deg,#1a0028,#3d0066,#8B1A1A)",
+            },
+            copa: {
+                title: "Copa Belas Artes",
+                badge: "Inscrições abertas",
+                badgeClass: "open",
+                date: "15 Jan 2025",
+                time: "08h00 – 18h00",
+                loc: "Ginásio BA — Campus Paulista",
+                bg: "linear-gradient(135deg,#001a3d,#003380,#1a4080)",
+            },
+            open: {
+                title: "Open Bar Calouros",
+                badge: "Vendas abertas",
+                badgeClass: "open",
+                date: "22 Jan 2025",
+                time: "21h00 – 03h00",
+                loc: "Espaço Aurora — Pinheiros",
+                bg: "linear-gradient(135deg,#1a1200,#3d2c00,#6b4e00)",
+            },
+        };
+
+        const timesData = {
+            direito: {
+                name: "Direito",
+                modals: [
+                    {
+                        name: "Futsal Masculino",
+                        badge: "Treino hoje 19h",
+                        type: "treino",
+                    },
+                    { name: "Futsal Feminino", badge: "Jogo amanhã 15h", type: "jogo" },
+                    { name: "Vôlei Misto", badge: "Campeões Interfau", type: "ok" },
+                    { name: "Basquete", badge: "Treino Sex 18h", type: "treino" },
+                    { name: "Tênis de Mesa", badge: "Treino Qua 20h", type: "treino" },
+                ],
+            },
+            design: {
+                name: "Design",
+                modals: [
+                    { name: "Futsal Masculino", badge: "Jogo hoje 20h", type: "jogo" },
+                    { name: "Vôlei Feminino", badge: "Treino Ter 19h", type: "treino" },
+                    { name: "Basquete", badge: "Treino Qui 19h", type: "treino" },
+                    { name: "Corrida", badge: "Circuito aberto", type: "ok" },
+                ],
+            },
+            eng: {
+                name: "Engenharia",
+                modals: [
+                    { name: "Futsal Masculino", badge: "Jogo sex 17h", type: "jogo" },
+                    {
+                        name: "Futsal Feminino",
+                        badge: "Treino hoje 18h",
+                        type: "treino",
+                    },
+                    { name: "Vôlei Masculino", badge: "Campeões 2024", type: "ok" },
+                    { name: "Basquete", badge: "Treino Seg 20h", type: "treino" },
+                    { name: "Tênis", badge: "Treino Sáb 09h", type: "treino" },
+                    { name: "Natação", badge: "Treino Qua 07h", type: "treino" },
+                ],
+            },
+            arqs: {
+                name: "Arq. & Urb.",
+                modals: [
+                    { name: "Futsal Misto", badge: "Treino Qui 18h", type: "treino" },
+                    { name: "Vôlei Misto", badge: "Jogo dom 10h", type: "jogo" },
+                    { name: "Xadrez", badge: "Torneio aberto", type: "ok" },
+                ],
+            },
+        };
+
+        function switchTab(tab) {
+            document
+                .querySelectorAll(".tab")
+                .forEach((t) => t.classList.remove("active"));
+            document
+                .querySelectorAll(".screen")
+                .forEach((s) => s.classList.remove("active"));
+            document.getElementById("tab-" + tab).classList.add("active");
+            document.getElementById("screen-" + tab).classList.add("active");
+            if (tab === "menu") {
+                openSheet();
+                document.getElementById("tab-menu").classList.remove("active");
+            }
+        }
+
+        function openSheet() {
+            document.getElementById("sheet-overlay").classList.add("open");
+            document.getElementById("bottom-sheet").classList.add("open");
+        }
+        function closeSheet() {
+            document.getElementById("sheet-overlay").classList.remove("open");
+            document.getElementById("bottom-sheet").classList.remove("open");
+            closeEntidades();
+        }
+        function openEntidades() {
+            document.getElementById("sheet-main").style.display = "none";
+            document.getElementById("sheet-entities").style.display = "block";
+        }
+        function closeEntidades() {
+            document.getElementById("sheet-main").style.display = "block";
+            document.getElementById("sheet-entities").style.display = "none";
+        }
+
+        function switchEvTab(tab) {
+            document
+                .querySelectorAll(".tab-top")
+                .forEach((t) => t.classList.remove("active"));
+            document
+                .querySelectorAll(".event-tab-content")
+                .forEach((c) => c.classList.remove("active"));
+            document.getElementById("ev-tab-" + tab).classList.add("active");
+            document.getElementById("ev-" + tab).classList.add("active");
+        }
+
+        function openEventDetail(id) {
+            const d = eventData[id];
+            document.getElementById("detail-title").textContent = d.title;
+            document.getElementById("detail-badge").textContent = d.badge;
+            document.getElementById("detail-badge").className =
+                "event-badge " + d.badgeClass;
+            document.getElementById("detail-date").textContent = d.date;
+            document.getElementById("detail-time").textContent = d.time;
+            document.getElementById("detail-loc").textContent = d.loc;
+            document.getElementById("detail-art").style.background = d.bg;
+            document.getElementById("event-detail").classList.add("open");
+        }
+        function closeEventDetail() {
+            document.getElementById("event-detail").classList.remove("open");
+        }
+
+        function openLevel2(curso) {
+            const d = timesData[curso];
+            document.getElementById("level2-title").textContent = d.name;
+            document.getElementById("modal-list").innerHTML = d.modals
+                .map(
+                    (m) => `
+    <div class="modal-card" onclick="openLevel3('${m.name}', '${curso}')">
+      <div class="modal-left">
+        <div class="modal-name">${m.name}</div>
+        <div class="modal-badge ${m.type}">${m.type === "treino" ? "⏰" : m.type === "jogo" ? "🔴" : "✓"} ${m.badge}</div>
+      </div>
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  `,
+                )
+                .join("");
+            document.getElementById("level2").classList.add("open");
+        }
+        function closeLevel2() {
+            document.getElementById("level2").classList.remove("open");
+        }
+
+        function switchInner(tab, btn) {
+            document
+                .querySelectorAll(".inner-tab")
+                .forEach((t) => t.classList.remove("active"));
+            document
+                .querySelectorAll(".tab-content")
+                .forEach((c) => c.classList.remove("active"));
+            btn.classList.add("active");
+            document.getElementById("tab-" + tab).classList.add("active");
+        }
+
+        function openLevel3(nome, curso) {
+            document.getElementById("l3-title").textContent = nome;
+            document.getElementById("l3").classList.add("open");
+        }
+
+        function closeLevel3() {
+            document.getElementById("l3").classList.remove("open");
+        }
+
+        function toggleExpand() {
+            const c = document.getElementById("expand-content");
+            const ch = document.getElementById("chevron");
+            const lb = document.getElementById("expand-label");
+            const isOpen = c.classList.toggle("open");
+            ch.textContent = isOpen ? "↑" : "↓";
+            ch.classList.toggle("open", isOpen);
+            lb.textContent = isOpen ? "Recolher" : "Ler história completa";
+        }
+    </script>
+</body>
+
+</html>
