@@ -33,7 +33,7 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Strapi (CMS) - regras gerais adicionais (já existe o cms/.gitignore que cobre o resto)
+# Strapi (CMS) - regras gerais adicionais 
 .strapi/
 build/
 dist/
@@ -41,7 +41,8 @@ exports/
 .strapi-updater.json
 .strapi-cloud.json
 
-# Next.js (Frontend - preparando para a próxima fase)
+# Next.js (Frontend)
+
 .next/
 out/
 next-env.d.ts
