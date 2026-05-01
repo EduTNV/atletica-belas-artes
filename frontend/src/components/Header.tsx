@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const navLinks = [
   { href: "/", label: "Início" },
@@ -10,12 +11,26 @@ const navLinks = [
 ];
 
 const secondaryLinks = [
-  { href: "#", label: "Entidades" },
-  { href: "#", label: "Contato" },
+  { href: "/entidades", label: "Entidades" },
+  { href: "/contato", label: "Contato" },
 ];
 
 export default function Header() {
   const pathname = usePathname();
+  const [linkSocio, setLinkSocio] = useState<string | null>(null);
+
+  // Busca o link dinâmico de "Seja Sócio" do ConfigHome
+  useEffect(() => {
+    const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+    fetch(`${STRAPI_URL}/api/config-home`)
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.data?.link_seja_socio) {
+          setLinkSocio(res.data.link_seja_socio);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <header className="desktop-header" id="desktop-header">
@@ -43,19 +58,33 @@ export default function Header() {
 
         {secondaryLinks.map((link) => (
           <Link
-            key={link.label}
+            key={link.href}
             href={link.href}
-            className="header-nav-link"
+            className={`header-nav-link ${
+              pathname === link.href ? "active" : ""
+            }`}
           >
             {link.label}
           </Link>
         ))}
       </nav>
 
-      {/* CTA */}
-      <button className="header-cta" id="header-cta-socio">
-        Seja Sócio
-      </button>
+      {/* CTA — link dinâmico do Strapi ou fallback */}
+      {linkSocio ? (
+        <a
+          href={linkSocio}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="header-cta"
+          id="header-cta-socio"
+        >
+          Seja Sócio
+        </a>
+      ) : (
+        <button className="header-cta" id="header-cta-socio" disabled style={{ opacity: 0.5 }}>
+          Seja Sócio
+        </button>
+      )}
     </header>
   );
 }

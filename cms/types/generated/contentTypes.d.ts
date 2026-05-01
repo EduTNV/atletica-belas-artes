@@ -430,6 +430,36 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiConfigContatoConfigContato extends Struct.SingleTypeSchema {
+  collectionName: 'config_contatos';
+  info: {
+    displayName: 'ConfigContato';
+    pluralName: 'config-contatos';
+    singularName: 'config-contato';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.String;
+    instagram: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::config-contato.config-contato'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whatsapp: Schema.Attribute.String;
+  };
+}
+
 export interface ApiConfigHomeConfigHome extends Struct.SingleTypeSchema {
   collectionName: 'config_homes';
   info: {
@@ -515,6 +545,7 @@ export interface ApiCursoCurso extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     emoji: Schema.Attribute.String;
+    foto_capa: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::curso.curso'> &
       Schema.Attribute.Private;
@@ -525,6 +556,41 @@ export interface ApiCursoCurso extends Struct.CollectionTypeSchema {
     nome: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'nome'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiEntidadeEntidade extends Struct.CollectionTypeSchema {
+  collectionName: 'entidades';
+  info: {
+    displayName: 'Entidade';
+    pluralName: 'entidades';
+    singularName: 'entidade';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    cor: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descricao: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::entidade.entidade'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images'>;
+    membros: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membro-entidade.membro-entidade'
+    >;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -566,6 +632,40 @@ export interface ApiEventoEvento extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiMembroEntidadeMembroEntidade
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'membro_entidades';
+  info: {
+    displayName: 'MembroEntidade';
+    pluralName: 'membro-entidades';
+    singularName: 'membro-entidade';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    cargo: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    entidade: Schema.Attribute.Relation<'manyToOne', 'api::entidade.entidade'>;
+    foto: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membro-entidade.membro-entidade'
+    > &
+      Schema.Attribute.Private;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    ordem: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whatsapp: Schema.Attribute.String;
   };
 }
 
@@ -1189,10 +1289,13 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::config-contato.config-contato': ApiConfigContatoConfigContato;
       'api::config-home.config-home': ApiConfigHomeConfigHome;
       'api::conquista.conquista': ApiConquistaConquista;
       'api::curso.curso': ApiCursoCurso;
+      'api::entidade.entidade': ApiEntidadeEntidade;
       'api::evento.evento': ApiEventoEvento;
+      'api::membro-entidade.membro-entidade': ApiMembroEntidadeMembroEntidade;
       'api::modalidade.modalidade': ApiModalidadeModalidade;
       'api::resultado.resultado': ApiResultadoResultado;
       'api::treino.treino': ApiTreinoTreino;

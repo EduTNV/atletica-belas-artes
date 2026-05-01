@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "config_contatos",
+  "info": {
+    "singularName": "config-contato",
+    "pluralName": "config-contatos",
+    "displayName": "ConfigContato"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "email": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
+    }
+  }
+}

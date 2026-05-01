@@ -219,6 +219,13 @@ img {
   font-size: 22px;
   letter-spacing: 1.5px;
   color: var(--text);
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .header-logo-text {
+    display: none;
+  }
 }
 
 .header-nav {
@@ -375,10 +382,18 @@ img {
   z-index: 301;
   max-height: 70%;
   overflow-y: auto;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s ease, visibility 0s 0.35s;
 }
 
 .bottom-sheet.open {
   transform: translateY(0);
+  pointer-events: all;
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s ease, visibility 0s 0s;
 }
 
 @media (min-width: 768px) {

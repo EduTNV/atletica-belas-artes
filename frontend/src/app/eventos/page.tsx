@@ -1,11 +1,26 @@
 import type { Metadata } from "next";
+import { getEventos, type Evento } from "@/lib/strapi";
+import { EventosList } from "@/components/EventosList";
 
 export const metadata: Metadata = {
   title: "Eventos — Atlética Belas Artes",
   description: "Confira os próximos eventos e a galeria da Atlética Belas Artes.",
 };
 
-export default function EventosPage() {
+/**
+ * Página de Eventos — Server Component.
+ * Busca todos os eventos do Strapi e divide em "próximos" e "passados".
+ */
+export default async function EventosPage() {
+  const todosEventos = await getEventos().catch(() => [] as Evento[]);
+
+  // Divide eventos por data: futuros vs passados
+  const agora = new Date();
+  const proximos = todosEventos.filter((e) => new Date(e.data) >= agora);
+  const passados = todosEventos
+    .filter((e) => new Date(e.data) < agora)
+    .reverse(); // Mais recente primeiro na galeria
+
   return (
     <>
       {/* Hero compacto */}
@@ -29,38 +44,8 @@ export default function EventosPage() {
         </div>
       </section>
 
-      {/* Tabs Próximos / Galeria */}
-      <div className="content-wrapper">
-        <div
-          className="flex border-b"
-          style={{ borderColor: "var(--border)" }}
-        >
-          <button
-            className="py-[14px] px-6 text-[13px] md:text-[14px] font-medium border-b-2 transition-colors"
-            style={{ color: "var(--text)", borderColor: "var(--crimson)" }}
-            id="ev-tab-proximos"
-          >
-            Próximos
-          </button>
-          <button
-            className="py-[14px] px-6 text-[13px] md:text-[14px] font-medium border-b-2 border-transparent transition-colors"
-            style={{ color: "var(--text3)" }}
-            id="ev-tab-galeria"
-          >
-            Galeria
-          </button>
-        </div>
-      </div>
-
-      {/* Conteúdo — placeholder para Tarefa 2 */}
-      <div className="content-wrapper py-10 md:py-16">
-        <p
-          className="text-center text-[14px]"
-          style={{ color: "var(--text3)" }}
-        >
-          Cards de eventos serão implementados na Tarefa 2
-        </p>
-      </div>
+      {/* Abas e listagem — Client Component */}
+      <EventosList proximos={proximos} passados={passados} />
     </>
   );
 }

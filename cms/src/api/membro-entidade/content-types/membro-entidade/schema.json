@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "membro_entidades",
+  "info": {
+    "singularName": "membro-entidade",
+    "pluralName": "membro-entidades",
+    "displayName": "MembroEntidade"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true
+    },
+    "cargo": {
+      "type": "string"
+    },
+    "foto": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "ordem": {
+      "type": "integer",
+      "default": 0
+    },
+    "entidade": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::entidade.entidade",
+      "inversedBy": "membros"
+    }
+  }
+}

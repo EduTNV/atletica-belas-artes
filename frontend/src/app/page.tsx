@@ -1,9 +1,35 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
+import { getEventos, getConfigHome, type Evento } from "@/lib/strapi";
+import { ExpandableText } from "@/components/ExpandableText";
+import { EventCard } from "@/components/EventCard";
 
-export default function HomePage() {
+/**
+ * Home Page — Server Component.
+ * Busca dados do Strapi no servidor (ISR 60s) e renderiza a página.
+ */
+export default async function HomePage() {
+  // Busca paralela: eventos + config da home
+  const [todosEventos, configHome] = await Promise.all([
+    getEventos().catch(() => [] as Evento[]),
+    getConfigHome(),
+  ]);
+
+  // Filtra apenas eventos FUTUROS para a seção "Próximos Eventos"
+  const agora = new Date();
+  const proximosEventos = todosEventos.filter((e) => new Date(e.data) >= agora);
+
+  // Texto "Quem Somos" — usa fallback se ConfigHome não foi preenchido
+  const quemSomosResumo =
+    configHome?.texto_quem_somos_resumo ||
+    "A Atlética Belas Artes é a entidade esportiva oficial da Faculdade Belas Artes de São Paulo. Fundada por alunos apaixonados, representamos a BA nas principais competições universitárias com muito suor, tinta e determinação.";
+
+  const quemSomosCompleto = configHome?.texto_quem_somos_completo || null;
+
+  // Links externos — fallback para "#"
+  const linkSejaSocio = configHome?.link_seja_socio || "#";
+  const linkProdutos = configHome?.link_produtos || "#";
+  const linkContato = configHome?.link_whatsapp_contato || "#";
+
   return (
     <>
       {/* =================== FOTO DA ATLÉTICA (HERO) =================== */}
@@ -31,20 +57,9 @@ export default function HomePage() {
             style={{ minHeight: "clamp(420px, 60vh, 680px)", paddingBottom: "clamp(40px, 6vw, 80px)" }}
           >
             <div
-              className="w-full mx-auto px-6 md:px-12 lg:px-16"
-              style={{ maxWidth: "1400px" }}
+              className="w-full mx-auto"
+              style={{ maxWidth: "1400px", paddingLeft: "clamp(32px, 8vw, 120px)", paddingRight: "clamp(32px, 8vw, 120px)" }}
             >
-              <div
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-[11px] font-semibold uppercase tracking-widest mb-6 border"
-                style={{
-                  background: "rgba(0,0,0,0.4)",
-                  borderColor: "rgba(201,168,76,0.4)",
-                  color: "var(--gold)",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                A maior de São Paulo
-              </div>
 
               <h1
                 className="font-heading leading-[0.92] tracking-[1px] mb-5 drop-shadow-2xl"
@@ -105,97 +120,73 @@ export default function HomePage() {
               className="text-[15px] md:text-[16px] leading-[1.8] mb-6"
               style={{ color: "var(--text2)" }}
             >
-              A Atlética Belas Artes é a entidade esportiva oficial da
-              Faculdade Belas Artes de São Paulo. Fundada por alunos
-              apaixonados, representamos a BA nas principais competições
-              universitárias com muito suor, tinta e determinação.
+              {quemSomosResumo}
             </p>
-            <ExpandableText />
+            <ExpandableText text={quemSomosCompleto} />
           </div>
         </div>
       </section>
-
-      {/* Separador visual */}
-      <div
-        className="w-full border-t"
-        style={{ borderColor: "var(--border)" }}
-      />
 
       {/* ====== SEÇÃO 3: PRÓXIMOS EVENTOS ====== */}
-      <section className="content-wrapper py-20 md:py-28">
-        <div className="max-w-6xl mx-auto">
-          {/* Cabeçalho da seção */}
-          <div className="flex justify-between items-end mb-10 md:mb-14">
-            <div>
-              <h2
-                className="font-heading leading-none mb-2"
-                style={{
-                  fontSize: "clamp(30px, 4vw, 48px)",
-                  color: "var(--text)",
-                }}
+      {/* Regra 6: Se não há eventos, a seção simplesmente não renderiza */}
+      {proximosEventos.length > 0 && (
+        <section className="content-wrapper py-20 md:py-28">
+          <div className="max-w-6xl mx-auto">
+            {/* Cabeçalho da seção */}
+            <div className="flex justify-between items-end mb-10 md:mb-14">
+              <div>
+                <h2
+                  className="font-heading leading-none mb-2 pl-2 md:pl-4"
+                  style={{
+                    fontSize: "clamp(30px, 4vw, 48px)",
+                    color: "var(--text)",
+                  }}
+                >
+                  Próximos Eventos
+                </h2>
+                <p
+                  className="text-[14px] md:text-[16px] hidden md:block"
+                  style={{ color: "var(--text3)" }}
+                >
+                  Fique por dentro das melhores festas e campeonatos
+                </p>
+              </div>
+              <Link
+                href="/eventos"
+                className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 py-2 px-1 transition-opacity hover:opacity-70"
+                style={{ color: "var(--crimson-light)" }}
               >
-                Próximos Eventos
-              </h2>
-              <p
-                className="text-[14px] md:text-[16px] hidden md:block"
-                style={{ color: "var(--text3)" }}
-              >
-                Fique por dentro das melhores festas e campeonatos
-              </p>
+                Ver todos
+                <svg
+                  width="14"
+                  height="14"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
             </div>
-            <Link
-              href="/eventos"
-              className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 transition-opacity hover:opacity-70"
-              style={{ color: "var(--crimson-light)" }}
-            >
-              Ver todos
-              <svg
-                width="14"
-                height="14"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </Link>
-          </div>
 
-          {/* Cards de eventos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-            <EventCard
-              title="Balada da Virada 2025"
-              date="12 de Outubro"
-              location="Nos Trilhos, Mooca"
-              status="LOTE 2"
-              statusColor="gold"
-              img="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop"
-            />
-            <EventCard
-              title="Cervejada BA"
-              date="25 de Novembro"
-              location="Estacionamento FBA"
-              status="À VENDA"
-              statusColor="green"
-              img="https://images.unsplash.com/photo-1540039155732-68ee23e15b51?q=80&w=1974&auto=format&fit=crop"
-            />
-            <EventCard
-              title="Interartes"
-              date="Dezembro"
-              location="São Carlos - SP"
-              status="EM BREVE"
-              statusColor="neutral"
-              img="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop"
-              className="hidden lg:flex"
-            />
+            {/* Cards de eventos — dados reais do Strapi */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
+              {proximosEventos.slice(0, 3).map((evento, index) => (
+                <EventCard
+                  key={evento.documentId}
+                  evento={evento}
+                  className={index === 2 ? "hidden lg:flex" : ""}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Separador visual */}
       <div
@@ -204,8 +195,8 @@ export default function HomePage() {
       />
 
       {/* ====== SEÇÃO 4: RODAPÉ DE LINKS (compacto, discreto) ====== */}
-      <section className="content-wrapper py-8 md:py-10">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
+      <section className="content-wrapper pt-16 pb-10 md:pt-24 md:pb-16 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
           <span
             className="font-heading text-[18px] md:text-[20px] tracking-wide"
             style={{ color: "var(--text3)" }}
@@ -215,7 +206,7 @@ export default function HomePage() {
 
           <div className="flex flex-wrap justify-center gap-6 md:gap-10">
             <FooterLink
-              href="#"
+              href={linkSejaSocio}
               label="Seja Sócio"
               hoverColor="var(--crimson-light)"
               icon={
@@ -223,7 +214,7 @@ export default function HomePage() {
               }
             />
             <FooterLink
-              href="#"
+              href={linkProdutos}
               label="Nossos Produtos"
               hoverColor="var(--gold)"
               icon={
@@ -235,7 +226,7 @@ export default function HomePage() {
               }
             />
             <FooterLink
-              href="#"
+              href={linkContato}
               label="Contato"
               hoverColor="#60a5fa"
               icon={
@@ -251,143 +242,6 @@ export default function HomePage() {
 
 /* ====== SUB-COMPONENTES ====== */
 
-function ExpandableText() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <div
-        className="overflow-hidden transition-all duration-500 ease-in-out"
-        style={{ maxHeight: open ? "400px" : "0px", opacity: open ? 1 : 0 }}
-      >
-        <p
-          className="text-[15px] md:text-[16px] leading-[1.8] pt-1 pb-5"
-          style={{ color: "var(--text2)" }}
-        >
-          Desde a nossa fundação, construímos uma história de vitórias,
-          amizades e momentos inesquecíveis. Nossos times competem em diversas
-          modalidades, levando o nome da BA com orgulho por toda São Paulo e em
-          jogos universitários por todo o estado. Mais do que esporte, somos
-          comunidade.
-        </p>
-      </div>
-
-      <button
-        className="inline-flex items-center gap-2 py-2.5 px-5 rounded-full text-[13px] font-medium transition-all border"
-        style={{
-          color: "var(--text2)",
-          borderColor: "var(--border)",
-          background: "transparent",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.borderColor =
-            "var(--text3)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.borderColor =
-            "var(--border)";
-        }}
-        onClick={() => setOpen(!open)}
-      >
-        {open ? "Ler menos" : "Conheça nossa história"}
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          className={`transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-    </>
-  );
-}
-
-/* Card de evento reutilizável */
-interface EventCardProps {
-  title: string;
-  date: string;
-  location: string;
-  status: string;
-  statusColor: "gold" | "green" | "neutral";
-  img: string;
-  className?: string;
-}
-
-const statusStyles = {
-  gold: "bg-[rgba(201,168,76,0.12)] text-[#e8c97a] border-[rgba(201,168,76,0.3)]",
-  green:
-    "bg-[rgba(76,175,80,0.12)] text-[#81c784] border-[rgba(76,175,80,0.3)]",
-  neutral: "bg-zinc-800/80 text-zinc-400 border-zinc-700",
-};
-
-function EventCard({
-  title,
-  date,
-  location,
-  status,
-  statusColor,
-  img,
-  className = "",
-}: EventCardProps) {
-  return (
-    <Link
-      href="/eventos"
-      className={`flex flex-col rounded-[var(--radius)] overflow-hidden border group transition-all hover:border-[var(--crimson)] shadow-md hover:shadow-xl ${className}`}
-      style={{
-        background: "var(--surface)",
-        borderColor: "var(--border)",
-      }}
-    >
-      {/* Imagem com overlay */}
-      <div
-        className="h-[200px] relative flex items-end p-5 overflow-hidden"
-        style={{
-          backgroundImage: `url('${img}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-        <h3
-          className="font-heading text-[26px] relative z-10 tracking-wide drop-shadow-md transition-colors group-hover:text-[var(--gold)]"
-          style={{ color: "var(--text)" }}
-        >
-          {title}
-        </h3>
-      </div>
-
-      {/* Footer do card */}
-      <div
-        className="px-5 py-4 flex justify-between items-center"
-        style={{ background: "var(--surface)" }}
-      >
-        <div className="flex flex-col gap-0.5">
-          <span
-            className="text-[13px] font-semibold"
-            style={{ color: "var(--text)" }}
-          >
-            {date}
-          </span>
-          <span className="text-[11px]" style={{ color: "var(--text3)" }}>
-            {location}
-          </span>
-        </div>
-        <span
-          className={`text-[10px] font-bold px-4 py-1.5 rounded-md border tracking-wider ${statusStyles[statusColor]}`}
-        >
-          {status}
-        </span>
-      </div>
-    </Link>
-  );
-}
-
 /* Link de rodapé reutilizável */
 interface FooterLinkProps {
   href: string;
@@ -400,14 +254,10 @@ function FooterLink({ href, label, hoverColor, icon }: FooterLinkProps) {
   return (
     <a
       href={href}
-      className="flex items-center gap-2 text-[13px] font-medium transition-colors group"
+      className="flex items-center gap-2 text-[13px] font-medium transition-colors group py-2"
       style={{ color: "var(--text3)" }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLAnchorElement).style.color = hoverColor;
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLAnchorElement).style.color = "var(--text3)";
-      }}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
     >
       <svg
         width="15"

@@ -35,7 +35,7 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
           /* Vista principal do Menu */
           <div id="menu-main">
             <div
-              className="font-heading text-[20px] tracking-[0.5px] px-5 mb-2"
+              className="font-heading text-[24px] tracking-[1px] text-center mb-6 mt-2"
               style={{ color: "var(--text)" }}
             >
               Menu

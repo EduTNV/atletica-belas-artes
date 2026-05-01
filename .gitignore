@@ -1,10 +1,16 @@
 # Documentação e anotações privadas
 CLAUDE.md
+*.md~
 
 # Dependências (Node.js)
 node_modules/
 .pnp
-.pnp.js
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
 # Variáveis de Ambiente
 .env
@@ -12,11 +18,14 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+*.env
+.env.*
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 logs/
 *.log
 
@@ -28,10 +37,34 @@ logs/
 *.njsproj
 *.sln
 *.sw?
+nbproject/
 
 # Sistema Operacional
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+.Spotlight-V100
+.Trashes
+._*
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Pacotes comprimidos
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
 
 # Strapi (CMS) - regras gerais adicionais 
 .strapi/
@@ -40,17 +73,31 @@ dist/
 exports/
 .strapi-updater.json
 .strapi-cloud.json
+.tmp/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+**/public/uploads/*
+!**/public/uploads/.gitkeep
 
 # Next.js (Frontend)
-
 .next/
 out/
 next-env.d.ts
+.vercel/
 
 # Testes e cobertura
 coverage/
 .nyc_output/
+lib-cov/
+lcov.info
 
 # Diversos
 .eslintcache
-.tsbuildinfo
+*.tsbuildinfo
+*.pem
+*.pid
+*.seed
+*.out
+results/

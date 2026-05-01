@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
+import { getCursos, type Curso } from "@/lib/strapi";
+import { TimesList } from "@/components/TimesList";
 
 export const metadata: Metadata = {
   title: "Times — Atlética Belas Artes",
   description: "Conheça os times e modalidades da Atlética Belas Artes.",
 };
 
-export default function TimesPage() {
+/**
+ * Página de Times — Server Component.
+ * Busca Cursos (com modalidades populadas) do Strapi e passa ao componente cliente.
+ */
+export default async function TimesPage() {
+  const cursos = await getCursos().catch(() => [] as Curso[]);
+
   return (
     <>
       {/* Hero compacto */}
@@ -29,15 +37,16 @@ export default function TimesPage() {
         </div>
       </section>
 
-      {/* Grid de cursos — placeholder para Tarefa 3 */}
-      <div className="content-wrapper py-10 md:py-16">
-        <p
-          className="text-center text-[14px]"
-          style={{ color: "var(--text3)" }}
-        >
-          Grid de cursos e modalidades será implementado na Tarefa 3
-        </p>
-      </div>
+      {/* Conteúdo dinâmico — Client Component */}
+      {cursos.length === 0 ? (
+        <div className="content-wrapper py-24 text-center">
+          <p className="text-[15px]" style={{ color: "var(--text3)" }}>
+            Nenhum time cadastrado no momento.
+          </p>
+        </div>
+      ) : (
+        <TimesList cursos={cursos} />
+      )}
     </>
   );
 }

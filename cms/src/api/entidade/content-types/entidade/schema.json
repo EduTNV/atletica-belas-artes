@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "cursos",
+  "collectionName": "entidades",
   "info": {
-    "singularName": "curso",
-    "pluralName": "cursos",
-    "displayName": "Curso"
+    "singularName": "entidade",
+    "pluralName": "entidades",
+    "displayName": "Entidade"
   },
   "options": {
     "draftAndPublish": false
@@ -14,26 +14,22 @@
       "type": "string",
       "required": true
     },
-    "emoji": {
-      "type": "string"
-    },
-    "foto_capa": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
+    "descricao": {
+      "type": "text"
     },
     "cor": {
       "type": "string"
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "nome"
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
     },
-    "modalidades": {
+    "membros": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::modalidade.modalidade",
-      "mappedBy": "curso"
+      "target": "api::membro-entidade.membro-entidade",
+      "mappedBy": "entidade"
     }
   }
 }
