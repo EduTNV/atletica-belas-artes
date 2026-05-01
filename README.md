@@ -10,7 +10,6 @@ A plataforma tem o objetivo de centralizar todas as informações importantes da
 - 📅 **Eventos e Festas**: Cronograma, detalhes e links para ingressos.
 - 🏆 **Times e Modalidades**: Informações sobre as equipes esportivas, treinos e resultados.
 - 🏢 **Entidades e Diretoria**: Contatos, estrutura organizacional e membros responsáveis.
-- 📱 **Experiência de App (PWA)**: O site foi construído para ser instalado diretamente no celular do aluno, funcionando de forma semelhante a um aplicativo nativo.
 
 Tudo isso é gerenciado pelos próprios diretores da Atlética de forma autônoma através de um painel administrativo (CMS).
 
