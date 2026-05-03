@@ -430,6 +430,35 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiConfigCompeticoesConfigCompeticoes
+  extends Struct.SingleTypeSchema {
+  collectionName: 'config_competicoes';
+  info: {
+    displayName: 'Config Competicoes';
+    pluralName: 'config-competicoess';
+    singularName: 'config-competicoes';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    competicoes: Schema.Attribute.Component<'competicao.competicao', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::config-competicoes.config-competicoes'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiConfigContatoConfigContato extends Struct.SingleTypeSchema {
   collectionName: 'config_contatos';
   info: {
@@ -475,6 +504,8 @@ export interface ApiConfigHomeConfigHome extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    foto_hero: Schema.Attribute.Media<'images'>;
+    frase_footer: Schema.Attribute.String;
     link_produtos: Schema.Attribute.String;
     link_seja_socio: Schema.Attribute.String;
     link_whatsapp_contato: Schema.Attribute.String;
@@ -544,7 +575,6 @@ export interface ApiCursoCurso extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    emoji: Schema.Attribute.String;
     foto_capa: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::curso.curso'> &
@@ -669,6 +699,43 @@ export interface ApiMembroEntidadeMembroEntidade
   };
 }
 
+export interface ApiMembroModalidadeMembroModalidade
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'membro_modalidades';
+  info: {
+    displayName: 'Membro Modalidade';
+    pluralName: 'membro-modalidades';
+    singularName: 'membro-modalidade';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    cargo: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    foto: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membro-modalidade.membro-modalidade'
+    > &
+      Schema.Attribute.Private;
+    modalidade: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::modalidade.modalidade'
+    >;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    ordem: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whatsapp: Schema.Attribute.String;
+  };
+}
+
 export interface ApiModalidadeModalidade extends Struct.CollectionTypeSchema {
   collectionName: 'modalidades';
   info: {
@@ -686,8 +753,8 @@ export interface ApiModalidadeModalidade extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     curso: Schema.Attribute.Relation<'manyToOne', 'api::curso.curso'>;
-    emoji: Schema.Attribute.String;
-    foto_time: Schema.Attribute.Media<'images'>;
+    foto_banner: Schema.Attribute.Media<'images'>;
+    foto_card: Schema.Attribute.Media<'images'>;
     historico: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -695,6 +762,10 @@ export interface ApiModalidadeModalidade extends Struct.CollectionTypeSchema {
       'api::modalidade.modalidade'
     > &
       Schema.Attribute.Private;
+    membro_modalidades: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membro-modalidade.membro-modalidade'
+    >;
     nome: Schema.Attribute.String & Schema.Attribute.Required;
     nome_interno: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
@@ -1289,6 +1360,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::config-competicoes.config-competicoes': ApiConfigCompeticoesConfigCompeticoes;
       'api::config-contato.config-contato': ApiConfigContatoConfigContato;
       'api::config-home.config-home': ApiConfigHomeConfigHome;
       'api::conquista.conquista': ApiConquistaConquista;
@@ -1296,6 +1368,7 @@ declare module '@strapi/strapi' {
       'api::entidade.entidade': ApiEntidadeEntidade;
       'api::evento.evento': ApiEventoEvento;
       'api::membro-entidade.membro-entidade': ApiMembroEntidadeMembroEntidade;
+      'api::membro-modalidade.membro-modalidade': ApiMembroModalidadeMembroModalidade;
       'api::modalidade.modalidade': ApiModalidadeModalidade;
       'api::resultado.resultado': ApiResultadoResultado;
       'api::treino.treino': ApiTreinoTreino;

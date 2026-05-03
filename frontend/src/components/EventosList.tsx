@@ -12,10 +12,6 @@ interface EventosListProps {
   passados: Evento[];
 }
 
-/**
- * Componente client-side que gerencia as abas "Próximos" e "Galeria"
- * e o painel de detalhe slide-in ao clicar em um evento.
- */
 export function EventosList({ proximos, passados }: EventosListProps) {
   const [activeTab, setActiveTab] = useState<TabId>("proximos");
   const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
@@ -29,46 +25,56 @@ export function EventosList({ proximos, passados }: EventosListProps) {
 
   return (
     <>
-      {/* Tabs */}
-      <div className="content-wrapper mt-4">
-        <div
-          className="flex border-b gap-4 md:gap-8"
-          style={{ borderColor: "var(--border)" }}
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="py-[14px] px-2 md:px-4 text-[14px] md:text-[16px] font-medium border-b-2 transition-colors"
-              style={{
-                color: activeTab === tab.id ? "var(--text)" : "var(--text3)",
-                borderColor: activeTab === tab.id ? "var(--crimson)" : "transparent",
-              }}
-              id={`ev-tab-${tab.id}`}
-            >
-              {tab.label}
-              {tab.count > 0 && (
-                <span
-                  className="ml-2 text-[11px] px-2 py-[2px] rounded-full"
-                  style={{
-                    background: activeTab === tab.id
-                      ? "rgba(139, 26, 26, 0.2)"
-                      : "rgba(255,255,255,0.06)",
-                    color: activeTab === tab.id
-                      ? "var(--crimson-light)"
-                      : "var(--text3)",
-                  }}
+      <div className="content-wrapper mt-10 md:mt-16">
+        <div className="flex flex-wrap gap-4 md:gap-6">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`
+                  relative flex items-center justify-between gap-6 py-4 px-6 md:px-8 
+                  rounded-2xl border-2 transition-all duration-300 min-w-[160px] md:min-w-[200px]
+                  hover:scale-[1.02] active:scale-[0.98]
+                `}
+                style={{
+                  background: isActive ? "var(--blue-header)" : "transparent",
+                  borderColor: isActive ? "var(--crimson)" : "var(--border)",
+                  boxShadow: isActive ? "0 10px 25px -5px rgba(92, 100, 132, 0.2)" : "none",
+                }}
+                id={`ev-tab-${tab.id}`}
+              >
+                <span 
+                  className="text-base md:text-lg font-bold tracking-wide"
+                  style={{ color: isActive ? "var(--crimson)" : "var(--text-main)" }}
                 >
-                  {tab.count}
+                  {tab.label.toUpperCase()}
                 </span>
-              )}
-            </button>
-          ))}
+                
+                {tab.count >= 0 && (
+                  <span
+                    className="flex items-center justify-center min-w-[28px] h-[28px] px-2 text-[12px] font-bold rounded-lg transition-colors"
+                    style={{
+                      background: isActive ? "var(--crimson)" : "var(--surface)",
+                      color: isActive ? "white" : "var(--text-main)",
+                      border: isActive ? "none" : "1px solid var(--border)",
+                    }}
+                  >
+                    {tab.count}
+                  </span>
+                )}
+
+                {isActive && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--crimson)] rounded-full border-2 border-[var(--bg)]" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Conteúdo da aba ativa */}
-      <div className="content-wrapper py-10 md:py-16 mt-4">
+      <div className="content-wrapper py-12 md:py-20">
         {eventos.length === 0 ? (
           <div
             className="text-center py-16 md:py-24"
@@ -98,7 +104,6 @@ export function EventosList({ proximos, passados }: EventosListProps) {
         )}
       </div>
 
-      {/* Painel de detalhe do evento (slide-in) */}
       {selectedEvento && (
         <EventDetail
           evento={selectedEvento}

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_competicao_competicoes",
+  "info": {
+    "displayName": "Competicao",
+    "icon": "trophy"
+  },
+  "options": {},
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true
+    },
+    "sigla": {
+      "type": "string",
+      "required": true
+    },
+    "descricao": {
+      "type": "text",
+      "required": true
+    },
+    "destaque": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

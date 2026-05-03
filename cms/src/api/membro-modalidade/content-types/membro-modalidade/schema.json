@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "membro_modalidades",
+  "info": {
+    "singularName": "membro-modalidade",
+    "pluralName": "membro-modalidades",
+    "displayName": "Membro Modalidade"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true
+    },
+    "cargo": {
+      "type": "string"
+    },
+    "foto": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "ordem": {
+      "type": "integer"
+    },
+    "modalidade": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::modalidade.modalidade",
+      "inversedBy": "membro_modalidades"
+    }
+  }
+}

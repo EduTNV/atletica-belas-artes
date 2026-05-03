@@ -10,23 +10,17 @@ interface TimesListProps {
   cursos: Curso[];
 }
 
-/**
- * Client Component — Gerencia o grid de cursos e a lista de modalidades.
- * As modalidades vêm embutidas dentro de cada Curso via populate.
- */
 export function TimesList({ cursos }: TimesListProps) {
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
   const [selectedMod, setSelectedMod] = useState<Modalidade | null>(null);
 
-  // Modalidades vêm embutidas no curso selecionado
   const modalidadesFiltradas = selectedCurso?.modalidades || [];
 
   return (
     <>
-      {/* ====== GRID DE CURSOS ====== */}
       {!selectedCurso && (
         <div className="content-wrapper py-8 md:py-12">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto">
             {cursos.map((curso) => {
               const count = curso.modalidades?.length || 0;
 
@@ -41,7 +35,6 @@ export function TimesList({ cursos }: TimesListProps) {
                   }}
                   id={`curso-${curso.slug || curso.id}`}
                 >
-                  {/* Brilho sutil no hover */}
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
                     style={{
@@ -49,7 +42,6 @@ export function TimesList({ cursos }: TimesListProps) {
                     }}
                   />
 
-                  {/* Foto do curso ou fallback com inicial */}
                   {curso.foto_capa?.url ? (
                     <img
                       src={`${STRAPI_URL}${curso.foto_capa.url}`}
@@ -71,13 +63,13 @@ export function TimesList({ cursos }: TimesListProps) {
                   )}
                   <span
                     className="text-[14px] md:text-[16px] font-semibold relative z-10"
-                    style={{ color: "var(--text)" }}
+                    style={{ color: "var(--crimson)" }}
                   >
                     {curso.nome}
                   </span>
                   <span
                     className="text-[12px] mt-1 relative z-10"
-                    style={{ color: "var(--text3)" }}
+                    style={{ color: "var(--text-main)" }}
                   >
                     {count} {count === 1 ? "modalidade" : "modalidades"}
                   </span>
@@ -88,10 +80,8 @@ export function TimesList({ cursos }: TimesListProps) {
         </div>
       )}
 
-      {/* ====== LISTA DE MODALIDADES (Nível 2) ====== */}
       {selectedCurso && (
         <div className="content-wrapper py-6 md:py-10">
-          {/* Header com botão voltar */}
           <div className="flex items-center gap-3 mb-8">
             <button
               onClick={() => setSelectedCurso(null)}
@@ -142,7 +132,6 @@ export function TimesList({ cursos }: TimesListProps) {
         </div>
       )}
 
-      {/* ====== DETALHE DA MODALIDADE (Nível 3 Slide-in) ====== */}
       {selectedMod && selectedCurso && (
         <ModalidadeDetail
           modalidade={selectedMod}
@@ -155,8 +144,6 @@ export function TimesList({ cursos }: TimesListProps) {
   );
 }
 
-/* ====== CARD DE MODALIDADE ====== */
-
 function ModalidadeCard({
   modalidade,
   cursoColor,
@@ -167,8 +154,6 @@ function ModalidadeCard({
   onClick: () => void;
 }) {
   const color = cursoColor || "#8b1a1a";
-
-  // Badge dinâmico: detecta gênero pelo nome
   const badges: { label: string; style: string }[] = [];
   const nomeLower = modalidade.nome.toLowerCase();
 
@@ -201,9 +186,8 @@ function ModalidadeCard({
       }}
       id={`mod-${modalidade.documentId}`}
     >
-      {/* Foto do time ou fallback com inicial */}
       {(() => {
-        const fotoUrl = modalidade.foto_time?.formats?.thumbnail?.url || modalidade.foto_time?.url;
+        const fotoUrl = modalidade.foto_card?.formats?.thumbnail?.url || modalidade.foto_card?.url;
         if (fotoUrl) {
           return (
             <img
@@ -228,16 +212,14 @@ function ModalidadeCard({
         );
       })()}
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
         <h3
           className="text-[15px] md:text-[16px] font-semibold mb-1 truncate"
-          style={{ color: "var(--text)" }}
+          style={{ color: "var(--text-main)" }}
         >
           {modalidade.nome}
         </h3>
 
-        {/* Badges dinâmicos */}
         {badges.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {badges.map((badge, i) => (
@@ -252,7 +234,6 @@ function ModalidadeCard({
         )}
       </div>
 
-      {/* Chevron */}
       <svg
         width="18"
         height="18"

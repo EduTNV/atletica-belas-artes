@@ -27,6 +27,16 @@
     },
     "link_whatsapp_contato": {
       "type": "string"
+    },
+    "frase_footer": {
+      "type": "string"
+    },
+    "foto_hero": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

@@ -22,18 +22,14 @@ export default function ClientLayout({
 
   return (
     <>
-      {/* Header desktop — só aparece em md+ */}
       <Header />
 
-      {/* Conteúdo da página */}
       <main className="main-content">
         <div className="page-enter">{children}</div>
       </main>
 
-      {/* Bottom Sheet do Menu — só aparece em mobile */}
       <BottomSheet isOpen={sheetOpen} onClose={handleCloseSheet} />
 
-      {/* Bottom Tab Bar — só aparece em mobile */}
       <BottomTabBar onMenuToggle={handleMenuToggle} menuOpen={sheetOpen} />
     </>
   );

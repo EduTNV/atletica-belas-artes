@@ -1,57 +1,52 @@
 import Link from "next/link";
-import { getEventos, getConfigHome, type Evento } from "@/lib/strapi";
+import { getEventos, getConfigHome, getConfigCompeticoes, getEntidades, type Evento, type Entidade } from "@/lib/strapi";
 import { ExpandableText } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
+import { EntidadesList } from "@/components/EntidadesList";
 
-/**
- * Home Page — Server Component.
- * Busca dados do Strapi no servidor (ISR 60s) e renderiza a página.
- */
 export default async function HomePage() {
-  // Busca paralela: eventos + config da home
-  const [todosEventos, configHome] = await Promise.all([
+  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+
+  const [todosEventos, configHome, configCompeticoes] = await Promise.all([
     getEventos().catch(() => [] as Evento[]),
     getConfigHome(),
+    getConfigCompeticoes(),
   ]);
 
-  // Filtra apenas eventos FUTUROS para a seção "Próximos Eventos"
   const agora = new Date();
   const proximosEventos = todosEventos.filter((e) => new Date(e.data) >= agora);
 
-  // Texto "Quem Somos" — usa fallback se ConfigHome não foi preenchido
   const quemSomosResumo =
     configHome?.texto_quem_somos_resumo ||
     "A Atlética Belas Artes é a entidade esportiva oficial da Faculdade Belas Artes de São Paulo. Fundada por alunos apaixonados, representamos a BA nas principais competições universitárias com muito suor, tinta e determinação.";
 
   const quemSomosCompleto = configHome?.texto_quem_somos_completo || null;
 
-  // Links externos — fallback para "#"
   const linkSejaSocio = configHome?.link_seja_socio || "#";
   const linkProdutos = configHome?.link_produtos || "#";
   const linkContato = configHome?.link_whatsapp_contato || "#";
 
+  const heroImgUrl = configHome?.foto_hero?.url
+    ? `${STRAPI_URL}${configHome.foto_hero.url}`
+    : "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop";
+
   return (
     <>
-      {/* =================== FOTO DA ATLÉTICA (HERO) =================== */}
       <section className="relative w-full" id="hero-banner">
         <div
           className="w-full relative"
           style={{ minHeight: "clamp(420px, 60vh, 680px)" }}
         >
-          {/* Imagem de fundo */}
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop')",
+              backgroundImage: `url('${heroImgUrl}')`,
               backgroundSize: "cover",
               backgroundPosition: "center top",
             }}
           />
-          {/* Overlay gradiente */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#0f0f0f]" />
 
-          {/* Conteúdo — fica na parte de baixo da imagem */}
           <div
             className="relative z-10 flex flex-col justify-end"
             style={{ minHeight: "clamp(420px, 60vh, 680px)", paddingBottom: "clamp(40px, 6vw, 80px)" }}
@@ -60,21 +55,20 @@ export default async function HomePage() {
               className="w-full mx-auto"
               style={{ maxWidth: "1400px", paddingLeft: "clamp(32px, 8vw, 120px)", paddingRight: "clamp(32px, 8vw, 120px)" }}
             >
-
               <h1
                 className="font-heading leading-[0.92] tracking-[1px] mb-5 drop-shadow-2xl"
                 style={{
                   fontSize: "clamp(48px, 8vw, 100px)",
-                  color: "var(--text)",
+                  color: "#ffffff",
                 }}
               >
                 ATLÉTICA{" "}
-                <span style={{ color: "var(--crimson-light)" }}>BELAS ARTES</span>
+                <span style={{ color: "var(--crimson)" }}>BELAS ARTES</span>
               </h1>
 
               <p
                 className="text-[15px] md:text-[18px] font-medium"
-                style={{ color: "rgba(240,236,228,0.75)", maxWidth: "520px" }}
+                style={{ color: "rgba(255,255,255,0.75)", maxWidth: "520px" }}
               >
                 A fúria do design, a força da arquitetura e a garra das artes.
                 Junte-se à nossa matilha!
@@ -84,10 +78,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ====== SEÇÃO 2: QUEM SOMOS ====== */}
       <section className="content-wrapper" style={{ paddingTop: "clamp(80px, 10vw, 160px)", paddingBottom: "clamp(80px, 10vw, 160px)" }}>
         <div className="max-w-5xl mx-auto md:flex gap-14 lg:gap-20 items-start">
-          {/* Ícone BA — só desktop, alinhado ao topo do texto */}
           <div className="hidden md:flex shrink-0">
             <div
               className="rounded-2xl flex items-center justify-center font-heading shadow-xl"
@@ -97,15 +89,14 @@ export default async function HomePage() {
                 fontSize: "clamp(44px, 5.5vw, 64px)",
                 background:
                   "linear-gradient(135deg, var(--crimson-dark), var(--crimson))",
-                color: "var(--gold)",
-                border: "1px solid rgba(201, 168, 76, 0.25)",
+                color: "#ffffff",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
               }}
             >
               BA
             </div>
           </div>
 
-          {/* Texto */}
           <div className="flex-1">
             <h2
               className="font-heading tracking-wide mb-5"
@@ -118,7 +109,7 @@ export default async function HomePage() {
             </h2>
             <p
               className="text-[15px] md:text-[16px] leading-[1.8] mb-6"
-              style={{ color: "var(--text2)" }}
+              style={{ color: "var(--text-main)" }}
             >
               {quemSomosResumo}
             </p>
@@ -127,12 +118,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ====== SEÇÃO 3: PRÓXIMOS EVENTOS ====== */}
-      {/* Regra 6: Se não há eventos, a seção simplesmente não renderiza */}
       {proximosEventos.length > 0 && (
         <section className="content-wrapper py-20 md:py-28">
           <div className="max-w-6xl mx-auto">
-            {/* Cabeçalho da seção */}
             <div className="flex justify-between items-end mb-10 md:mb-14">
               <div>
                 <h2
@@ -146,7 +134,7 @@ export default async function HomePage() {
                 </h2>
                 <p
                   className="text-[14px] md:text-[16px] hidden md:block"
-                  style={{ color: "var(--text3)" }}
+                  style={{ color: "var(--text-main)" }}
                 >
                   Fique por dentro das melhores festas e campeonatos
                 </p>
@@ -154,7 +142,7 @@ export default async function HomePage() {
               <Link
                 href="/eventos"
                 className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 py-2 px-1 transition-opacity hover:opacity-70"
-                style={{ color: "var(--crimson-light)" }}
+                style={{ color: "var(--crimson)" }}
               >
                 Ver todos
                 <svg
@@ -174,7 +162,6 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {/* Cards de eventos — dados reais do Strapi */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
               {proximosEventos.slice(0, 3).map((evento, index) => (
                 <EventCard
@@ -188,27 +175,79 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Separador visual */}
+      {configCompeticoes?.competicoes && configCompeticoes.competicoes.length > 0 && (
+        <section className="content-wrapper py-20 md:py-28">
+          <div className="max-w-5xl mx-auto">
+            <h2
+              className="font-heading mb-3"
+              style={{ fontSize: "clamp(28px, 3.5vw, 44px)", color: "var(--text)" }}
+            >
+              Onde Competimos
+            </h2>
+            <p
+              className="text-[14px] md:text-[16px] mb-10 md:mb-14"
+              style={{ color: "var(--text-main)" }}
+            >
+              Representando a Belas Artes nos maiores palcos universitários
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {configCompeticoes.competicoes.map((comp) => (
+                <div
+                  key={comp.sigla}
+                  className="rounded-2xl border p-6 flex flex-col gap-3"
+                  style={{
+                    background: comp.destaque
+                      ? "rgba(224, 44, 44, 0.05)"
+                      : "var(--surface)",
+                    borderColor: comp.destaque
+                      ? "rgba(224, 44, 44, 0.2)"
+                      : "var(--border)",
+                  }}
+                >
+                  <div
+                    className="font-heading text-[38px] md:text-[44px] tracking-widest leading-none"
+                    style={{ color: "var(--crimson)" }}
+                  >
+                    {comp.sigla}
+                  </div>
+                  <div
+                    className="text-[14px] md:text-[15px] font-semibold"
+                    style={{ color: "var(--text-main)" }}
+                  >
+                    {comp.nome}
+                  </div>
+                  <p
+                    className="text-[13px] leading-relaxed"
+                    style={{ color: "var(--text2)" }}
+                  >
+                    {comp.descricao}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <div
         className="w-full border-t"
         style={{ borderColor: "var(--border)" }}
       />
 
-      {/* ====== SEÇÃO 4: RODAPÉ DE LINKS (compacto, discreto) ====== */}
-      <section className="content-wrapper pt-16 pb-10 md:pt-24 md:pb-16 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+      <section className="content-wrapper pt-16 pb-10 md:pt-24 md:pb-16 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
           <span
             className="font-heading text-[18px] md:text-[20px] tracking-wide"
             style={{ color: "var(--text3)" }}
           >
-            Faça parte da matilha
+            {configHome?.frase_footer || "Venha defender as cores da BA"}
           </span>
 
           <div className="flex flex-wrap justify-center gap-6 md:gap-10">
             <FooterLink
               href={linkSejaSocio}
               label="Seja Sócio"
-              hoverColor="var(--crimson-light)"
+              hoverColor="var(--crimson)"
               icon={
                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
               }
@@ -228,7 +267,7 @@ export default async function HomePage() {
             <FooterLink
               href={linkContato}
               label="Contato"
-              hoverColor="#60a5fa"
+              hoverColor="#2563eb"
               icon={
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
               }
@@ -240,9 +279,6 @@ export default async function HomePage() {
   );
 }
 
-/* ====== SUB-COMPONENTES ====== */
-
-/* Link de rodapé reutilizável */
 interface FooterLinkProps {
   href: string;
   label: string;

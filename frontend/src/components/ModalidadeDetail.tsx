@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Modalidade, Resultado, Treino, Conquista } from "@/lib/strapi";
+import type { Modalidade, Resultado, Treino, Conquista, MembroModalidade } from "@/lib/strapi";
 
 type InnerTab = "resultados" | "treinos" | "conquistas" | "elenco";
 
@@ -14,25 +14,17 @@ interface ModalidadeDetailProps {
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
-/**
- * Slide-in complexo — detalhe de uma Modalidade.
- * Busca Resultados, Treinos e Conquistas sob demanda via client-side fetch.
- */
 export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }: ModalidadeDetailProps) {
   const [activeTab, setActiveTab] = useState<InnerTab>("resultados");
   const [resultados, setResultados] = useState<Resultado[]>([]);
   const [treinos, setTreinos] = useState<Treino[]>([]);
   const [conquistas, setConquistas] = useState<Conquista[]>([]);
+  const [membros, setMembros] = useState<MembroModalidade[]>([]);
   const [loading, setLoading] = useState(true);
 
   const color = cursoColor || "#8b1a1a";
+  const fotoBanner = modalidade.foto_banner?.url ? `${STRAPI_URL}${modalidade.foto_banner.url}` : null;
 
-  // Foto do time (se houver upload no Strapi)
-  const fotoTime = modalidade.foto_time?.url
-    ? `${STRAPI_URL}${modalidade.foto_time.url}`
-    : null;
-
-  // Fetch client-side dos sub-recursos
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -40,17 +32,19 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
         const baseUrl = STRAPI_URL;
         const docId = modalidade.documentId;
 
-        const [resRes, resTre, resCon] = await Promise.all([
+        const [resRes, resTre, resCon, resMem] = await Promise.all([
           fetch(`${baseUrl}/api/resultados?filters[modalidade][documentId][$eq]=${docId}&sort=data:desc&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
           fetch(`${baseUrl}/api/treinos?filters[modalidade][documentId][$eq]=${docId}&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
           fetch(`${baseUrl}/api/conquistas?filters[modalidade][documentId][$eq]=${docId}&sort=ano:desc&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
+          fetch(`${baseUrl}/api/membro-modalidades?filters[modalidade][documentId][$eq]=${docId}&populate=foto&sort=ordem:asc&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
         ]);
 
         setResultados(resRes.data || []);
         setTreinos(sortTreinos(resTre.data || []));
         setConquistas(resCon.data || []);
+        setMembros(resMem.data || []);
       } catch {
-        // silently fail
+        // fail silently
       } finally {
         setLoading(false);
       }
@@ -58,7 +52,6 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
     fetchData();
   }, [modalidade.documentId]);
 
-  // Stats calculados dos resultados
   const totalJogos = resultados.length;
   const vitorias = resultados.filter(r => r.placar_nos != null && r.placar_adversario != null && r.placar_nos > r.placar_adversario).length;
   const derrotas = resultados.filter(r => r.placar_nos != null && r.placar_adversario != null && r.placar_nos < r.placar_adversario).length;
@@ -73,12 +66,9 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
 
   return (
     <>
-      {/* Overlay */}
       <div className="drawer-overlay open" onClick={onClose} />
 
-      {/* Painel slide-in */}
       <div className="slide-panel open" style={{ zIndex: 210 }}>
-        {/* Header */}
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="mod-detail-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -98,17 +88,14 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
           </div>
         </div>
 
-        {/* Conteúdo scrollável */}
         <div className="flex-1 overflow-y-auto">
-          {/* Hero do time */}
           <div className="relative" style={{ height: "clamp(180px, 30vh, 260px)" }}>
-            {/* Background: foto do time ou gradiente */}
             <div
               className="absolute inset-0"
               style={
-                fotoTime
+                fotoBanner
                   ? {
-                      backgroundImage: `url('${fotoTime}')`,
+                      backgroundImage: `url('${fotoBanner}')`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }
@@ -117,27 +104,18 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
                     }
               }
             />
-            {/* Overlay escuro */}
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/50 to-transparent" />
 
-            {/* Conteúdo sobre o hero */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
-              <div
-                className="text-[11px] font-bold tracking-[1.5px] uppercase mb-2"
-                style={{ color: `${color}` }}
-              >
-                {modalidade.nome}
-              </div>
               <h2
                 className="font-heading tracking-wide"
-                style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "var(--text)" }}
+                style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "var(--crimson)" }}
               >
-                {modalidade.nome_interno}
+                {modalidade.nome}
               </h2>
             </div>
           </div>
 
-          {/* Stats Strip */}
           {!loading && totalJogos > 0 && (
             <div
               className="grid grid-cols-4 border-y"
@@ -150,7 +128,6 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
             </div>
           )}
 
-          {/* Sub-abas internas */}
           <div
             className="flex border-b overflow-x-auto"
             style={{ borderColor: "var(--border)" }}
@@ -170,7 +147,6 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
             ))}
           </div>
 
-          {/* Conteúdo das abas */}
           <div className="p-5 md:p-6">
             {loading ? (
               <div className="text-center py-12" style={{ color: "var(--text3)" }}>
@@ -181,13 +157,12 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
                 {activeTab === "resultados" && <TabResultados resultados={resultados} />}
                 {activeTab === "treinos" && <TabTreinos treinos={treinos} />}
                 {activeTab === "conquistas" && <TabConquistas conquistas={conquistas} />}
-                {activeTab === "elenco" && <TabElenco modalidade={modalidade} color={color} />}
+                {activeTab === "elenco" && <TabElenco modalidade={modalidade} membros={membros} color={color} />}
               </>
             )}
           </div>
         </div>
 
-        {/* Sticky CTA — Falar com o Capitão */}
         {modalidade.capitao_whatsapp && (
           <div className="sticky-cta">
             <a
@@ -213,10 +188,6 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
   );
 }
 
-/* ================================================
-   SUB-COMPONENTES INTERNOS
-   ================================================ */
-
 function StatCell({ value, label, color }: { value: number; label: string; color?: string }) {
   return (
     <div className="flex flex-col items-center py-4">
@@ -232,8 +203,6 @@ function StatCell({ value, label, color }: { value: number; label: string; color
     </div>
   );
 }
-
-/* ====== ABA: RESULTADOS ====== */
 
 function TabResultados({ resultados }: { resultados: Resultado[] }) {
   if (resultados.length === 0) {
@@ -259,12 +228,10 @@ function TabResultados({ resultados }: { resultados: Resultado[] }) {
             className="flex items-center gap-3 py-3 border-b"
             style={{ borderColor: "var(--border)" }}
           >
-            {/* Indicador lateral */}
             <div
               className="w-[3px] h-10 rounded-full shrink-0"
               style={{ background: colors[outcome].indicator }}
             />
-            {/* Info */}
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-medium truncate" style={{ color: "var(--text)" }}>
                 vs {r.adversario}
@@ -274,7 +241,6 @@ function TabResultados({ resultados }: { resultados: Resultado[] }) {
                 {r.data && ` · ${new Date(r.data).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })}`}
               </p>
             </div>
-            {/* Placar */}
             <div className="text-right shrink-0">
               <p className="text-[15px] font-bold" style={{ color: colors[outcome].text }}>
                 {nos}–{adv}
@@ -289,8 +255,6 @@ function TabResultados({ resultados }: { resultados: Resultado[] }) {
     </div>
   );
 }
-
-/* ====== ABA: TREINOS ====== */
 
 const diasLabels: Record<string, string> = {
   segunda: "Segunda-feira",
@@ -334,7 +298,6 @@ function TabTreinos({ treinos }: { treinos: Treino[] }) {
           </div>
         ))}
       </div>
-      {/* Nota informativa */}
       <div
         className="mt-4 p-3 rounded-lg text-[12px] leading-relaxed"
         style={{
@@ -348,8 +311,6 @@ function TabTreinos({ treinos }: { treinos: Treino[] }) {
     </div>
   );
 }
-
-/* ====== ABA: CONQUISTAS ====== */
 
 const medalhaConfig: Record<string, { emoji: string; label: string; color: string; bg: string; border: string }> = {
   ouro: { emoji: "🥇", label: "OURO", color: "var(--gold-light, #e8c97a)", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.3)" },
@@ -397,29 +358,30 @@ function TabConquistas({ conquistas }: { conquistas: Conquista[] }) {
   );
 }
 
-/* ====== ABA: ELENCO ====== */
-
-function TabElenco({ modalidade, color }: { modalidade: Modalidade; color: string }) {
-  // Seção do capitão + placeholder para elenco futuro
+function TabElenco({
+  modalidade,
+  membros,
+  color,
+}: {
+  modalidade: Modalidade;
+  membros: MembroModalidade[];
+  color: string;
+}) {
   return (
     <div>
       {modalidade.capitao_nome && (
         <>
-          <p className="text-[11px] font-bold tracking-wider uppercase mb-3" style={{ color: "var(--text3)" }}>
+          <p className="text-[11px] font-bold tracking-wider uppercase mb-3"
+             style={{ color: "var(--text3)" }}>
             Capitão
           </p>
           <div
             className="flex items-center gap-3 p-4 rounded-xl mb-6"
             style={{ background: "var(--surface)", border: `0.5px solid ${color}44` }}
           >
-            {/* Avatar com iniciais */}
             <div
               className="w-[52px] h-[52px] rounded-full flex items-center justify-center font-heading text-[18px] shrink-0"
-              style={{
-                background: `${color}25`,
-                border: `1.5px solid ${color}55`,
-                color: color,
-              }}
+              style={{ background: `${color}25`, border: `1.5px solid ${color}55`, color }}
             >
               {getInitials(modalidade.capitao_nome)}
             </div>
@@ -435,18 +397,72 @@ function TabElenco({ modalidade, color }: { modalidade: Modalidade; color: strin
         </>
       )}
 
-      {/* Placeholder para elenco completo (futuro: content type Atleta no Strapi) */}
-      <p
-        className="text-[13px] text-center py-8"
-        style={{ color: "var(--text3)" }}
-      >
-        Elenco completo em breve.
-      </p>
+      {membros.length > 0 ? (
+        <>
+          <p className="text-[11px] font-bold tracking-wider uppercase mb-3"
+             style={{ color: "var(--text3)" }}>
+            Elenco · {membros.length} atletas
+          </p>
+          <div className="flex flex-col gap-2">
+            {membros.map((m) => {
+              const fotoUrl = m.foto?.url ? `${STRAPI_URL}${m.foto.url}` : null;
+              return (
+                <div
+                  key={m.documentId}
+                  className="flex items-center gap-3 p-3 rounded-xl border"
+                  style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+                >
+                  {fotoUrl ? (
+                    <img
+                      src={fotoUrl}
+                      alt={m.nome}
+                      className="w-10 h-10 rounded-full object-cover shrink-0"
+                    />
+                  ) : (
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center font-heading text-[14px] shrink-0"
+                      style={{ background: `${color}20`, color }}
+                    >
+                      {getInitials(m.nome)}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold truncate"
+                       style={{ color: "var(--text)" }}>
+                      {m.nome}
+                    </p>
+                    {m.cargo && (
+                      <p className="text-[11px] truncate" style={{ color: "var(--text3)" }}>
+                        {m.cargo}
+                      </p>
+                    )}
+                  </div>
+                  {m.whatsapp && (
+                    <a
+                      href={`https://wa.me/55${m.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                      style={{ background: "rgba(37,211,102,0.12)" }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#25d366">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <p className="text-[13px] text-center py-8" style={{ color: "var(--text3)" }}>
+          Elenco será adicionado em breve.
+        </p>
+      )}
     </div>
   );
 }
-
-/* ====== HELPERS ====== */
 
 function EmptyState({ text }: { text: string }) {
   return (

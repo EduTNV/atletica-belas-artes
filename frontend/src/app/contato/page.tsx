@@ -8,33 +8,29 @@ export const metadata: Metadata = {
 
 export default async function ContatoPage() {
   const contato = await getConfigContato();
-
-  // Se não houver dados cadastrados, exibe mensagem padrão
   const hasAnyInfo = contato && (contato.email || contato.whatsapp || contato.instagram);
 
   return (
     <>
-      {/* Hero */}
       <section
         className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(160deg, #2a0808 0%, #1a0505 40%, #0f0f0f 100%)",
+          background: "var(--blue-header)",
         }}
       >
         <div className="content-wrapper py-10 md:py-16 lg:py-20">
-          <h1 className="font-heading text-[32px] md:text-[48px] tracking-[0.5px]">
+          <h1 className="font-heading text-[32px] md:text-[48px] tracking-[0.5px]" style={{ color: "var(--crimson)" }}>
             Contato
           </h1>
           <p
             className="text-[14px] md:text-[16px] mt-2"
-            style={{ color: "var(--text2)" }}
+            style={{ color: "rgba(255,255,255,0.8)" }}
           >
             Fale com a gente por qualquer um dos canais abaixo
           </p>
         </div>
       </section>
 
-      {/* Cards de contato */}
       <div className="content-wrapper py-10 md:py-16">
         {!hasAnyInfo ? (
           <p className="text-[15px] text-center py-12" style={{ color: "var(--text3)" }}>
@@ -42,7 +38,6 @@ export default async function ContatoPage() {
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto">
-            {/* WhatsApp */}
             {contato.whatsapp && (
               <a
                 href={`https://wa.me/55${contato.whatsapp.replace(/\D/g, "")}`}
@@ -78,7 +73,6 @@ export default async function ContatoPage() {
               </a>
             )}
 
-            {/* E-mail */}
             {contato.email && (
               <a
                 href={`mailto:${contato.email}`}
@@ -113,7 +107,6 @@ export default async function ContatoPage() {
               </a>
             )}
 
-            {/* Instagram */}
             {contato.instagram && (
               <a
                 href={`https://instagram.com/${contato.instagram.replace("@", "")}`}

@@ -19,7 +19,6 @@ export default function Header() {
   const pathname = usePathname();
   const [linkSocio, setLinkSocio] = useState<string | null>(null);
 
-  // Busca o link dinâmico de "Seja Sócio" do ConfigHome
   useEffect(() => {
     const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
     fetch(`${STRAPI_URL}/api/config-home`)
@@ -34,13 +33,11 @@ export default function Header() {
 
   return (
     <header className="desktop-header" id="desktop-header">
-      {/* Logo */}
       <Link href="/" className="header-logo" id="header-logo">
         <div className="header-logo-mark">BA</div>
         <div className="header-logo-text">Atlética Belas Artes</div>
       </Link>
 
-      {/* Nav principal */}
       <nav className="header-nav" id="header-nav">
         {navLinks.map((link) => (
           <Link
@@ -69,7 +66,6 @@ export default function Header() {
         ))}
       </nav>
 
-      {/* CTA — link dinâmico do Strapi ou fallback */}
       {linkSocio ? (
         <a
           href={linkSocio}

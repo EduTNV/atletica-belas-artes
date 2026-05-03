@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 
-/**
- * Texto expandível (Progressive Disclosure).
- * Componente client-side pois usa useState para controle do toggle.
- */
 export function ExpandableText({ text }: { text?: string | null }) {
   const [open, setOpen] = useState(false);
 
@@ -21,7 +17,7 @@ export function ExpandableText({ text }: { text?: string | null }) {
       >
         <p
           className="text-[15px] md:text-[16px] leading-[1.8] pt-1 pb-5"
-          style={{ color: "var(--text2)" }}
+          style={{ color: "var(--text-main)" }}
         >
           {displayText}
         </p>
@@ -30,13 +26,13 @@ export function ExpandableText({ text }: { text?: string | null }) {
       <button
         className="inline-flex items-center gap-2 py-2.5 px-5 rounded-full text-[13px] font-medium transition-all border"
         style={{
-          color: "var(--text2)",
+          color: "var(--crimson)",
           borderColor: "var(--border)",
-          background: "transparent",
+          background: "rgba(224, 44, 44, 0.05)",
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLButtonElement).style.borderColor =
-            "var(--text3)";
+            "var(--crimson)";
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLButtonElement).style.borderColor =

@@ -8,14 +8,9 @@ interface EventDetailProps {
   onClose: () => void;
 }
 
-/**
- * Painel de detalhe do evento — desliza da direita (mobile) ou abre como drawer (desktop).
- * Inclui Sticky CTA que redireciona para o link de ingresso definido pelo diretor no Strapi.
- */
 export function EventDetail({ evento, onClose }: EventDetailProps) {
   const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
-  // Imagem: arte do Strapi ou placeholder
   const placeholderImages = [
     "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1540039155732-68ee23e15b51?q=80&w=1974&auto=format&fit=crop",
@@ -26,7 +21,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
     ? `${STRAPI_URL}${evento.arte.url}`
     : placeholderImages[evento.id % placeholderImages.length];
 
-  // Formata data completa (dia, mês, ano + hora)
   const dataObj = new Date(evento.data);
   const dataFormatada = dataObj.toLocaleDateString("pt-BR", {
     weekday: "long",
@@ -39,7 +33,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
     minute: "2-digit",
   });
 
-  // Status visual do lote
   const statusLabels: Record<string, string> = {
     vendas_abertas: "Vendas Abertas",
     lote_2: "Lote 2",
@@ -55,12 +48,9 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
 
   return (
     <>
-      {/* Overlay escuro (desktop drawer) */}
       <div className="drawer-overlay open" onClick={onClose} />
 
-      {/* Painel slide-in */}
       <div className="slide-panel open" style={{ zIndex: 200 }}>
-        {/* Header com botão voltar */}
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="event-detail-back">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -70,9 +60,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
           </button>
         </div>
 
-        {/* Conteúdo scrollável */}
         <div className="flex-1 overflow-y-auto">
-          {/* Imagem hero do evento */}
           <div
             className="relative w-full"
             style={{ height: "clamp(200px, 35vh, 320px)" }}
@@ -87,7 +75,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-transparent to-transparent" />
 
-            {/* Badge de status sobre a imagem */}
             <div className="absolute top-4 right-4">
               <span
                 className="text-[11px] font-bold px-4 py-2 rounded-lg backdrop-blur-sm"
@@ -103,7 +90,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
             </div>
           </div>
 
-          {/* Informações do evento */}
           <div className="px-6 md:px-8 py-6" style={{ marginTop: "-24px", position: "relative", zIndex: 2 }}>
             <h2
               className="font-heading tracking-wide mb-4"
@@ -112,7 +98,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               {evento.nome}
             </h2>
 
-            {/* Data e hora */}
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
@@ -135,7 +120,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               </div>
             </div>
 
-            {/* Local */}
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
@@ -158,10 +142,8 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               </div>
             </div>
 
-            {/* Separador */}
             <div className="divider !mx-0 !my-6" />
 
-            {/* Informações adicionais se houver aftermovie */}
             {evento.aftermovie_url && (
               <a
                 href={evento.aftermovie_url}
@@ -189,7 +171,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
           </div>
         </div>
 
-        {/* Sticky CTA — Comprar Ingresso */}
         {evento.link_ingresso && !isEsgotado && (
           <div className="sticky-cta">
             <a
@@ -208,7 +189,6 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
           </div>
         )}
 
-        {/* CTA esgotado */}
         {isEsgotado && (
           <div className="sticky-cta">
             <div

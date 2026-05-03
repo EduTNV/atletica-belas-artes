@@ -101,3 +101,7 @@ lcov.info
 *.seed
 *.out
 results/
+
+.agents/
+.geminiignore
+skills-lock.json

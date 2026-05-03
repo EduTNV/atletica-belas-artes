@@ -24,16 +24,20 @@
       "target": "api::curso.curso",
       "inversedBy": "modalidades"
     },
-    "emoji": {
-      "type": "string"
-    },
     "capitao_nome": {
       "type": "string"
     },
     "capitao_whatsapp": {
       "type": "string"
     },
-    "foto_time": {
+    "foto_card": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "foto_banner": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
@@ -42,6 +46,12 @@
     },
     "historico": {
       "type": "text"
+    },
+    "membro_modalidades": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::membro-modalidade.membro-modalidade",
+      "mappedBy": "modalidade"
     }
   }
 }

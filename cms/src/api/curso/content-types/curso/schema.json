@@ -14,9 +14,6 @@
       "type": "string",
       "required": true
     },
-    "emoji": {
-      "type": "string"
-    },
     "foto_capa": {
       "type": "media",
       "multiple": false,

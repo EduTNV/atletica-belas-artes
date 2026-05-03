@@ -17,14 +17,12 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
 
   return (
     <>
-      {/* Overlay escuro atrás do sheet */}
       <div
         className={`sheet-overlay ${isOpen ? "open" : ""}`}
         onClick={handleOverlayClick}
         id="sheet-overlay"
       />
 
-      {/* Bottom Sheet */}
       <div
         className={`bottom-sheet ${isOpen ? "open" : ""}`}
         id="bottom-sheet"
@@ -32,7 +30,6 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
         <div className="sheet-handle" />
 
         {!showEntities ? (
-          /* Vista principal do Menu */
           <div id="menu-main">
             <div
               className="font-heading text-[24px] tracking-[1px] text-center mb-6 mt-2"
@@ -41,7 +38,6 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
               Menu
             </div>
 
-            {/* Sobre a Atlética */}
             <button className="sheet-item" id="menu-sobre">
               <svg
                 width="18"
@@ -63,7 +59,6 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
               </div>
             </button>
 
-            {/* Outras Entidades */}
             <button
               className="sheet-item"
               onClick={() => setShowEntities(true)}
@@ -103,7 +98,6 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
 
             <div className="divider !mx-5 !my-[6px]" />
 
-            {/* Contato */}
             <button className="sheet-item" id="menu-contato">
               <svg
                 width="18"
@@ -124,7 +118,6 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
             </button>
           </div>
         ) : (
-          /* Sub-view: Outras Entidades */
           <div id="menu-entities-list">
             <button
               className="flex items-center gap-[6px] py-[10px] px-5 text-[13px]"

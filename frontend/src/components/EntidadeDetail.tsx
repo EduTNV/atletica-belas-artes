@@ -9,29 +9,18 @@ interface EntidadeDetailProps {
   onClose: () => void;
 }
 
-/**
- * Slide-in para detalhe de uma Entidade — mostra descrição + lista de membros.
- */
 export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
   const color = entidade.cor || "#8b1a1a";
-
-  const logoUrl = entidade.logo?.url
-    ? `${STRAPI_URL}${entidade.logo.url}`
-    : null;
-
-  // Ordenar membros pela ordem (já vem da API, mas garantimos)
+  const logoUrl = entidade.logo?.url ? `${STRAPI_URL}${entidade.logo.url}` : null;
   const membros = [...(entidade.membros || [])].sort(
     (a, b) => (a.ordem ?? 99) - (b.ordem ?? 99)
   );
 
   return (
     <>
-      {/* Overlay */}
       <div className="drawer-overlay open" onClick={onClose} />
 
-      {/* Painel slide-in */}
       <div className="slide-panel open" style={{ zIndex: 210 }}>
-        {/* Header */}
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="ent-detail-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -41,9 +30,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
           </button>
         </div>
 
-        {/* Conteúdo scrollável */}
         <div className="flex-1 overflow-y-auto">
-          {/* Hero */}
           <div className="relative" style={{ minHeight: "180px" }}>
             <div
               className="absolute inset-0"
@@ -54,7 +41,6 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/40 to-transparent" />
 
             <div className="relative flex flex-col items-center justify-center py-10 px-6">
-              {/* Logo da entidade */}
               {logoUrl ? (
                 <img
                   src={logoUrl}
@@ -77,29 +63,26 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 
               <h2
                 className="font-heading text-center tracking-wide"
-                style={{ fontSize: "clamp(24px, 4vw, 36px)", color: "var(--text)" }}
+                style={{ fontSize: "clamp(24px, 4vw, 36px)", color: "var(--crimson)" }}
               >
                 {entidade.nome}
               </h2>
             </div>
           </div>
 
-          {/* Descrição */}
           {entidade.descricao && (
             <div className="px-6 pb-6">
               <p
                 className="text-[14px] md:text-[15px] leading-relaxed text-center"
-                style={{ color: "var(--text2)" }}
+                style={{ color: "var(--text-main)" }}
               >
                 {entidade.descricao}
               </p>
             </div>
           )}
 
-          {/* Divisor */}
           <div className="border-t mx-6" style={{ borderColor: "var(--border)" }} />
 
-          {/* Lista de Membros */}
           <div className="p-6">
             {membros.length === 0 ? (
               <p className="text-[14px] text-center py-8" style={{ color: "var(--text3)" }}>
@@ -128,19 +111,14 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
   );
 }
 
-/* ====== CARD DE MEMBRO ====== */
-
 function MembroCard({ membro, color }: { membro: MembroEntidade; color: string }) {
-  const fotoUrl = membro.foto?.url
-    ? `${STRAPI_URL}${membro.foto.url}`
-    : null;
+  const fotoUrl = membro.foto?.url ? `${STRAPI_URL}${membro.foto.url}` : null;
 
   return (
     <div
       className="flex items-center gap-3 p-4 rounded-xl border"
       style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
-      {/* Avatar */}
       {fotoUrl ? (
         <img
           src={fotoUrl}
@@ -161,19 +139,17 @@ function MembroCard({ membro, color }: { membro: MembroEntidade; color: string }
         </div>
       )}
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="text-[14px] font-semibold truncate" style={{ color: "var(--text)" }}>
+        <p className="text-[14px] font-semibold truncate" style={{ color: "var(--text-main)" }}>
           {membro.nome}
         </p>
         {membro.cargo && (
-          <p className="text-[12px] truncate" style={{ color: "var(--text3)" }}>
+          <p className="text-[12px] truncate" style={{ color: "var(--text2)" }}>
             {membro.cargo}
           </p>
         )}
       </div>
 
-      {/* WhatsApp */}
       {membro.whatsapp && (
         <a
           href={`https://wa.me/55${membro.whatsapp.replace(/\D/g, "")}`}

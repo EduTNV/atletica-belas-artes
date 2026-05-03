@@ -1,15 +1,5 @@
-/**
- * Serviço de conexão com a API do Strapi.
- * Centraliza todas as chamadas ao CMS para reutilização em qualquer página.
- */
-
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
-/**
- * Fetch genérico para a API REST do Strapi.
- * @param path - Caminho da API (ex: "/api/eventos")
- * @param params - Query params opcionais (ex: { sort: "data:asc", populate: "*" })
- */
 export async function fetchStrapi<T>(
   path: string,
   params?: Record<string, string>
@@ -35,11 +25,6 @@ export async function fetchStrapi<T>(
   return res.json();
 }
 
-/* ============================
-   TIPOS DO STRAPI
-   ============================ */
-
-/** Estrutura padrão de resposta de coleção do Strapi v5 */
 export interface StrapiCollectionResponse<T> {
   data: T[];
   meta: {
@@ -52,18 +37,16 @@ export interface StrapiCollectionResponse<T> {
   };
 }
 
-/** Estrutura padrão de resposta de single type do Strapi v5 */
 export interface StrapiSingleResponse<T> {
   data: T;
   meta: Record<string, unknown>;
 }
 
-/** Tipo: Evento */
 export interface Evento {
   id: number;
   documentId: string;
   nome: string;
-  data: string; // ISO 8601
+  data: string;
   local: string;
   endereco: string | null;
   arte?: {
@@ -83,7 +66,6 @@ export interface Evento {
   publishedAt: string;
 }
 
-/** Tipo: ConfigHome (Single Type) */
 export interface ConfigHome {
   id: number;
   texto_quem_somos_resumo: string | null;
@@ -92,9 +74,10 @@ export interface ConfigHome {
   link_seja_socio: string | null;
   link_produtos: string | null;
   link_whatsapp_contato: string | null;
+  frase_footer: string | null;
+  foto_hero: { url: string; formats?: Record<string, { url: string }> } | null;
 }
 
-/** Tipo: ConfigContato (Single Type) */
 export interface ConfigContato {
   id: number;
   email: string | null;
@@ -102,7 +85,18 @@ export interface ConfigContato {
   instagram: string | null;
 }
 
-/** Tipo: Entidade */
+export interface Competicao {
+  nome: string;
+  sigla: string;
+  descricao: string;
+  destaque: boolean;
+}
+
+export interface ConfigCompeticoes {
+  id: number;
+  competicoes: Competicao[];
+}
+
 export interface Entidade {
   id: number;
   documentId: string;
@@ -113,7 +107,6 @@ export interface Entidade {
   membros: MembroEntidade[];
 }
 
-/** Tipo: MembroEntidade */
 export interface MembroEntidade {
   id: number;
   documentId: string;
@@ -124,28 +117,34 @@ export interface MembroEntidade {
   ordem: number | null;
 }
 
-/** Tipo: Curso */
+export interface MembroModalidade {
+  id: number;
+  documentId: string;
+  nome: string;
+  cargo: string | null;
+  foto: { url: string; formats?: Record<string, { url: string }> } | null;
+  whatsapp: string | null;
+  ordem: number | null;
+}
+
 export interface Curso {
   id: number;
   documentId: string;
   nome: string;
-  emoji: string | null;
   foto_capa: { url: string; formats?: Record<string, { url: string }> } | null;
-  cor: string | null;   // Cor hex opcional para personalização do card
+  cor: string | null;
   slug: string | null;
-  modalidades?: Modalidade[]; // Populado com populate
+  modalidades?: Modalidade[];
 }
 
-/** Tipo: Modalidade */
 export interface Modalidade {
   id: number;
   documentId: string;
-  nome_interno: string;  // Ex: "Futebol Masculino Arq"
-  nome: string;           // Ex: "Futebol Masculino"
-  emoji: string | null;
+  nome_interno: string;
+  nome: string;
   capitao_nome: string | null;
   capitao_whatsapp: string | null;
-  foto_time: {
+  foto_card: {
     url: string;
     formats?: {
       medium?: { url: string };
@@ -153,11 +152,17 @@ export interface Modalidade {
       thumbnail?: { url: string };
     };
   } | null;
+  foto_banner: {
+    url: string;
+    formats?: {
+      medium?: { url: string };
+      large?: { url: string };
+    };
+  } | null;
   historico: string | null;
-  curso?: Pick<Curso, "id" | "documentId" | "nome" | "emoji" | "cor">;
+  curso?: Pick<Curso, "id" | "documentId" | "nome" | "cor">;
 }
 
-/** Tipo: Resultado */
 export interface Resultado {
   id: number;
   documentId: string;
@@ -165,10 +170,9 @@ export interface Resultado {
   competicao: string | null;
   placar_nos: number | null;
   placar_adversario: number | null;
-  data: string | null; // date string "YYYY-MM-DD"
+  data: string | null;
 }
 
-/** Tipo: Treino */
 export interface Treino {
   id: number;
   documentId: string;
@@ -178,7 +182,6 @@ export interface Treino {
   local: string | null;
 }
 
-/** Tipo: Conquista */
 export interface Conquista {
   id: number;
   documentId: string;
@@ -187,14 +190,6 @@ export interface Conquista {
   medalha: "ouro" | "prata" | "bronze" | "premio" | null;
 }
 
-/* ============================
-   FUNÇÕES DE BUSCA ESPECÍFICAS
-   ============================ */
-
-/**
- * Busca os eventos ativos, ordenados por data (mais próximo primeiro).
- * Filtra apenas eventos com ativo=true.
- */
 export async function getEventos(): Promise<Evento[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Evento>>(
     "/api/eventos",
@@ -208,24 +203,18 @@ export async function getEventos(): Promise<Evento[]> {
   return res.data;
 }
 
-/**
- * Busca as configurações da Home Page (Single Type).
- */
 export async function getConfigHome(): Promise<ConfigHome | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigHome>>(
-      "/api/config-home"
+      "/api/config-home",
+      { "populate": "foto_hero" }
     );
     return res.data;
   } catch {
-    // Se ConfigHome ainda não foi preenchido, retorna null silenciosamente
     return null;
   }
 }
 
-/**
- * Busca as configurações de Contato (Single Type).
- */
 export async function getConfigContato(): Promise<ConfigContato | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigContato>>(
@@ -237,66 +226,11 @@ export async function getConfigContato(): Promise<ConfigContato | null> {
   }
 }
 
-/**
- * Busca todas as Entidades com logo e membros (com fotos) populados.
- */
-export async function getEntidades(): Promise<Entidade[]> {
+export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> {
   try {
-    const res = await fetchStrapi<StrapiCollectionResponse<Entidade>>(
-      "/api/entidades",
-      {
-        "sort": "nome:asc",
-        "populate[logo]": "*",
-        "populate[membros][populate][foto]": "*",
-        "populate[membros][sort]": "ordem:asc",
-        "pagination[pageSize]": "50",
-      }
-    );
-    return res.data;
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Busca todos os Cursos, populando foto_capa e modalidades (com foto_time).
- */
-export async function getCursos(): Promise<Curso[]> {
-  const res = await fetchStrapi<StrapiCollectionResponse<Curso>>(
-    "/api/cursos",
-    {
-      "sort": "nome:asc",
-      "populate[foto_capa]": "true",
-      "populate[modalidades][populate][foto_time]": "true",
-      "pagination[pageSize]": "50",
-    }
-  );
-  return res.data;
-}
-
-/**
- * Busca todas as Modalidades com seu curso relacionado.
- */
-export async function getModalidades(): Promise<Modalidade[]> {
-  const res = await fetchStrapi<StrapiCollectionResponse<Modalidade>>(
-    "/api/modalidades",
-    {
-      "sort": "nome:asc",
-      "populate": "curso,foto_time",
-      "pagination[pageSize]": "100",
-    }
-  );
-  return res.data;
-}
-
-/**
- * Busca os dados completos de uma modalidade específica.
- */
-export async function getModalidadeDetalhe(documentId: string): Promise<Modalidade | null> {
-  try {
-    const res = await fetchStrapi<StrapiSingleResponse<Modalidade>>(
-      `/api/modalidades/${documentId}`,
-      { "populate": "curso,foto_time" }
+    const res = await fetchStrapi<StrapiSingleResponse<ConfigCompeticoes>>(
+      "/api/config-competicoes",
+      { "populate": "*" }
     );
     return res.data;
   } catch {
@@ -304,9 +238,61 @@ export async function getModalidadeDetalhe(documentId: string): Promise<Modalida
   }
 }
 
-/**
- * Busca os Resultados de uma modalidade.
- */
+export async function getEntidades(): Promise<Entidade[]> {
+  try {
+    const res = await fetchStrapi<StrapiCollectionResponse<Entidade>>(
+      "/api/entidades",
+      {
+        "sort": "nome:asc",
+        "populate": "*",
+        "pagination[pageSize]": "50",
+      }
+    );
+    return res.data || [];
+  } catch (error) {
+    console.error("Erro ao buscar entidades:", error);
+    return [];
+  }
+}
+
+export async function getCursos(): Promise<Curso[]> {
+  const res = await fetchStrapi<StrapiCollectionResponse<Curso>>(
+    "/api/cursos",
+    {
+      "sort": "nome:asc",
+      "populate[foto_capa]": "true",
+      "populate[modalidades][populate][foto_card]": "true",
+      "populate[modalidades][populate][foto_banner]": "true",
+      "pagination[pageSize]": "50",
+    }
+  );
+  return res.data;
+}
+
+export async function getModalidades(): Promise<Modalidade[]> {
+  const res = await fetchStrapi<StrapiCollectionResponse<Modalidade>>(
+    "/api/modalidades",
+    {
+      "sort": "nome:asc",
+      "populate": "curso,foto_card,foto_banner",
+      "pagination[pageSize]": "100",
+    }
+  );
+  return res.data;
+}
+
+export async function getModalidadeDetalhe(documentId: string): Promise<Modalidade | null> {
+  try {
+    const res = await fetchStrapi<StrapiSingleResponse<Modalidade>>(
+      `/api/modalidades/${documentId}`,
+      { "populate": "curso,foto_card,foto_banner" }
+    );
+    return res.data;
+  } catch {
+    return null;
+  }
+}
+
 export async function getResultados(modalidadeDocumentId: string): Promise<Resultado[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Resultado>>(
     "/api/resultados",
@@ -319,9 +305,6 @@ export async function getResultados(modalidadeDocumentId: string): Promise<Resul
   return res.data;
 }
 
-/**
- * Busca os Treinos de uma modalidade.
- */
 export async function getTreinos(modalidadeDocumentId: string): Promise<Treino[]> {
   const diasOrdem = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
   const res = await fetchStrapi<StrapiCollectionResponse<Treino>>(
@@ -331,15 +314,11 @@ export async function getTreinos(modalidadeDocumentId: string): Promise<Treino[]
       "pagination[pageSize]": "50",
     }
   );
-  // Ordena por dia da semana
   return res.data.sort(
     (a, b) => diasOrdem.indexOf(a.dia_semana) - diasOrdem.indexOf(b.dia_semana)
   );
 }
 
-/**
- * Busca as Conquistas de uma modalidade.
- */
 export async function getConquistas(modalidadeDocumentId: string): Promise<Conquista[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Conquista>>(
     "/api/conquistas",
@@ -350,4 +329,23 @@ export async function getConquistas(modalidadeDocumentId: string): Promise<Conqu
     }
   );
   return res.data;
+}
+
+export async function getMembrosModalidade(
+  modalidadeDocumentId: string
+): Promise<MembroModalidade[]> {
+  try {
+    const res = await fetchStrapi<StrapiCollectionResponse<MembroModalidade>>(
+      "/api/membro-modalidades",
+      {
+        "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
+        "populate": "foto",
+        "sort": "ordem:asc",
+        "pagination[pageSize]": "50",
+      }
+    );
+    return res.data;
+  } catch {
+    return [];
+  }
 }

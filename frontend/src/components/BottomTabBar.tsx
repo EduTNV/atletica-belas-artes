@@ -88,7 +88,6 @@ export default function BottomTabBar({ onMenuToggle, menuOpen }: BottomTabBarPro
         </Link>
       ))}
 
-      {/* Menu button (não é um link, abre o Bottom Sheet) */}
       <button
         className={`tab-bar-btn ${menuOpen ? "active" : ""}`}
         onClick={onMenuToggle}
