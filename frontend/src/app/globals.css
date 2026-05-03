@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
-/* ============================
-   DESIGN SYSTEM — Atlética BA
-   ============================ */
-
 :root {
-  /* Cores da marca */
   --crimson: #e02c2c;
   --crimson-dark: #b01b1b;
   --crimson-light: #ff4d4d;
@@ -13,32 +8,30 @@
   --gold-light: #e8c97a;
   --blue-header: #5c6484;
 
-  /* Superfícies */
   --bg: #f4f4f4;
   --surface: #ffffff;
   --surface2: #e9e9e9;
   --border: #dddddd;
 
-  /* Texto */
-  --text: #e02c2c;     /* Vermelho para títulos destacados */
-  --text-main: #000000; /* Preto para texto principal */
-  --text2: #333333;    /* Cinza escuro para corpo */
-  --text3: #666666;    /* Cinza suave para muted */
+  --text: #e02c2c;
+  --text-main: #000000;
+  --text2: #333333;
+  --text3: #666666;
 
-  /* Feedback */
   --win: #4caf50;
   --loss: #e57373;
   --draw: var(--gold-light);
 
-  /* Spacing / Layout */
   --radius: 14px;
   --tab-h: 64px;
   --header-h: 72px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Tailwind custom theme tokens */
 @theme inline {
+  --color-blue: var(--blue);
+  --color-white: var(--white);
+  --color-red: var(--red);
   --color-crimson: var(--crimson);
   --color-crimson-dark: var(--crimson-dark);
   --color-crimson-light: var(--crimson-light);
@@ -59,10 +52,6 @@
   --font-heading: "Bebas Neue", sans-serif;
   --font-body: "DM Sans", sans-serif;
 }
-
-/* ============================
-   RESET & BASE
-   ============================ */
 
 * {
   margin: 0;
@@ -99,15 +88,12 @@ img {
   max-width: 100%;
 }
 
-/* ============================
-   ANIMATIONS
-   ============================ */
-
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -115,9 +101,12 @@ img {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.3;
   }
@@ -127,16 +116,12 @@ img {
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }
 }
 
-/* ============================
-   MAIN LAYOUT
-   ============================ */
-
-/* Mobile: conteúdo ocupa tela toda, com padding inferior para a tab bar */
 .main-content {
   min-height: 100vh;
   min-height: 100dvh;
@@ -144,7 +129,6 @@ img {
   overflow-y: auto;
 }
 
-/* Desktop: sem padding inferior (não tem tab bar), com padding superior para o header */
 @media (min-width: 768px) {
   .main-content {
     padding-bottom: 0;
@@ -152,7 +136,6 @@ img {
   }
 }
 
-/* Container utilitário para limitar largura de conteúdo em telas grandes */
 .content-wrapper {
   width: 100%;
   max-width: 1200px;
@@ -172,10 +155,6 @@ img {
   }
 }
 
-/* ============================
-   DESKTOP HEADER
-   ============================ */
-
 .desktop-header {
   display: none;
 }
@@ -191,7 +170,7 @@ img {
     background: var(--blue-header);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
     z-index: 500;
     align-items: center;
     padding: 0 40px;
@@ -272,7 +251,7 @@ img {
 .header-divider {
   width: 1px;
   height: 24px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   margin: 0 12px;
 }
 
@@ -290,10 +269,6 @@ img {
 .header-cta:hover {
   opacity: 0.9;
 }
-
-/* ============================
-   BOTTOM TAB BAR (Mobile only)
-   ============================ */
 
 .tab-bar {
   position: fixed;
@@ -347,10 +322,6 @@ img {
   font-weight: 500;
   letter-spacing: 0.3px;
 }
-
-/* ============================
-   BOTTOM SHEET (Menu — Mobile only)
-   ============================ */
 
 .sheet-overlay {
   position: fixed;
@@ -439,10 +410,6 @@ img {
   flex-shrink: 0;
 }
 
-/* ============================
-   SLIDE-IN PANELS (Level 2, Level 3, Event Detail)
-   ============================ */
-
 .slide-panel {
   position: fixed;
   inset: 0;
@@ -460,7 +427,6 @@ img {
   transform: translateX(0);
 }
 
-/* No desktop, os slide-ins viram drawers laterais */
 @media (min-width: 768px) {
   .slide-panel {
     bottom: 0;
@@ -478,7 +444,6 @@ img {
   overflow: hidden;
 }
 
-/* Overlay para o drawer no desktop */
 .drawer-overlay {
   display: none;
 }
@@ -499,10 +464,6 @@ img {
     pointer-events: all;
   }
 }
-
-/* ============================
-   DETAIL HEADER (Sticky com botão voltar)
-   ============================ */
 
 .panel-header {
   display: flex;
@@ -529,10 +490,6 @@ img {
   padding: 0;
 }
 
-/* ============================
-   STICKY CTA (Bottom buttons)
-   ============================ */
-
 .sticky-cta {
   position: sticky;
   bottom: 0;
@@ -548,10 +505,6 @@ img {
   gap: 10px;
 }
 
-/* ============================
-   UTILITY CLASSES
-   ============================ */
-
 .font-heading {
   font-family: var(--font-heading);
 }
@@ -566,7 +519,6 @@ img {
   margin: 0 20px;
 }
 
-/* Page entry animation */
 .page-enter {
   animation: fadeIn 0.3s ease;
 }
