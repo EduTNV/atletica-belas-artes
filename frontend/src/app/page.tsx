@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { getEventos, getConfigHome, getConfigCompeticoes, getEntidades, type Evento, type Entidade } from "@/lib/strapi";
-import { ExpandableText } from "@/components/ExpandableText";
+import { getEventos, getConfigHome, getConfigCompeticoes, type Evento } from "@/lib/strapi";
+import { ExpandableText, Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
-import { EntidadesList } from "@/components/EntidadesList";
 
 export default async function HomePage() {
   const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
@@ -78,7 +77,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="content-wrapper" style={{ paddingTop: "clamp(80px, 10vw, 160px)", paddingBottom: "clamp(80px, 10vw, 160px)" }}>
+      <section className="content-wrapper" style={{ paddingTop: "clamp(32px, 5vw, 60px)", paddingBottom: "clamp(32px, 5vw, 60px)" }}>
         <div className="max-w-5xl mx-auto md:flex gap-14 lg:gap-20 items-start">
           <div className="hidden md:flex shrink-0">
             <div
@@ -107,123 +106,138 @@ export default async function HomePage() {
             >
               Quem Somos
             </h2>
-            <p
-              className="text-[15px] md:text-[16px] leading-[1.8] mb-6"
-              style={{ color: "var(--text-main)" }}
-            >
-              {quemSomosResumo}
-            </p>
+            <div className="mb-6">
+              <Paragraphs text={quemSomosResumo} />
+            </div>
             <ExpandableText text={quemSomosCompleto} />
           </div>
         </div>
       </section>
 
       {proximosEventos.length > 0 && (
-        <section className="content-wrapper py-20 md:py-28">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex justify-between items-end mb-10 md:mb-14">
-              <div>
-                <h2
-                  className="font-heading leading-none mb-2 pl-2 md:pl-4"
-                  style={{
-                    fontSize: "clamp(30px, 4vw, 48px)",
-                    color: "var(--text)",
-                  }}
+        <section 
+          className="w-full" 
+          style={{ paddingTop: "32px", paddingBottom: "60px" }}
+        >
+          <div className="content-wrapper">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex justify-between items-end mb-10 md:mb-14">
+                <div>
+                  <h2
+                    className="font-heading leading-none mb-2 pl-2 md:pl-4"
+                    style={{
+                      fontSize: "clamp(30px, 4vw, 48px)",
+                      color: "var(--text)",
+                    }}
+                  >
+                    Próximos Eventos
+                  </h2>
+                  <p
+                    className="text-[14px] md:text-[16px] hidden md:block"
+                    style={{ color: "var(--text-main)" }}
+                  >
+                    Fique por dentro das melhores festas e campeonatos
+                  </p>
+                </div>
+                <Link
+                  href="/eventos"
+                  className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 py-2 px-1 transition-opacity hover:opacity-70"
+                  style={{ color: "var(--crimson)" }}
                 >
-                  Próximos Eventos
-                </h2>
-                <p
-                  className="text-[14px] md:text-[16px] hidden md:block"
-                  style={{ color: "var(--text-main)" }}
-                >
-                  Fique por dentro das melhores festas e campeonatos
-                </p>
+                  Ver todos
+                  <svg
+                    width="14"
+                    height="14"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </Link>
               </div>
-              <Link
-                href="/eventos"
-                className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 py-2 px-1 transition-opacity hover:opacity-70"
-                style={{ color: "var(--crimson)" }}
-              >
-                Ver todos
-                <svg
-                  width="14"
-                  height="14"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-              {proximosEventos.slice(0, 3).map((evento, index) => (
-                <EventCard
-                  key={evento.documentId}
-                  evento={evento}
-                  className={index === 2 ? "hidden lg:flex" : ""}
-                />
-              ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
+                {proximosEventos.slice(0, 3).map((evento, index) => (
+                  <EventCard
+                    key={evento.documentId}
+                    evento={evento}
+                    className={index === 2 ? "hidden lg:flex" : ""}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
       )}
 
       {configCompeticoes?.competicoes && configCompeticoes.competicoes.length > 0 && (
-        <section className="content-wrapper py-20 md:py-28">
-          <div className="max-w-5xl mx-auto">
-            <h2
-              className="font-heading mb-3"
-              style={{ fontSize: "clamp(28px, 3.5vw, 44px)", color: "var(--text)" }}
-            >
-              Onde Competimos
-            </h2>
-            <p
-              className="text-[14px] md:text-[16px] mb-10 md:mb-14"
-              style={{ color: "var(--text-main)" }}
-            >
-              Representando a Belas Artes nos maiores palcos universitários
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {configCompeticoes.competicoes.map((comp) => (
-                <div
-                  key={comp.sigla}
-                  className="rounded-2xl border p-6 flex flex-col gap-3"
-                  style={{
-                    background: comp.destaque
-                      ? "rgba(224, 44, 44, 0.05)"
-                      : "var(--surface)",
-                    borderColor: comp.destaque
-                      ? "rgba(224, 44, 44, 0.2)"
-                      : "var(--border)",
-                  }}
-                >
-                  <div
-                    className="font-heading text-[38px] md:text-[44px] tracking-widest leading-none"
-                    style={{ color: "var(--crimson)" }}
-                  >
-                    {comp.sigla}
-                  </div>
-                  <div
-                    className="text-[14px] md:text-[15px] font-semibold"
-                    style={{ color: "var(--text-main)" }}
-                  >
-                    {comp.nome}
-                  </div>
-                  <p
-                    className="text-[13px] leading-relaxed"
-                    style={{ color: "var(--text2)" }}
-                  >
-                    {comp.descricao}
-                  </p>
-                </div>
-              ))}
+        <section 
+          className="w-full"
+          style={{ paddingTop: "32px", paddingBottom: "clamp(48px, 6vw, 80px)" }}
+        >
+          <div className="content-wrapper">
+            <div className="max-w-5xl mx-auto">
+              <h2
+                className="font-heading mb-3"
+                style={{ fontSize: "clamp(28px, 3.5vw, 44px)", color: "var(--text)" }}
+              >
+                Onde Competimos
+              </h2>
+              <p
+                className="text-[14px] md:text-[16px] mb-10 md:mb-16"
+                style={{ color: "var(--text-main)" }}
+              >
+                Representando a Belas Artes nos maiores palcos universitários
+              </p>
+
+              <div className="flex flex-col gap-10 md:gap-14">
+                {configCompeticoes.competicoes.map((comp) => {
+                  const fotoUrl = comp.foto?.url ? `${STRAPI_URL}${comp.foto.url}` : null;
+                  return (
+                    <div key={comp.sigla} className="flex flex-col gap-5">
+                      <div className="flex flex-col md:flex-row gap-6 md:items-start">
+                        {fotoUrl ? (
+                          <img
+                            src={fotoUrl}
+                            alt={comp.nome}
+                            className="w-full md:w-[280px] lg:w-[320px] aspect-[16/9] rounded-2xl object-cover shrink-0"
+                          />
+                        ) : (
+                          <div
+                            className="w-full md:w-[280px] lg:w-[320px] aspect-[16/9] rounded-2xl flex items-center justify-center font-heading text-[44px] shrink-0"
+                            style={{
+                              background: "var(--surface2)",
+                              color: "var(--text3)",
+                            }}
+                          >
+                            {comp.sigla}
+                          </div>
+                        )}
+
+                        <div className="flex-1">
+                          <div className="flex items-baseline gap-4 mb-3">
+                            <span className="font-heading text-[32px] md:text-[44px]" style={{ color: "var(--crimson)" }}>
+                              {comp.sigla}
+                            </span>
+                            <h3 className="text-[18px] md:text-[22px] font-bold" style={{ color: "var(--text-main)" }}>
+                              {comp.nome}
+                            </h3>
+                          </div>
+                          <p className="text-[15px] md:text-[16px] leading-[1.7]" style={{ color: "var(--text2)" }}>
+                            {comp.descricao}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
@@ -247,7 +261,6 @@ export default async function HomePage() {
             <FooterLink
               href={linkSejaSocio}
               label="Seja Sócio"
-              hoverColor="var(--crimson)"
               icon={
                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
               }
@@ -255,7 +268,6 @@ export default async function HomePage() {
             <FooterLink
               href={linkProdutos}
               label="Nossos Produtos"
-              hoverColor="var(--gold)"
               icon={
                 <>
                   <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -267,7 +279,6 @@ export default async function HomePage() {
             <FooterLink
               href={linkContato}
               label="Contato"
-              hoverColor="#2563eb"
               icon={
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
               }
@@ -282,11 +293,10 @@ export default async function HomePage() {
 interface FooterLinkProps {
   href: string;
   label: string;
-  hoverColor: string;
   icon: React.ReactNode;
 }
 
-function FooterLink({ href, label, hoverColor, icon }: FooterLinkProps) {
+function FooterLink({ href, label, icon }: FooterLinkProps) {
   return (
     <a
       href={href}

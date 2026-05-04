@@ -90,11 +90,25 @@ export interface Competicao {
   sigla: string;
   descricao: string;
   destaque: boolean;
+  foto: { url: string; formats?: Record<string, { url: string }> } | null;
 }
 
 export interface ConfigCompeticoes {
   id: number;
   competicoes: Competicao[];
+}
+
+export interface Faq {
+  pergunta: string;
+  resposta: string;
+  ordem: number | null;
+}
+
+export interface ConfigAjuda {
+  id: number;
+  titulo_pagina: string | null;
+  subtitulo: string | null;
+  faqs: Faq[];
 }
 
 export interface Entidade {
@@ -115,6 +129,7 @@ export interface MembroEntidade {
   foto: { url: string; formats?: Record<string, { url: string }> } | null;
   whatsapp: string | null;
   ordem: number | null;
+  curso?: Pick<Curso, "id" | "documentId" | "nome" | "cor"> | null;
 }
 
 export interface MembroModalidade {
@@ -125,6 +140,7 @@ export interface MembroModalidade {
   foto: { url: string; formats?: Record<string, { url: string }> } | null;
   whatsapp: string | null;
   ordem: number | null;
+  curso?: Pick<Curso, "id" | "documentId" | "nome" | "cor"> | null;
 }
 
 export interface Curso {
@@ -230,7 +246,21 @@ export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> 
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigCompeticoes>>(
       "/api/config-competicoes",
-      { "populate": "*" }
+      { 
+        "populate[competicoes][populate]": "foto" 
+      }
+    );
+    return res.data;
+  } catch {
+    return null;
+  }
+}
+
+export async function getConfigAjuda(): Promise<ConfigAjuda | null> {
+  try {
+    const res = await fetchStrapi<StrapiSingleResponse<ConfigAjuda>>(
+      "/api/config-ajuda",
+      { "populate[faqs]": "true" }
     );
     return res.data;
   } catch {
@@ -274,8 +304,10 @@ export async function getModalidades(): Promise<Modalidade[]> {
     "/api/modalidades",
     {
       "sort": "nome:asc",
-      "populate": "curso,foto_card,foto_banner",
-      "pagination[pageSize]": "100",
+      "populate[curso]": "true",
+      "populate[foto_card]": "true",
+      "populate[foto_banner]": "true",
+      "pagination[pageSize]": "500",
     }
   );
   return res.data;

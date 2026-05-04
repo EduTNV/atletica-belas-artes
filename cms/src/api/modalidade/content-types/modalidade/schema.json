@@ -52,6 +52,24 @@
       "relation": "oneToMany",
       "target": "api::membro-modalidade.membro-modalidade",
       "mappedBy": "modalidade"
+    },
+    "conquistas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conquista.conquista",
+      "mappedBy": "modalidade"
+    },
+    "treinos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::treino.treino",
+      "mappedBy": "modalidade"
+    },
+    "resultados": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::resultado.resultado",
+      "mappedBy": "modalidade"
     }
   }
 }

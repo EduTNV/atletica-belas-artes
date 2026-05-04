@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "config_ajudas",
+  "info": {
+    "singularName": "config-ajuda",
+    "pluralName": "config-ajudas",
+    "displayName": "Config Ajuda"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "titulo_pagina": {
+      "type": "string"
+    },
+    "subtitulo": {
+      "type": "string"
+    },
+    "faqs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "ajuda.faq"
+    }
+  }
+}

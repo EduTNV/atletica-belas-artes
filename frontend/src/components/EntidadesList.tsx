@@ -25,10 +25,9 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
 
   return (
     <>
-      <div className="content-wrapper py-8 md:py-12">
+      <div className="content-wrapper py-8 md:py-12" style={{ paddingBottom: "clamp(60px, 8vw, 100px)" }}>
         <div className="max-w-5xl mx-auto flex flex-col gap-12 md:gap-20">
           {entidades.map((ent) => {
-            const color = ent.cor || "#8b1a1a";
             const logoUrl = ent.logo?.url ? `${STRAPI_URL}${ent.logo.url}` : null;
 
             return (
@@ -38,8 +37,12 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
                 id={`ent-${ent.documentId}`}
               >
                 <h3
-                  className="text-[20px] md:text-[24px] font-bold tracking-tight mb-3"
-                  style={{ color: "var(--text)" }}
+                  className="tracking-tight mb-3"
+                  style={{ 
+                    fontSize: "clamp(18px, 2vw, 22px)", 
+                    fontWeight: 700,
+                    color: "var(--text-main)"
+                  }}
                 >
                   {ent.nome}
                 </h3>
@@ -50,15 +53,15 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
                       src={logoUrl}
                       alt={ent.nome}
                       className="w-full md:w-[280px] lg:w-[320px] aspect-[16/10] rounded-2xl object-cover shrink-0"
-                      style={{ border: `1px solid ${color}33` }}
+                      style={{ border: "1px solid var(--border)" }}
                     />
                   ) : (
                     <div
                       className="w-full md:w-[280px] lg:w-[320px] aspect-[16/10] rounded-2xl flex items-center justify-center font-heading text-[44px] shrink-0"
                       style={{
-                        background: `${color}15`,
-                        border: `1px solid ${color}33`,
-                        color: color,
+                        background: "var(--surface2)",
+                        border: "1px solid var(--border)",
+                        color: "var(--text3)",
                       }}
                     >
                       {ent.nome.charAt(0)}
@@ -76,17 +79,18 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
                 <div>
                   <button
                     onClick={() => setSelected(ent)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-[13px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]"
                     style={{
-                      background: "rgba(224, 44, 44, 0.08)",
-                      color: "var(--crimson)",
-                      border: "1px solid rgba(224, 44, 44, 0.2)",
+                      background: "#5c6484",
+                      color: "#f4f4f4",
+                      border: "none",
+                      borderRadius: "8px",
+                      padding: "8px 18px",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      cursor: "pointer",
                     }}
                   >
-                    Veja os membros
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
+                    Ver membros →
                   </button>
                 </div>
               </div>

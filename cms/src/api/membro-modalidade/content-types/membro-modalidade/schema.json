@@ -20,9 +20,7 @@
     "foto": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "whatsapp": {
       "type": "string"
@@ -35,6 +33,11 @@
       "relation": "manyToOne",
       "target": "api::modalidade.modalidade",
       "inversedBy": "membro_modalidades"
+    },
+    "curso": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::curso.curso"
     }
   }
 }

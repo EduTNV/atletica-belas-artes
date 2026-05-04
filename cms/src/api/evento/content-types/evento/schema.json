@@ -7,7 +7,7 @@
     "displayName": "Evento"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "nome": {
@@ -28,18 +28,11 @@
     "arte": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "status_lote": {
       "type": "enumeration",
-      "enum": [
-        "vendas_abertas",
-        "lote_2",
-        "lote_3",
-        "esgotado"
-      ]
+      "enum": ["vendas_abertas", "lote_2", "lote_3", "esgotado"]
     },
     "link_ingresso": {
       "type": "string"

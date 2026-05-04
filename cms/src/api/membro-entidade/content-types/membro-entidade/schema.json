@@ -4,7 +4,7 @@
   "info": {
     "singularName": "membro-entidade",
     "pluralName": "membro-entidades",
-    "displayName": "MembroEntidade"
+    "displayName": "Membro Entidade"
   },
   "options": {
     "draftAndPublish": false
@@ -26,8 +26,7 @@
       "type": "string"
     },
     "ordem": {
-      "type": "integer",
-      "default": 0
+      "type": "integer"
     },
     "entidade": {
       "type": "relation",

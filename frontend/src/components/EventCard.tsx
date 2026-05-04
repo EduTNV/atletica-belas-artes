@@ -8,12 +8,6 @@ const statusMap: Record<string, { label: string; color: "gold" | "green" | "neut
   esgotado: { label: "ESGOTADO", color: "neutral" },
 };
 
-const statusStyles = {
-  gold: "bg-[rgba(201,168,76,0.12)] text-[#e8c97a] border-[rgba(201,168,76,0.3)]",
-  green: "bg-[rgba(76,175,80,0.12)] text-[#81c784] border-[rgba(76,175,80,0.3)]",
-  neutral: "bg-zinc-800/80 text-zinc-400 border-zinc-700",
-};
-
 export function formatDate(isoDate: string): string {
   const date = new Date(isoDate);
   return date.toLocaleDateString("pt-BR", {
@@ -84,7 +78,15 @@ export function EventCard({ evento, className = "", disableLink = false }: Event
           </span>
         </div>
         <span
-          className={`shrink-0 text-[10px] font-bold px-4 py-1.5 rounded-md border tracking-wider ${statusStyles[status.color]}`}
+          style={{
+            background: "#5c6484",
+            color: "#f4f4f4",
+            fontSize: "10px",
+            fontWeight: 600,
+            padding: "4px 10px",
+            borderRadius: "6px",
+            letterSpacing: "0.5px",
+          }}
         >
           {status.label}
         </span>

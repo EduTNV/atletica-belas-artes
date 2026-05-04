@@ -10,32 +10,25 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "modalidade": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::modalidade.modalidade"
-    },
     "dia_semana": {
       "type": "enumeration",
-      "enum": [
-        "segunda",
-        "terca",
-        "quarta",
-        "quinta",
-        "sexta",
-        "sabado",
-        "domingo"
-      ],
+      "enum": ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"],
       "required": true
     },
     "hora_inicio": {
-      "type": "string"
+      "type": "time"
     },
     "hora_fim": {
-      "type": "string"
+      "type": "time"
     },
     "local": {
       "type": "string"
+    },
+    "modalidade": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::modalidade.modalidade",
+      "inversedBy": "treinos"
     }
   }
 }

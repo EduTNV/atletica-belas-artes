@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -98,7 +99,12 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
 
             <div className="divider !mx-5 !my-[6px]" />
 
-            <button className="sheet-item" id="menu-contato">
+            <Link 
+              href="/contato" 
+              className="sheet-item" 
+              id="menu-contato"
+              onClick={onClose}
+            >
               <svg
                 width="18"
                 height="18"
@@ -107,15 +113,17 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
                 stroke="currentColor"
                 strokeWidth="2"
               >
-                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
               </svg>
               <div>
-                <div className="text-[14px]">Contato</div>
+                <div className="text-[14px]">Ajuda & FAQ</div>
                 <span className="text-[12px] block mt-[1px]" style={{ color: "var(--text3)" }}>
-                  Fale conosco pelo WhatsApp
+                  Dúvidas frequentes e canais
                 </span>
               </div>
-            </button>
+            </Link>
           </div>
         ) : (
           <div id="menu-entities-list">

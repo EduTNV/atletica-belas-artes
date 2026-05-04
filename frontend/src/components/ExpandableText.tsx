@@ -2,6 +2,21 @@
 
 import { useState } from "react";
 
+export function Paragraphs({ text, className = "" }: { text: string; className?: string }) {
+  return text
+    .split(/\n\n+/)
+    .filter((p) => p.trim().length > 0)
+    .map((paragraph, i) => (
+      <p
+        key={i}
+        className={`text-[15px] md:text-[16px] leading-[1.8] ${className}`}
+        style={{ color: "var(--text-main)", marginBottom: "1rem" }}
+      >
+        {paragraph.trim()}
+      </p>
+    ));
+}
+
 export function ExpandableText({ text }: { text?: string | null }) {
   const [open, setOpen] = useState(false);
 
@@ -13,14 +28,11 @@ export function ExpandableText({ text }: { text?: string | null }) {
     <>
       <div
         className="overflow-hidden transition-all duration-500 ease-in-out"
-        style={{ maxHeight: open ? "400px" : "0px", opacity: open ? 1 : 0 }}
+        style={{ maxHeight: open ? "800px" : "0px", opacity: open ? 1 : 0 }}
       >
-        <p
-          className="text-[15px] md:text-[16px] leading-[1.8] pt-1 pb-5"
-          style={{ color: "var(--text-main)" }}
-        >
-          {displayText}
-        </p>
+        <div className="pt-1 pb-5">
+          <Paragraphs text={displayText} />
+        </div>
       </div>
 
       <button

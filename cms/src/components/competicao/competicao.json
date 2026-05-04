@@ -21,6 +21,13 @@
     "destaque": {
       "type": "boolean",
       "default": false
+    },
+    "foto": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

@@ -25,48 +25,44 @@ export function EventosList({ proximos, passados }: EventosListProps) {
 
   return (
     <>
-      <div className="content-wrapper mt-10 md:mt-16">
-        <div className="flex flex-wrap gap-4 md:gap-6">
+      <div className="content-wrapper" style={{ marginTop: "24px" }}>
+        <div 
+          className="inline-flex rounded-xl overflow-hidden p-1" 
+          style={{ background: "#5c6484" }}
+        >
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`
-                  relative flex items-center justify-between gap-6 py-4 px-6 md:px-8 
-                  rounded-2xl border-2 transition-all duration-300 min-w-[160px] md:min-w-[200px]
-                  hover:scale-[1.02] active:scale-[0.98]
-                `}
                 style={{
-                  background: isActive ? "var(--blue-header)" : "transparent",
-                  borderColor: isActive ? "var(--crimson)" : "var(--border)",
-                  boxShadow: isActive ? "0 10px 25px -5px rgba(92, 100, 132, 0.2)" : "none",
+                  color: isActive ? "#f4f4f4" : "rgba(244,244,244,0.6)",
+                  borderBottom: isActive ? "2px solid #f4f4f4" : "2px solid transparent",
+                  background: "transparent",
+                  padding: "12px 24px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  transition: "all 0.2s",
                 }}
                 id={`ev-tab-${tab.id}`}
               >
-                <span 
-                  className="text-base md:text-lg font-bold tracking-wide"
-                  style={{ color: isActive ? "var(--crimson)" : "var(--text-main)" }}
-                >
-                  {tab.label.toUpperCase()}
-                </span>
-                
-                {tab.count >= 0 && (
+                {tab.label}
+                {tab.count > 0 && (
                   <span
-                    className="flex items-center justify-center min-w-[28px] h-[28px] px-2 text-[12px] font-bold rounded-lg transition-colors"
                     style={{
-                      background: isActive ? "var(--crimson)" : "var(--surface)",
-                      color: isActive ? "white" : "var(--text-main)",
-                      border: isActive ? "none" : "1px solid var(--border)",
+                      fontSize: "11px",
+                      padding: "2px 8px",
+                      borderRadius: "20px",
+                      background: "rgba(244,244,244,0.2)",
+                      color: "#f4f4f4",
                     }}
                   >
                     {tab.count}
                   </span>
-                )}
-
-                {isActive && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--crimson)] rounded-full border-2 border-[var(--bg)]" />
                 )}
               </button>
             );
@@ -74,7 +70,7 @@ export function EventosList({ proximos, passados }: EventosListProps) {
         </div>
       </div>
 
-      <div className="content-wrapper py-12 md:py-20">
+      <div className="content-wrapper pt-24 pb-12 md:pt-32 md:pb-20">
         {eventos.length === 0 ? (
           <div
             className="text-center py-16 md:py-24"

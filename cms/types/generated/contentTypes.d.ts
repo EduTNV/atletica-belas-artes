@@ -430,6 +430,36 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiConfigAjudaConfigAjuda extends Struct.SingleTypeSchema {
+  collectionName: 'config_ajudas';
+  info: {
+    displayName: 'Config Ajuda';
+    pluralName: 'config-ajudas';
+    singularName: 'config-ajuda';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    faqs: Schema.Attribute.Component<'ajuda.faq', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::config-ajuda.config-ajuda'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subtitulo: Schema.Attribute.String;
+    titulo_pagina: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiConfigCompeticoesConfigCompeticoes
   extends Struct.SingleTypeSchema {
   collectionName: 'config_competicoes';
@@ -635,7 +665,7 @@ export interface ApiEventoEvento extends Struct.CollectionTypeSchema {
     singularName: 'evento';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     aftermovie_url: Schema.Attribute.String;
@@ -669,7 +699,7 @@ export interface ApiMembroEntidadeMembroEntidade
   extends Struct.CollectionTypeSchema {
   collectionName: 'membro_entidades';
   info: {
-    displayName: 'MembroEntidade';
+    displayName: 'Membro Entidade';
     pluralName: 'membro-entidades';
     singularName: 'membro-entidade';
   };
@@ -690,7 +720,7 @@ export interface ApiMembroEntidadeMembroEntidade
     > &
       Schema.Attribute.Private;
     nome: Schema.Attribute.String & Schema.Attribute.Required;
-    ordem: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    ordem: Schema.Attribute.Integer;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -715,6 +745,7 @@ export interface ApiMembroModalidadeMembroModalidade
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    curso: Schema.Attribute.Relation<'manyToOne', 'api::curso.curso'>;
     foto: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -749,6 +780,10 @@ export interface ApiModalidadeModalidade extends Struct.CollectionTypeSchema {
   attributes: {
     capitao_nome: Schema.Attribute.String;
     capitao_whatsapp: Schema.Attribute.String;
+    conquistas: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conquista.conquista'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -769,6 +804,11 @@ export interface ApiModalidadeModalidade extends Struct.CollectionTypeSchema {
     nome: Schema.Attribute.String & Schema.Attribute.Required;
     nome_interno: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    resultados: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::resultado.resultado'
+    >;
+    treinos: Schema.Attribute.Relation<'oneToMany', 'api::treino.treino'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -829,8 +869,8 @@ export interface ApiTreinoTreino extends Struct.CollectionTypeSchema {
       ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo']
     > &
       Schema.Attribute.Required;
-    hora_fim: Schema.Attribute.String;
-    hora_inicio: Schema.Attribute.String;
+    hora_fim: Schema.Attribute.Time;
+    hora_inicio: Schema.Attribute.Time;
     local: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1360,6 +1400,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::config-ajuda.config-ajuda': ApiConfigAjudaConfigAjuda;
       'api::config-competicoes.config-competicoes': ApiConfigCompeticoesConfigCompeticoes;
       'api::config-contato.config-contato': ApiConfigContatoConfigContato;
       'api::config-home.config-home': ApiConfigHomeConfigHome;

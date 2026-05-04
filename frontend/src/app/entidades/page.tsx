@@ -16,17 +16,18 @@ export default async function EntidadesPage() {
     <>
       <section
         className="relative overflow-hidden"
-        style={{
-          background: "var(--blue-header)",
-        }}
+        style={{ background: "#5c6484", marginBottom: "clamp(20px, 3vw, 32px)" }}
       >
         <div className="content-wrapper py-10 md:py-16 lg:py-20">
-          <h1 className="font-heading text-[32px] md:text-[48px] tracking-[0.5px]" style={{ color: "var(--crimson)" }}>
+          <h1 
+            className="font-heading text-[32px] md:text-[48px] tracking-[0.5px]" 
+            style={{ color: "#f4f4f4" }}
+          >
             Entidades
           </h1>
           <p
             className="text-[14px] md:text-[16px] mt-2"
-            style={{ color: "rgba(255,255,255,0.8)" }}
+            style={{ color: "rgba(244, 244, 244, 0.75)" }}
           >
             Organizações que fazem parte da Belas Artes
           </p>

@@ -10,7 +10,6 @@ interface EntidadeDetailProps {
 }
 
 export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
-  const color = entidade.cor || "#8b1a1a";
   const logoUrl = entidade.logo?.url ? `${STRAPI_URL}${entidade.logo.url}` : null;
   const membros = [...(entidade.membros || [])].sort(
     (a, b) => (a.ordem ?? 99) - (b.ordem ?? 99)
@@ -18,9 +17,9 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 
   return (
     <>
-      <div className="drawer-overlay open" onClick={onClose} />
+      <div className="drawer-overlay open" onClick={onClose} style={{ zIndex: 9998 }} />
 
-      <div className="slide-panel open" style={{ zIndex: 210 }}>
+      <div className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="ent-detail-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -35,7 +34,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
             <div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(135deg, ${color}50 0%, ${color}15 50%, #0f0f0f 100%)`,
+                background: "linear-gradient(160deg, #e02c2c 0%, #f4f4f4 100%)",
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/40 to-transparent" />
@@ -45,16 +44,14 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
                 <img
                   src={logoUrl}
                   alt={entidade.nome}
-                  className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover mb-4"
-                  style={{ border: `2px solid ${color}55` }}
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover mb-4 shadow-md"
                 />
               ) : (
                 <div
-                  className="w-20 h-20 md:w-24 md:h-24 rounded-2xl flex items-center justify-center font-heading text-[28px] mb-4"
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-2xl flex items-center justify-center font-heading text-[28px] mb-4 shadow-md"
                   style={{
-                    background: `${color}25`,
-                    border: `2px solid ${color}55`,
-                    color: color,
+                    background: "#ffffff",
+                    color: "var(--crimson)",
                   }}
                 >
                   {entidade.nome.charAt(0)}
@@ -63,7 +60,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 
               <h2
                 className="font-heading text-center tracking-wide"
-                style={{ fontSize: "clamp(24px, 4vw, 36px)", color: "var(--crimson)" }}
+                style={{ fontSize: "clamp(24px, 4vw, 36px)", color: "#000000" }}
               >
                 {entidade.nome}
               </h2>
@@ -99,7 +96,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 
                 <div className="flex flex-col gap-3">
                   {membros.map((membro) => (
-                    <MembroCard key={membro.documentId} membro={membro} color={color} />
+                    <MembroCard key={membro.documentId} membro={membro} />
                   ))}
                 </div>
               </>
@@ -111,7 +108,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
   );
 }
 
-function MembroCard({ membro, color }: { membro: MembroEntidade; color: string }) {
+function MembroCard({ membro }: { membro: MembroEntidade }) {
   const fotoUrl = membro.foto?.url ? `${STRAPI_URL}${membro.foto.url}` : null;
 
   return (
@@ -124,15 +121,13 @@ function MembroCard({ membro, color }: { membro: MembroEntidade; color: string }
           src={fotoUrl}
           alt={membro.nome}
           className="w-12 h-12 rounded-full object-cover shrink-0"
-          style={{ border: `1.5px solid ${color}44` }}
         />
       ) : (
         <div
           className="w-12 h-12 rounded-full flex items-center justify-center font-heading text-[16px] shrink-0"
           style={{
-            background: `${color}20`,
-            border: `1.5px solid ${color}44`,
-            color: color,
+            background: "var(--surface2)",
+            color: "var(--text-main)",
           }}
         >
           {getInitials(membro.nome)}
@@ -145,7 +140,12 @@ function MembroCard({ membro, color }: { membro: MembroEntidade; color: string }
         </p>
         {membro.cargo && (
           <p className="text-[12px] truncate" style={{ color: "var(--text2)" }}>
-            {membro.cargo}
+            {membro.cargo} {membro.curso && ` · ${membro.curso.nome}`}
+          </p>
+        )}
+        {!membro.cargo && membro.curso && (
+          <p className="text-[12px] truncate" style={{ color: "var(--text2)" }}>
+            {membro.curso.nome}
           </p>
         )}
       </div>

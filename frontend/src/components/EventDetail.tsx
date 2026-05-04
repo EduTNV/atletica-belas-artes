@@ -1,7 +1,6 @@
 "use client";
 
 import type { Evento } from "@/lib/strapi";
-import { formatDate } from "@/components/EventCard";
 
 interface EventDetailProps {
   evento: Evento;
@@ -44,13 +43,11 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
     ? statusLabels[evento.status_lote] || "Em breve"
     : "Em breve";
 
-  const isEsgotado = evento.status_lote === "esgotado";
-
   return (
     <>
-      <div className="drawer-overlay open" onClick={onClose} />
+      <div className="drawer-overlay open" onClick={onClose} style={{ zIndex: 9998 }} />
 
-      <div className="slide-panel open" style={{ zIndex: 200 }}>
+      <div className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="event-detail-back">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -79,10 +76,8 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               <span
                 className="text-[11px] font-bold px-4 py-2 rounded-lg backdrop-blur-sm"
                 style={{
-                  background: isEsgotado
-                    ? "rgba(100,100,100,0.8)"
-                    : "rgba(139, 26, 26, 0.85)",
-                  color: "var(--text)",
+                  background: "#5c6484",
+                  color: "#f4f4f4",
                 }}
               >
                 {statusLabel}
@@ -93,7 +88,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
           <div className="px-6 md:px-8 py-6" style={{ marginTop: "-24px", position: "relative", zIndex: 2 }}>
             <h2
               className="font-heading tracking-wide mb-4"
-              style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "var(--text)" }}
+              style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "#000000" }}
             >
               {evento.nome}
             </h2>
@@ -101,9 +96,9 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
             <div className="flex items-center gap-3 mb-4">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: "rgba(139, 26, 26, 0.2)" }}
+                style={{ background: "rgba(92, 100, 132, 0.1)" }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--crimson-light)" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5c6484" strokeWidth="2">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
                   <line x1="8" y1="2" x2="8" y2="6" />
@@ -111,7 +106,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-[14px] font-medium capitalize" style={{ color: "var(--text)" }}>
+                <p className="text-[14px] font-medium capitalize" style={{ color: "#000000" }}>
                   {dataFormatada}
                 </p>
                 <p className="text-[13px]" style={{ color: "var(--text3)" }}>
@@ -131,7 +126,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-[14px] font-medium" style={{ color: "var(--text)" }}>
+                <p className="text-[14px] font-medium" style={{ color: "#000000" }}>
                   {evento.local}
                 </p>
                 {evento.endereco && (
@@ -154,7 +149,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               >
                 <span className="text-[20px]">🎬</span>
                 <div>
-                  <p className="text-[14px] font-medium" style={{ color: "var(--text)" }}>
+                  <p className="text-[14px] font-medium" style={{ color: "#000000" }}>
                     Aftermovie
                   </p>
                   <p className="text-[12px]" style={{ color: "var(--text3)" }}>
@@ -171,7 +166,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
           </div>
         </div>
 
-        {evento.link_ingresso && !isEsgotado && (
+        {evento.link_ingresso && evento.status_lote !== "esgotado" && (
           <div className="sticky-cta">
             <a
               href={evento.link_ingresso}
@@ -179,8 +174,8 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               rel="noopener noreferrer"
               className="flex-1 py-4 rounded-xl text-center text-[15px] font-bold tracking-wide transition-all hover:opacity-90"
               style={{
-                background: "linear-gradient(135deg, var(--crimson), var(--crimson-light))",
-                color: "var(--text)",
+                background: "#5c6484",
+                color: "#ffffff",
               }}
               id="event-detail-cta"
             >
@@ -189,7 +184,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
           </div>
         )}
 
-        {isEsgotado && (
+        {evento.status_lote === "esgotado" && (
           <div className="sticky-cta">
             <div
               className="flex-1 py-4 rounded-xl text-center text-[15px] font-bold tracking-wide opacity-50 cursor-not-allowed"

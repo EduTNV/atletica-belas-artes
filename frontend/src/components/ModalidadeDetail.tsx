@@ -33,10 +33,10 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
         const docId = modalidade.documentId;
 
         const [resRes, resTre, resCon, resMem] = await Promise.all([
-          fetch(`${baseUrl}/api/resultados?filters[modalidade][documentId][$eq]=${docId}&sort=data:desc&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
+          fetch(`${baseUrl}/api/resultados?filters[modalidade][documentId][$eq]=${docId}&sort=data:desc&pagination[pageSize]=100`).then(r => r.json()).catch(() => ({ data: [] })),
           fetch(`${baseUrl}/api/treinos?filters[modalidade][documentId][$eq]=${docId}&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
-          fetch(`${baseUrl}/api/conquistas?filters[modalidade][documentId][$eq]=${docId}&sort=ano:desc&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
-          fetch(`${baseUrl}/api/membro-modalidades?filters[modalidade][documentId][$eq]=${docId}&populate=foto&sort=ordem:asc&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
+          fetch(`${baseUrl}/api/conquistas?filters[modalidade][documentId][$eq]=${docId}&sort=ano:desc&pagination[pageSize]=100`).then(r => r.json()).catch(() => ({ data: [] })),
+          fetch(`${baseUrl}/api/membro-modalidades?filters[modalidade][documentId][$eq]=${docId}&populate=foto,curso&sort=ordem:asc&pagination[pageSize]=100`).then(r => r.json()).catch(() => ({ data: [] })),
         ]);
 
         setResultados(resRes.data || []);
@@ -66,9 +66,9 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
 
   return (
     <>
-      <div className="drawer-overlay open" onClick={onClose} />
+      <div className="drawer-overlay open" onClick={onClose} style={{ zIndex: 9998 }} />
 
-      <div className="slide-panel open" style={{ zIndex: 210 }}>
+      <div className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="mod-detail-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -100,7 +100,7 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
                       backgroundPosition: "center",
                     }
                   : {
-                      background: `linear-gradient(135deg, ${color}40 0%, ${color}15 40%, #0f0f0f 100%)`,
+                      background: "linear-gradient(160deg, #e02c2c 0%, #f4f4f4 100%)",
                     }
               }
             />
@@ -109,7 +109,7 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <h2
                 className="font-heading tracking-wide"
-                style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "var(--crimson)" }}
+                style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "#000000" }}
               >
                 {modalidade.nome}
               </h2>
@@ -122,9 +122,9 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
               style={{ borderColor: "var(--border)" }}
             >
               <StatCell value={totalJogos} label="JOGOS" />
-              <StatCell value={vitorias} label="VITÓRIAS" color="#81c784" />
-              <StatCell value={derrotas} label="DERROTAS" color="#e57373" />
-              <StatCell value={empates} label="EMPATES" color="var(--text3)" />
+              <StatCell value={vitorias} label="VITÓRIAS" color="#4caf50" />
+              <StatCell value={derrotas} label="DERROTAS" color="#f44336" />
+              <StatCell value={empates} label="EMPATES" color="#7c84a4" />
             </div>
           )}
 
@@ -193,7 +193,7 @@ function StatCell({ value, label, color }: { value: number; label: string; color
     <div className="flex flex-col items-center py-4">
       <span
         className="font-heading text-[24px] md:text-[28px]"
-        style={{ color: color || "var(--text)" }}
+        style={{ color: color || "#000000" }}
       >
         {value}
       </span>
@@ -217,8 +217,8 @@ function TabResultados({ resultados }: { resultados: Resultado[] }) {
         const outcome = nos > adv ? "win" : nos < adv ? "loss" : "draw";
         const outcomeLabel = nos > adv ? "VITÓRIA" : nos < adv ? "DERROTA" : "EMPATE";
         const colors = {
-          win: { indicator: "#4caf50", text: "#81c784" },
-          loss: { indicator: "#f44336", text: "#e57373" },
+          win: { indicator: "#4caf50", text: "#4caf50" },
+          loss: { indicator: "#f44336", text: "#f44336" },
           draw: { indicator: "#9e9e9e", text: "var(--text3)" },
         };
 
@@ -233,7 +233,7 @@ function TabResultados({ resultados }: { resultados: Resultado[] }) {
               style={{ background: colors[outcome].indicator }}
             />
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium truncate" style={{ color: "var(--text)" }}>
+              <p className="text-[13px] font-medium truncate" style={{ color: "#000000" }}>
                 vs {r.adversario}
               </p>
               <p className="text-[11px] truncate" style={{ color: "var(--text3)" }}>
@@ -280,7 +280,7 @@ function TabTreinos({ treinos }: { treinos: Treino[] }) {
             className="flex items-center justify-between py-3 border-b"
             style={{ borderColor: "var(--border)" }}
           >
-            <span className="text-[13px] font-medium" style={{ color: "var(--text)" }}>
+            <span className="text-[13px] font-medium" style={{ color: "#000000" }}>
               {diasLabels[t.dia_semana] || t.dia_semana}
             </span>
             <div className="text-right">
@@ -301,8 +301,8 @@ function TabTreinos({ treinos }: { treinos: Treino[] }) {
       <div
         className="mt-4 p-3 rounded-lg text-[12px] leading-relaxed"
         style={{
-          background: "rgba(201, 168, 76, 0.06)",
-          border: "0.5px solid rgba(201, 168, 76, 0.2)",
+          background: "rgba(92, 100, 132, 0.06)",
+          border: "0.5px solid rgba(92, 100, 132, 0.2)",
           color: "var(--text2)",
         }}
       >
@@ -313,10 +313,10 @@ function TabTreinos({ treinos }: { treinos: Treino[] }) {
 }
 
 const medalhaConfig: Record<string, { emoji: string; label: string; color: string; bg: string; border: string }> = {
-  ouro: { emoji: "🥇", label: "OURO", color: "var(--gold-light, #e8c97a)", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.3)" },
-  prata: { emoji: "🥈", label: "PRATA", color: "var(--text2)", bg: "rgba(168,164,156,0.1)", border: "rgba(168,164,156,0.3)" },
+  ouro: { emoji: "🥇", label: "OURO", color: "#c9a84c", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.3)" },
+  prata: { emoji: "🥈", label: "PRATA", color: "#666666", bg: "rgba(0,0,0,0.05)", border: "rgba(0,0,0,0.1)" },
   bronze: { emoji: "🏅", label: "BRONZE", color: "#cd7f32", bg: "rgba(205,127,50,0.1)", border: "rgba(205,127,50,0.3)" },
-  premio: { emoji: "⭐", label: "PRÊMIO", color: "var(--crimson-light)", bg: "rgba(139,26,26,0.1)", border: "rgba(139,26,26,0.3)" },
+  premio: { emoji: "⭐", label: "PRÊMIO", color: "#e02c2c", bg: "rgba(224,44,44,0.1)", border: "rgba(224,44,44,0.3)" },
 };
 
 function TabConquistas({ conquistas }: { conquistas: Conquista[] }) {
@@ -336,7 +336,7 @@ function TabConquistas({ conquistas }: { conquistas: Conquista[] }) {
           >
             <span className="text-[22px] w-9 text-center shrink-0">{config.emoji}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium truncate" style={{ color: "var(--text)" }}>
+              <p className="text-[13px] font-medium truncate" style={{ color: "#000000" }}>
                 {c.titulo}
               </p>
               {c.ano && (
@@ -386,7 +386,7 @@ function TabElenco({
               {getInitials(modalidade.capitao_nome)}
             </div>
             <div>
-              <p className="text-[14px] font-semibold" style={{ color: "var(--text)" }}>
+              <p className="text-[14px] font-semibold" style={{ color: "#000000" }}>
                 {modalidade.capitao_nome}
               </p>
               <p className="text-[11px] mt-1" style={{ color: "var(--text3)" }}>
@@ -428,12 +428,17 @@ function TabElenco({
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold truncate"
-                       style={{ color: "var(--text)" }}>
+                       style={{ color: "#000000" }}>
                       {m.nome}
                     </p>
                     {m.cargo && (
                       <p className="text-[11px] truncate" style={{ color: "var(--text3)" }}>
-                        {m.cargo}
+                        {m.cargo} {m.curso && ` · ${m.curso.nome}`}
+                      </p>
+                    )}
+                    {!m.cargo && m.curso && (
+                      <p className="text-[11px] truncate" style={{ color: "var(--text3)" }}>
+                        {m.curso.nome}
                       </p>
                     )}
                   </div>

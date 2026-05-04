@@ -12,7 +12,7 @@ const navLinks = [
 
 const secondaryLinks = [
   { href: "/entidades", label: "Entidades" },
-  { href: "/contato", label: "Contato" },
+  { href: "/contato", label: "Ajuda" },
 ];
 
 export default function Header() {
