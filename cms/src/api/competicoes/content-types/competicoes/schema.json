@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "config_competicao",
+  "info": {
+    "singularName": "competicoes",
+    "pluralName": "competicoes-plural",
+    "displayName": "Configurações de Competições"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "competicoes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "competicao.competicao"
+    }
+  }
+}

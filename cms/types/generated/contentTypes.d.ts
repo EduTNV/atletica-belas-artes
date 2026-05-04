@@ -430,27 +430,28 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiConfigAjudaConfigAjuda extends Struct.SingleTypeSchema {
-  collectionName: 'config_ajudas';
+export interface ApiAjudaAjuda extends Struct.SingleTypeSchema {
+  collectionName: 'config_ajuda';
   info: {
-    displayName: 'Config Ajuda';
-    pluralName: 'config-ajudas';
-    singularName: 'config-ajuda';
+    displayName: 'Ajuda';
+    pluralName: 'ajuda-plural';
+    singularName: 'ajuda';
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     faqs: Schema.Attribute.Component<'ajuda.faq', true>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::config-ajuda.config-ajuda'
-    > &
-      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::ajuda.ajuda'>;
     publishedAt: Schema.Attribute.DateTime;
     subtitulo: Schema.Attribute.String;
     titulo_pagina: Schema.Attribute.String;
@@ -460,94 +461,32 @@ export interface ApiConfigAjudaConfigAjuda extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiConfigCompeticoesConfigCompeticoes
-  extends Struct.SingleTypeSchema {
-  collectionName: 'config_competicoes';
+export interface ApiCompeticoesCompeticoes extends Struct.SingleTypeSchema {
+  collectionName: 'config_competicao';
   info: {
-    displayName: 'Config Competicoes';
-    pluralName: 'config-competicoess';
-    singularName: 'config-competicoes';
+    displayName: 'Configura\u00E7\u00F5es de Competi\u00E7\u00F5es';
+    pluralName: 'competicoes-plural';
+    singularName: 'competicoes';
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
   };
   attributes: {
     competicoes: Schema.Attribute.Component<'competicao.competicao', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::config-competicoes.config-competicoes'
-    > &
-      Schema.Attribute.Private;
+      'api::competicoes.competicoes'
+    >;
     publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiConfigContatoConfigContato extends Struct.SingleTypeSchema {
-  collectionName: 'config_contatos';
-  info: {
-    displayName: 'ConfigContato';
-    pluralName: 'config-contatos';
-    singularName: 'config-contato';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    email: Schema.Attribute.String;
-    instagram: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::config-contato.config-contato'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    whatsapp: Schema.Attribute.String;
-  };
-}
-
-export interface ApiConfigHomeConfigHome extends Struct.SingleTypeSchema {
-  collectionName: 'config_homes';
-  info: {
-    displayName: 'ConfigHome';
-    pluralName: 'config-homes';
-    singularName: 'config-home';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    ano_fundacao: Schema.Attribute.Integer;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    foto_hero: Schema.Attribute.Media<'images'>;
-    frase_footer: Schema.Attribute.String;
-    link_produtos: Schema.Attribute.String;
-    link_seja_socio: Schema.Attribute.String;
-    link_whatsapp_contato: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::config-home.config-home'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    texto_quem_somos_completo: Schema.Attribute.RichText;
-    texto_quem_somos_resumo: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -587,6 +526,40 @@ export interface ApiConquistaConquista extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiContatoContato extends Struct.SingleTypeSchema {
+  collectionName: 'config_contato';
+  info: {
+    displayName: 'Contato';
+    pluralName: 'contato-plural';
+    singularName: 'contato';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.String;
+    instagram: Schema.Attribute.String;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contato.contato'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whatsapp: Schema.Attribute.String;
   };
 }
 
@@ -689,6 +662,42 @@ export interface ApiEventoEvento extends Struct.CollectionTypeSchema {
     status_lote: Schema.Attribute.Enumeration<
       ['vendas_abertas', 'lote_2', 'lote_3', 'esgotado']
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiHomeHome extends Struct.SingleTypeSchema {
+  collectionName: 'config_home';
+  info: {
+    displayName: 'Home';
+    pluralName: 'home-plural';
+    singularName: 'home';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    ano_fundacao: Schema.Attribute.Integer;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    foto_hero: Schema.Attribute.Media<'images'>;
+    frase_footer: Schema.Attribute.String;
+    link_produtos: Schema.Attribute.String;
+    link_seja_socio: Schema.Attribute.String;
+    link_whatsapp_contato: Schema.Attribute.String;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::home.home'>;
+    publishedAt: Schema.Attribute.DateTime;
+    texto_quem_somos_completo: Schema.Attribute.RichText;
+    texto_quem_somos_resumo: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1400,14 +1409,14 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::config-ajuda.config-ajuda': ApiConfigAjudaConfigAjuda;
-      'api::config-competicoes.config-competicoes': ApiConfigCompeticoesConfigCompeticoes;
-      'api::config-contato.config-contato': ApiConfigContatoConfigContato;
-      'api::config-home.config-home': ApiConfigHomeConfigHome;
+      'api::ajuda.ajuda': ApiAjudaAjuda;
+      'api::competicoes.competicoes': ApiCompeticoesCompeticoes;
       'api::conquista.conquista': ApiConquistaConquista;
+      'api::contato.contato': ApiContatoContato;
       'api::curso.curso': ApiCursoCurso;
       'api::entidade.entidade': ApiEntidadeEntidade;
       'api::evento.evento': ApiEventoEvento;
+      'api::home.home': ApiHomeHome;
       'api::membro-entidade.membro-entidade': ApiMembroEntidadeMembroEntidade;
       'api::membro-modalidade.membro-modalidade': ApiMembroModalidadeMembroModalidade;
       'api::modalidade.modalidade': ApiModalidadeModalidade;

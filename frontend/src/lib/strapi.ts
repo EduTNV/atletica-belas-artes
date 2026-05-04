@@ -222,7 +222,7 @@ export async function getEventos(): Promise<Evento[]> {
 export async function getConfigHome(): Promise<ConfigHome | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigHome>>(
-      "/api/config-home",
+      "/api/home",
       { "populate": "foto_hero" }
     );
     return res.data;

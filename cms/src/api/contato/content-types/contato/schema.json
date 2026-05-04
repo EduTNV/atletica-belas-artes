@@ -1,0 +1,28 @@
+{
+  "kind": "singleType",
+  "collectionName": "config_contato",
+  "info": {
+    "singularName": "contato",
+    "pluralName": "contato-plural",
+    "displayName": "Contato"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "email": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
+    }
+  }
+}
