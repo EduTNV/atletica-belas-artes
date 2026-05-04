@@ -1,9 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Modalidade, Resultado, Treino, Conquista, MembroModalidade } from "@/lib/strapi";
+import { 
+  type Modalidade, 
+  type Resultado, 
+  type Treino, 
+  type Conquista, 
+  type MembroModalidade,
+  getResultados,
+  getTreinos,
+  getConquistas,
+  getMembrosModalidade
+} from "@/lib/strapi";
 
 type InnerTab = "resultados" | "treinos" | "conquistas" | "elenco";
+// ... (rest of imports and types)
 
 interface ModalidadeDetailProps {
   modalidade: Modalidade;
@@ -29,20 +40,19 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
     async function fetchData() {
       setLoading(true);
       try {
-        const baseUrl = STRAPI_URL;
         const docId = modalidade.documentId;
 
         const [resRes, resTre, resCon, resMem] = await Promise.all([
-          fetch(`${baseUrl}/api/resultados?filters[modalidade][documentId][$eq]=${docId}&sort=data:desc&pagination[pageSize]=100`).then(r => r.json()).catch(() => ({ data: [] })),
-          fetch(`${baseUrl}/api/treinos?filters[modalidade][documentId][$eq]=${docId}&pagination[pageSize]=50`).then(r => r.json()).catch(() => ({ data: [] })),
-          fetch(`${baseUrl}/api/conquistas?filters[modalidade][documentId][$eq]=${docId}&sort=ano:desc&pagination[pageSize]=100`).then(r => r.json()).catch(() => ({ data: [] })),
-          fetch(`${baseUrl}/api/membro-modalidades?filters[modalidade][documentId][$eq]=${docId}&populate=foto,curso&sort=ordem:asc&pagination[pageSize]=100`).then(r => r.json()).catch(() => ({ data: [] })),
+          getResultados(docId),
+          getTreinos(docId),
+          getConquistas(docId),
+          getMembrosModalidade(docId),
         ]);
 
-        setResultados(resRes.data || []);
-        setTreinos(sortTreinos(resTre.data || []));
-        setConquistas(resCon.data || []);
-        setMembros(resMem.data || []);
+        setResultados(resRes || []);
+        setTreinos(resTre || []);
+        setConquistas(resCon || []);
+        setMembros(resMem || []);
       } catch {
         // fail silently
       } finally {

@@ -21,7 +21,7 @@ export default function Header() {
 
   useEffect(() => {
     const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-    fetch(`${STRAPI_URL}/api/config-home`)
+    fetch(`${STRAPI_URL}/api/home`)
       .then((r) => r.json())
       .then((res) => {
         if (res?.data?.link_seja_socio) {

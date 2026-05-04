@@ -234,7 +234,7 @@ export async function getConfigHome(): Promise<ConfigHome | null> {
 export async function getConfigContato(): Promise<ConfigContato | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigContato>>(
-      "/api/config-contato"
+      "/api/contato"
     );
     return res.data;
   } catch {
@@ -245,7 +245,7 @@ export async function getConfigContato(): Promise<ConfigContato | null> {
 export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigCompeticoes>>(
-      "/api/config-competicoes",
+      "/api/competicoes",
       { 
         "populate[competicoes][populate]": "foto" 
       }
@@ -259,7 +259,7 @@ export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> 
 export async function getConfigAjuda(): Promise<ConfigAjuda | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigAjuda>>(
-      "/api/config-ajuda",
+      "/api/ajuda",
       { "populate[faqs]": "true" }
     );
     return res.data;
@@ -326,41 +326,53 @@ export async function getModalidadeDetalhe(documentId: string): Promise<Modalida
 }
 
 export async function getResultados(modalidadeDocumentId: string): Promise<Resultado[]> {
-  const res = await fetchStrapi<StrapiCollectionResponse<Resultado>>(
-    "/api/resultados",
-    {
-      "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
-      "sort": "data:desc",
-      "pagination[pageSize]": "50",
-    }
-  );
-  return res.data;
+  try {
+    const res = await fetchStrapi<StrapiCollectionResponse<Resultado>>(
+      "/api/resultados",
+      {
+        "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
+        "sort": "data:desc",
+        "pagination[pageSize]": "100",
+      }
+    );
+    return res.data || [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getTreinos(modalidadeDocumentId: string): Promise<Treino[]> {
-  const diasOrdem = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
-  const res = await fetchStrapi<StrapiCollectionResponse<Treino>>(
-    "/api/treinos",
-    {
-      "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
-      "pagination[pageSize]": "50",
-    }
-  );
-  return res.data.sort(
-    (a, b) => diasOrdem.indexOf(a.dia_semana) - diasOrdem.indexOf(b.dia_semana)
-  );
+  try {
+    const diasOrdem = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
+    const res = await fetchStrapi<StrapiCollectionResponse<Treino>>(
+      "/api/treinos",
+      {
+        "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
+        "pagination[pageSize]": "50",
+      }
+    );
+    return (res.data || []).sort(
+      (a, b) => diasOrdem.indexOf(a.dia_semana) - diasOrdem.indexOf(b.dia_semana)
+    );
+  } catch {
+    return [];
+  }
 }
 
 export async function getConquistas(modalidadeDocumentId: string): Promise<Conquista[]> {
-  const res = await fetchStrapi<StrapiCollectionResponse<Conquista>>(
-    "/api/conquistas",
-    {
-      "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
-      "sort": "ano:desc",
-      "pagination[pageSize]": "50",
-    }
-  );
-  return res.data;
+  try {
+    const res = await fetchStrapi<StrapiCollectionResponse<Conquista>>(
+      "/api/conquistas",
+      {
+        "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
+        "sort": "ano:desc",
+        "pagination[pageSize]": "100",
+      }
+    );
+    return res.data || [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getMembrosModalidade(
@@ -371,13 +383,15 @@ export async function getMembrosModalidade(
       "/api/membro-modalidades",
       {
         "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
-        "populate": "foto",
+        "populate[foto]": "true",
+        "populate[curso]": "true",
         "sort": "ordem:asc",
-        "pagination[pageSize]": "50",
+        "pagination[pageSize]": "100",
       }
     );
-    return res.data;
-  } catch {
+    return res.data || [];
+  } catch (error) {
+    console.error("Erro ao buscar membros da modalidade:", error);
     return [];
   }
 }
