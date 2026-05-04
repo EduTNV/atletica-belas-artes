@@ -1,3 +1,3 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreController('api::ajuda.ajuda' as any);
+export default factories.createCoreController('api::ajuda.ajuda');
