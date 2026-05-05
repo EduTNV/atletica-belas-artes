@@ -123,7 +123,7 @@ export function TimesList({ modalidades }: TimesListProps) {
       {modalidadesFiltradas.length === 0 && (
         <div className="text-center py-20">
           <p className="text-[15px]" style={{ color: "var(--text3)" }}>
-            Nenhuma modalidade encontrada para "{busca}".
+            Nenhuma modalidade encontrada para &quot;{busca}&quot;.
           </p>
         </div>
       )}

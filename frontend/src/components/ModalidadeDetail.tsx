@@ -23,7 +23,7 @@ interface ModalidadeDetailProps {
   onClose: () => void;
 }
 
-export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }: ModalidadeDetailProps) {
+export function ModalidadeDetail({ modalidade, cursoColor, onClose }: ModalidadeDetailProps) {
   const [activeTab, setActiveTab] = useState<InnerTab>("resultados");
   const [resultados, setResultados] = useState<Resultado[]>([]);
   const [treinos, setTreinos] = useState<Treino[]>([]);
