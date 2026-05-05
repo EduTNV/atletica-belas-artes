@@ -15,7 +15,16 @@
       "required": true
     },
     "cargo": {
-      "type": "string"
+      "type": "enumeration",
+      "enum": [
+        "técnico",
+        "co-técnico",
+        "capitão",
+        "co-capitão",
+        "atleta",
+        "atleta reserva"
+      ],
+      "default": "atleta"
     },
     "foto": {
       "type": "media",

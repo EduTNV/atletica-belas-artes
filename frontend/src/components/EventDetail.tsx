@@ -82,26 +82,31 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
             </div>
           </div>
 
-          <div className="px-6 md:px-8 py-6" style={{ marginTop: "-24px", position: "relative", zIndex: 2 }}>
+          <div 
+            className="detail-body py-6" 
+            style={{ 
+              marginTop: "-24px", 
+              position: "relative", 
+              zIndex: 2,
+              paddingLeft: "clamp(24px, 5vw, 32px)",
+              paddingRight: "clamp(24px, 5vw, 32px)",
+              paddingBottom: evento.link_ingresso && evento.status_lote !== "esgotado" ? "100px" : "32px"
+            }}
+          >
             <h2
-              className="font-heading tracking-wide mb-4"
+              className="font-heading tracking-wide mb-6"
               style={{ fontSize: "clamp(28px, 4vw, 40px)", color: "#000000" }}
             >
               {evento.nome}
             </h2>
 
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: "rgba(92, 100, 132, 0.1)" }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5c6484" strokeWidth="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-              </div>
+            <div className="flex items-start gap-[10px] mb-4">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#5c6484" strokeWidth="2" className="mt-[2px] shrink-0">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
               <div>
                 <p className="text-[14px] font-medium capitalize" style={{ color: "#000000" }}>
                   {dataFormatada}
@@ -112,16 +117,11 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: "rgba(201, 168, 76, 0.15)" }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
+            <div className="flex items-start gap-[10px] mb-4">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#5c6484" strokeWidth="2" className="mt-[2px] shrink-0">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
               <div>
                 <p className="text-[14px] font-medium" style={{ color: "#000000" }}>
                   {evento.local}

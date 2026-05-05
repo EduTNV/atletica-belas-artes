@@ -154,7 +154,7 @@ export interface MembroModalidade {
   id: number;
   documentId: string;
   nome: string;
-  cargo: string | null;
+  cargo: "técnico" | "co-técnico" | "capitão" | "co-capitão" | "atleta" | "atleta reserva" | null;
   foto: { url: string; formats?: Record<string, { url: string }> } | null;
   whatsapp: string | null;
   ordem: number | null;
