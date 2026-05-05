@@ -1,24 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getConfigContato, getConfigAjuda } from "@/lib/strapi";
-import type { Faq } from "@/lib/strapi";
+import type { Faq, ConfigContato, ConfigAjuda } from "@/lib/strapi";
 
 export default function ContatoPage() {
-  const [contato, setContato] = useState<any>(null);
-  const [configAjuda, setConfigAjuda] = useState<any>(null);
+  const [contato, setContato] = useState<ConfigContato | null>(null);
+  const [configAjuda, setConfigAjuda] = useState<ConfigAjuda | null>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data on the client side since we are using "use client" for state
-  useState(() => {
+  useEffect(() => {
     Promise.all([getConfigContato(), getConfigAjuda()]).then(([c, a]) => {
       setContato(c);
       setConfigAjuda(a);
       setLoading(false);
     });
-    return () => { };
-  });
+  }, []);
 
   if (loading) return null;
 

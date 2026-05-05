@@ -10,11 +10,11 @@ import {
   getResultados,
   getTreinos,
   getConquistas,
-  getMembrosModalidade
+  getMembrosModalidade,
+  getStrapiMedia
 } from "@/lib/strapi";
 
 type InnerTab = "resultados" | "treinos" | "conquistas" | "elenco";
-// ... (rest of imports and types)
 
 interface ModalidadeDetailProps {
   modalidade: Modalidade;
@@ -22,8 +22,6 @@ interface ModalidadeDetailProps {
   cursoColor: string | null;
   onClose: () => void;
 }
-
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
 export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }: ModalidadeDetailProps) {
   const [activeTab, setActiveTab] = useState<InnerTab>("resultados");
@@ -34,7 +32,7 @@ export function ModalidadeDetail({ modalidade, cursoNome, cursoColor, onClose }:
   const [loading, setLoading] = useState(true);
 
   const color = cursoColor || "#8b1a1a";
-  const fotoBanner = modalidade.foto_banner?.url ? `${STRAPI_URL}${modalidade.foto_banner.url}` : null;
+  const fotoBanner = getStrapiMedia(modalidade.foto_banner?.url);
 
   useEffect(() => {
     async function fetchData() {
@@ -415,7 +413,7 @@ function TabElenco({
           </p>
           <div className="flex flex-col gap-2">
             {membros.map((m) => {
-              const fotoUrl = m.foto?.url ? `${STRAPI_URL}${m.foto.url}` : null;
+              const fotoUrl = getStrapiMedia(m.foto?.url);
               return (
                 <div
                   key={m.documentId}
@@ -495,9 +493,4 @@ function getInitials(name: string): string {
     .slice(0, 2)
     .join("")
     .toUpperCase();
-}
-
-function sortTreinos(treinos: Treino[]): Treino[] {
-  const order = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
-  return treinos.sort((a, b) => order.indexOf(a.dia_semana) - order.indexOf(b.dia_semana));
 }

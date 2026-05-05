@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getStrapiMedia } from "@/lib/strapi";
 import type { Evento } from "@/lib/strapi";
 
 const statusMap: Record<string, { label: string; color: "gold" | "green" | "neutral" }> = {
@@ -29,11 +30,7 @@ interface EventCardProps {
 }
 
 export function EventCard({ evento, className = "", disableLink = false }: EventCardProps) {
-  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
-  const img = evento.arte?.url
-    ? `${STRAPI_URL}${evento.arte.url}`
-    : placeholderImages[evento.id % placeholderImages.length];
+  const img = getStrapiMedia(evento.arte?.url) || placeholderImages[evento.id % placeholderImages.length];
 
   const status = evento.status_lote
     ? statusMap[evento.status_lote] || { label: "EM BREVE", color: "neutral" as const }

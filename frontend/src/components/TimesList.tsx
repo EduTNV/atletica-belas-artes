@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { getStrapiMedia } from "@/lib/strapi";
 import type { Modalidade } from "@/lib/strapi";
 import { ModalidadeDetail } from "@/components/ModalidadeDetail";
-
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
 interface TimesListProps {
   modalidades: Modalidade[];
@@ -51,11 +50,11 @@ function ModalidadeCard({
       style={{ borderColor: "var(--border)" }}
     >
       {(() => {
-        const fotoUrl = modalidade.foto_card?.formats?.thumbnail?.url || modalidade.foto_card?.url;
+        const fotoUrl = getStrapiMedia(modalidade.foto_card?.formats?.thumbnail?.url || modalidade.foto_card?.url);
         if (fotoUrl) {
           return (
             <img
-              src={`${STRAPI_URL}${fotoUrl}`}
+              src={fotoUrl}
               alt={modalidade.nome}
               className="w-14 h-14 md:w-16 md:h-16 rounded-xl object-cover shrink-0 transition-transform group-hover:scale-105 shadow-sm"
               style={{ border: `1px solid var(--border)` }}

@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { getEventos, getConfigHome, getConfigCompeticoes, type Evento } from "@/lib/strapi";
+import { getEventos, getConfigHome, getConfigCompeticoes, type Evento, getStrapiMedia } from "@/lib/strapi";
 import { ExpandableText, Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
 
 export default async function HomePage() {
-  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
   const [todosEventos, configHome, configCompeticoes] = await Promise.all([
     getEventos().catch(() => [] as Evento[]),
     getConfigHome(),
@@ -25,9 +23,8 @@ export default async function HomePage() {
   const linkProdutos = configHome?.link_produtos || "#";
   const linkContato = configHome?.link_whatsapp_contato || "#";
 
-  const heroImgUrl = configHome?.foto_hero?.url
-    ? `${STRAPI_URL}${configHome.foto_hero.url}`
-    : "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop";
+  const heroImgUrl = getStrapiMedia(configHome?.foto_hero?.url) || 
+    "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop";
 
   return (
     <>
@@ -198,7 +195,7 @@ export default async function HomePage() {
 
               <div className="flex flex-col gap-10 md:gap-14">
                 {configCompeticoes.competicoes.map((comp) => {
-                  const fotoUrl = comp.foto?.url ? `${STRAPI_URL}${comp.foto.url}` : null;
+                  const fotoUrl = getStrapiMedia(comp.foto?.url);
                   return (
                     <div key={comp.sigla} className="flex flex-col gap-5">
                       <div className="flex flex-col md:flex-row gap-6 md:items-start">

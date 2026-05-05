@@ -1,8 +1,9 @@
 "use client";
 
+import { getStrapiMedia } from "@/lib/strapi";
 import type { Entidade, MembroEntidade } from "@/lib/strapi";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 interface EntidadeDetailProps {
   entidade: Entidade;
@@ -10,7 +11,7 @@ interface EntidadeDetailProps {
 }
 
 export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
-  const logoUrl = entidade.logo?.url ? `${STRAPI_URL}${entidade.logo.url}` : null;
+  const logoUrl = getStrapiMedia(entidade.logo?.url);
   const membros = [...(entidade.membros || [])].sort(
     (a, b) => (a.ordem ?? 99) - (b.ordem ?? 99)
   );
@@ -109,7 +110,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 }
 
 function MembroCard({ membro }: { membro: MembroEntidade }) {
-  const fotoUrl = membro.foto?.url ? `${STRAPI_URL}${membro.foto.url}` : null;
+  const fotoUrl = getStrapiMedia(membro.foto?.url);
 
   return (
     <div

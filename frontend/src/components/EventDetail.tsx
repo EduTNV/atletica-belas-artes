@@ -1,5 +1,6 @@
 "use client";
 
+import { getStrapiMedia } from "@/lib/strapi";
 import type { Evento } from "@/lib/strapi";
 
 interface EventDetailProps {
@@ -8,17 +9,13 @@ interface EventDetailProps {
 }
 
 export function EventDetail({ evento, onClose }: EventDetailProps) {
-  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
   const placeholderImages = [
     "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1540039155732-68ee23e15b51?q=80&w=1974&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop",
   ];
 
-  const img = evento.arte?.url
-    ? `${STRAPI_URL}${evento.arte.url}`
-    : placeholderImages[evento.id % placeholderImages.length];
+  const img = getStrapiMedia(evento.arte?.url) || placeholderImages[evento.id % placeholderImages.length];
 
   const dataObj = new Date(evento.data);
   const dataFormatada = dataObj.toLocaleDateString("pt-BR", {

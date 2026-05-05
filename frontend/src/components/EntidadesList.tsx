@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { getStrapiMedia } from "@/lib/strapi";
 import type { Entidade } from "@/lib/strapi";
 import { EntidadeDetail } from "@/components/EntidadeDetail";
-
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
 interface EntidadesListProps {
   entidades: Entidade[];
@@ -28,7 +27,7 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
       <div className="content-wrapper py-8 md:py-12" style={{ paddingBottom: "clamp(60px, 8vw, 100px)" }}>
         <div className="max-w-5xl mx-auto flex flex-col gap-12 md:gap-20">
           {entidades.map((ent) => {
-            const logoUrl = ent.logo?.url ? `${STRAPI_URL}${ent.logo.url}` : null;
+            const logoUrl = getStrapiMedia(ent.logo?.url);
 
             return (
               <div

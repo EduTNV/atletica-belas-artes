@@ -1,9 +1,27 @@
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+
+/**
+ * Helper to get the correct URL for a Strapi media object.
+ * Strapi 5 can return relative or absolute URLs depending on the provider.
+ */
+export function getStrapiMedia(url: string | null | undefined): string | null {
+  if (!url) return null;
+  // If the URL is already absolute (starts with http or https), return it as is.
+  // Strapi Cloud often uses a different subdomain for media (.media.strapiapp.com)
+  if (url.startsWith("http") || url.startsWith("//")) {
+    return url;
+  }
+  // Otherwise, prepend the STRAPI_URL
+  return `${STRAPI_URL}${url}`;
+}
 
 export async function fetchStrapi<T>(
   path: string,
   params?: Record<string, string>
 ): Promise<T> {
+  if (!STRAPI_URL) {
+    throw new Error("NEXT_PUBLIC_STRAPI_URL is not defined in environment variables");
+  }
   const url = new URL(path, STRAPI_URL);
 
   if (params) {
@@ -223,7 +241,7 @@ export async function getConfigHome(): Promise<ConfigHome | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigHome>>(
       "/api/home",
-      { "populate": "foto_hero" }
+      { "populate[foto_hero]": "true" }
     );
     return res.data;
   } catch {
@@ -247,7 +265,7 @@ export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> 
     const res = await fetchStrapi<StrapiSingleResponse<ConfigCompeticoes>>(
       "/api/competicoes",
       { 
-        "populate[competicoes][populate]": "foto" 
+        "populate[competicoes][populate][foto]": "true" 
       }
     );
     return res.data;
@@ -274,7 +292,8 @@ export async function getEntidades(): Promise<Entidade[]> {
       "/api/entidades",
       {
         "sort": "nome:asc",
-        "populate": "*",
+        "populate[logo]": "true",
+        "populate[membros][populate][foto]": "true",
         "pagination[pageSize]": "50",
       }
     );
