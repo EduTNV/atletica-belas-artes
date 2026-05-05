@@ -3,8 +3,6 @@
 import { getStrapiMedia } from "@/lib/strapi";
 import type { Entidade, MembroEntidade } from "@/lib/strapi";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-
 interface EntidadeDetailProps {
   entidade: Entidade;
   onClose: () => void;
