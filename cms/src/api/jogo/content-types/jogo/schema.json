@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jogos",
+  "info": {
+    "singularName": "jogo",
+    "pluralName": "jogos",
+    "displayName": "Jogo"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "time_casa": {
+      "type": "string"
+    },
+    "time_visitante": {
+      "type": "string"
+    },
+    "modalidade_nome": {
+      "type": "string"
+    },
+    "competicao": {
+      "type": "string"
+    },
+    "data_hora": {
+      "type": "datetime"
+    },
+    "local": {
+      "type": "string"
+    },
+    "placar_casa": {
+      "type": "integer"
+    },
+    "placar_visitante": {
+      "type": "integer"
+    },
+    "ativo": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

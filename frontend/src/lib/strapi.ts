@@ -224,6 +224,36 @@ export interface Conquista {
   medalha: "ouro" | "prata" | "bronze" | "premio" | null;
 }
 
+export interface Jogo {
+  id: number;
+  documentId: string;
+  time_casa: string;
+  time_visitante: string;
+  modalidade_nome: string;
+  competicao: string | null;
+  data_hora: string;
+  local: string | null;
+  placar_casa: number | null;
+  placar_visitante: number | null;
+  ativo: boolean;
+}
+
+export async function getJogos(): Promise<Jogo[]> {
+  try {
+    const res = await fetchStrapi<StrapiCollectionResponse<Jogo>>(
+      "/api/jogos",
+      {
+        "filters[ativo][$eq]": "true",
+        "sort": "data_hora:asc",
+        "pagination[pageSize]": "20",
+      }
+    );
+    return res.data || [];
+  } catch {
+    return [];
+  }
+}
+
 export async function getEventos(): Promise<Evento[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Evento>>(
     "/api/eventos",

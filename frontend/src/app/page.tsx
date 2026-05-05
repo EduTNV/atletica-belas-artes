@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { getEventos, getConfigHome, getConfigCompeticoes, type Evento, getStrapiMedia } from "@/lib/strapi";
+import { getEventos, getConfigHome, getConfigCompeticoes, getJogos, type Evento, type Jogo, getStrapiMedia } from "@/lib/strapi";
 import { ExpandableText, Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
+import { JogosCard } from "@/components/JogosCard";
 
 export default async function HomePage() {
-  const [todosEventos, configHome, configCompeticoes] = await Promise.all([
+  const [todosEventos, configHome, configCompeticoes, jogos] = await Promise.all([
     getEventos().catch(() => [] as Evento[]),
     getConfigHome(),
     getConfigCompeticoes(),
+    getJogos().catch(() => [] as Jogo[]),
   ]);
 
   const agora = new Date();
@@ -73,6 +75,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <JogosCard jogos={jogos} />
 
       <section className="content-wrapper" style={{ paddingTop: "clamp(32px, 5vw, 60px)", paddingBottom: "clamp(32px, 5vw, 60px)" }}>
         <div className="max-w-5xl mx-auto md:flex gap-14 lg:gap-20 items-start">
