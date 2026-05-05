@@ -704,6 +704,39 @@ export interface ApiHomeHome extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiJogoJogo extends Struct.CollectionTypeSchema {
+  collectionName: 'jogos';
+  info: {
+    displayName: 'Jogo';
+    pluralName: 'jogos';
+    singularName: 'jogo';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    ativo: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    competicao: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    data_hora: Schema.Attribute.DateTime;
+    local: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::jogo.jogo'> &
+      Schema.Attribute.Private;
+    modalidade_nome: Schema.Attribute.String;
+    placar_casa: Schema.Attribute.Integer;
+    placar_visitante: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    time_casa: Schema.Attribute.String;
+    time_visitante: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiMembroEntidadeMembroEntidade
   extends Struct.CollectionTypeSchema {
   collectionName: 'membro_entidades';
@@ -750,7 +783,17 @@ export interface ApiMembroModalidadeMembroModalidade
     draftAndPublish: false;
   };
   attributes: {
-    cargo: Schema.Attribute.String;
+    cargo: Schema.Attribute.Enumeration<
+      [
+        't\u00E9cnico',
+        'co-t\u00E9cnico',
+        'capit\u00E3o',
+        'co-capit\u00E3o',
+        'atleta',
+        'atleta reserva',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'atleta'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1417,6 +1460,7 @@ declare module '@strapi/strapi' {
       'api::entidade.entidade': ApiEntidadeEntidade;
       'api::evento.evento': ApiEventoEvento;
       'api::home.home': ApiHomeHome;
+      'api::jogo.jogo': ApiJogoJogo;
       'api::membro-entidade.membro-entidade': ApiMembroEntidadeMembroEntidade;
       'api::membro-modalidade.membro-modalidade': ApiMembroModalidadeMembroModalidade;
       'api::modalidade.modalidade': ApiModalidadeModalidade;
