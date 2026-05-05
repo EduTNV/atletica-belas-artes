@@ -374,96 +374,54 @@ function TabElenco({
   membros: MembroModalidade[];
   color: string;
 }) {
-  // Logic for roles
-  const capitais = membros.filter(m => m.cargo === "capitão");
-  const elencoRestante = membros.filter(m => m.cargo !== "capitão");
-
-  if (capitais.length === 0 && elencoRestante.length === 0 && !modalidade.capitao_nome) {
+  if (membros.length === 0 && !modalidade.capitao_nome) {
     return null;
   }
 
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-      {/* Capitão do CMS (Se existir como membro com cargo 'capitão') */}
-      {capitais.map((m) => {
-        const fotoUrl = getStrapiMedia(m.foto?.url);
-        return (
-          <div
-            key={m.documentId}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              padding: "10px 12px",
-              background: "#ececec",
-              borderRadius: "10px",
-              overflow: "hidden",
-              gridColumn: "span 2",
-              border: `1px solid ${color}44`
-            }}
-          >
-            {fotoUrl ? (
-              <img
-                src={fotoUrl}
-                alt={m.nome}
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  flexShrink: 0,
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  background: color,
-                  color: "#f4f4f4",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  flexShrink: 0,
-                }}
-              >
-                {getInitials(m.nome)}
-              </div>
-            )}
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <p style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {m.nome}
-              </p>
-              <p style={{ fontSize: "11px", color: color, fontWeight: 600 }}>Capitão</p>
-            </div>
-          </div>
-        );
-      })}
+  // Hierarquia de cargos
+  const tecnico = membros.find(m => m.cargo === "técnico");
+  const capitais = membros.filter(m => m.cargo === "capitão");
+  const coTecnicos = membros.filter(m => m.cargo === "co-técnico");
+  
+  // O resto segue ordem alfabética
+  const outrosCargos = ["co-capitão", "atleta", "atleta reserva"];
+  const restante = membros
+    .filter(m => outrosCargos.includes(m.cargo || "") || (!m.cargo && m.nome))
+    .sort((a, b) => a.nome.localeCompare(b.nome));
 
-      {/* Fallback para Capitão Antigo (caso não tenha membros com o novo cargo 'capitão') */}
-      {capitais.length === 0 && modalidade.capitao_nome && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            padding: "10px 12px",
-            background: "#ececec",
-            borderRadius: "10px",
-            overflow: "hidden",
-            gridColumn: "span 2",
-            border: `1px solid ${color}44`
-          }}
-        >
+  // Função auxiliar para renderizar card de membro
+  const renderMembroCard = (m: MembroModalidade, isFullWidth = false, customLabel?: string) => {
+    const fotoUrl = getStrapiMedia(m.foto?.url);
+    const label = customLabel || m.cargo || "Atleta";
+    
+    return (
+      <div
+        key={m.documentId}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          padding: "10px 12px",
+          background: "#ececec",
+          borderRadius: "10px",
+          overflow: "hidden",
+          gridColumn: isFullWidth ? "span 2" : "span 1",
+          border: m.cargo === "técnico" || m.cargo === "capitão" ? `1px solid ${color}33` : "none"
+        }}
+      >
+        {fotoUrl ? (
+          <img
+            src={fotoUrl}
+            alt={m.nome}
+            style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+          />
+        ) : (
           <div
             style={{
               width: "36px",
               height: "36px",
               borderRadius: "50%",
-              background: color,
+              background: m.cargo === "técnico" || m.cargo === "capitão" ? color : "#5c6484",
               color: "#f4f4f4",
               display: "flex",
               alignItems: "center",
@@ -473,77 +431,60 @@ function TabElenco({
               flexShrink: 0,
             }}
           >
+            {getInitials(m.nome)}
+          </div>
+        )}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <p style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {m.nome}
+          </p>
+          <p style={{ 
+            fontSize: "11px", 
+            color: m.cargo === "técnico" || m.cargo === "capitão" ? color : "#6e6a64", 
+            fontWeight: 600,
+            textTransform: "capitalize"
+          }}>
+            {label}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+      {/* 1. Técnico (Topo Solitário) */}
+      {tecnico && renderMembroCard(tecnico, true)}
+
+      {/* 2. Capitão e Co-Técnico (Lado a Lado) */}
+      {capitais[0] && renderMembroCard(capitais[0])}
+      {coTecnicos[0] && renderMembroCard(coTecnicos[0])}
+
+      {/* 3. Restante (Ordem Alfabética) */}
+      {restante.map(m => renderMembroCard(m))}
+
+      {/* Fallback apenas se não houver NENHUM membro cadastrado via relação */}
+      {membros.length === 0 && modalidade.capitao_nome && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center", gap: "10px", padding: "10px 12px", background: "#ececec",
+            borderRadius: "10px", overflow: "hidden", gridColumn: "span 2", border: `1px solid ${color}44`
+          }}
+        >
+          <div style={{
+            width: "36px", height: "36px", borderRadius: "50%", background: color,
+            color: "#f4f4f4", display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "13px", fontWeight: 700, flexShrink: 0
+          }}>
             {getInitials(modalidade.capitao_nome)}
           </div>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {modalidade.capitao_nome}
-            </p>
+            <p style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a1a" }}>{modalidade.capitao_nome}</p>
             <p style={{ fontSize: "11px", color: color, fontWeight: 600 }}>Capitão</p>
           </div>
         </div>
       )}
-
-      {/* Membros do Elenco (Restante) */}
-      {elencoRestante.map((m) => {
-        const fotoUrl = getStrapiMedia(m.foto?.url);
-        return (
-          <div
-            key={m.documentId}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              padding: "10px 12px",
-              background: "#ececec",
-              borderRadius: "10px",
-              overflow: "hidden",
-            }}
-          >
-            {fotoUrl ? (
-              <img
-                src={fotoUrl}
-                alt={m.nome}
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  flexShrink: 0,
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  background: "#5c6484",
-                  color: "#f4f4f4",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  flexShrink: 0,
-                }}
-              >
-                {getInitials(m.nome)}
-              </div>
-            )}
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <p style={{ fontSize: "13px", fontWeight: 600, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {m.nome}
-              </p>
-              {m.cargo && (
-                <p style={{ fontSize: "11px", color: "#6e6a64", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {m.cargo}
-                </p>
-              )}
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }
