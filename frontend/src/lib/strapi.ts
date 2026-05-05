@@ -231,6 +231,7 @@ export interface Jogo {
   time_visitante: string;
   modalidade_nome: string;
   competicao: string | null;
+  fase: string | null;
   data_hora: string;
   local: string | null;
   placar_casa: number | null;

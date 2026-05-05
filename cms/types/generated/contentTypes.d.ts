@@ -721,6 +721,7 @@ export interface ApiJogoJogo extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     data_hora: Schema.Attribute.DateTime;
+    fase: Schema.Attribute.String;
     local: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::jogo.jogo'> &

@@ -22,6 +22,9 @@
     "competicao": {
       "type": "string"
     },
+    "fase": {
+      "type": "string"
+    },
     "data_hora": {
       "type": "datetime"
     },
