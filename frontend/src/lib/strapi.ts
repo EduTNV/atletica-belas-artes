@@ -1,4 +1,4 @@
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/[\[\]()]/g, "").trim();
 
 /**
  * Helper to get the correct URL for a Strapi media object.
