@@ -15,6 +15,9 @@
     }
   },
   "attributes": {
+    "subtitulo_hero": {
+      "type": "text"
+    },
     "texto_quem_somos_resumo": {
       "type": "text"
     },

@@ -15,6 +15,7 @@ const secondaryLinks = [
   { href: "/contato", label: "Ajuda" },
 ];
 
+/** Componente de cabeçalho (Header) principal exibido em telas de desktop */
 export default function Header() {
   const pathname = usePathname();
   const [linkSocio, setLinkSocio] = useState<string | null>(null);

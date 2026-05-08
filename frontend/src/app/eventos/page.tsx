@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: "Confira os próximos eventos e a galeria da Atlética Belas Artes.",
 };
 
+/** Página de Eventos, listando festas e integrações disponíveis */
 export default async function EventosPage() {
   const todosEventos = await getEventos().catch(() => [] as Evento[]);
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getConfigContato, getConfigAjuda } from "@/lib/strapi";
 import type { Faq, ConfigContato, ConfigAjuda } from "@/lib/strapi";
 
+/** Página de Contato e Ajuda, exibindo redes sociais, email e FAQ */
 export default function ContatoPage() {
   const [contato, setContato] = useState<ConfigContato | null>(null);
   const [configAjuda, setConfigAjuda] = useState<ConfigAjuda | null>(null);

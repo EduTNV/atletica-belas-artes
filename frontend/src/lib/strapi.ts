@@ -1,20 +1,15 @@
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL?.replace(/[\[\]()]/g, "").trim();
 
-/**
- * Helper to get the correct URL for a Strapi media object.
- * Strapi 5 can return relative or absolute URLs depending on the provider.
- */
+/** Retorna a URL absoluta correta para mídias do Strapi */
 export function getStrapiMedia(url: string | null | undefined): string | null {
   if (!url) return null;
-  // If the URL is already absolute (starts with http or https), return it as is.
-  // Strapi Cloud often uses a different subdomain for media (.media.strapiapp.com)
   if (url.startsWith("http") || url.startsWith("//")) {
     return url;
   }
-  // Otherwise, prepend the STRAPI_URL
   return `${STRAPI_URL}${url}`;
 }
 
+/** Wrapper de requisição pré-configurado com a URL base do Strapi e tratamento de erros */
 export async function fetchStrapi<T>(
   path: string,
   params?: Record<string, string>
@@ -86,6 +81,7 @@ export interface Evento {
 
 export interface ConfigHome {
   id: number;
+  subtitulo_hero: string | null;
   texto_quem_somos_resumo: string | null;
   texto_quem_somos_completo: string | null;
   ano_fundacao: number | null;
@@ -239,6 +235,7 @@ export interface Jogo {
   ativo: boolean;
 }
 
+/** Busca jogos ativos ordenados pela data mais próxima */
 export async function getJogos(): Promise<Jogo[]> {
   try {
     const res = await fetchStrapi<StrapiCollectionResponse<Jogo>>(
@@ -255,6 +252,7 @@ export async function getJogos(): Promise<Jogo[]> {
   }
 }
 
+/** Busca todos os eventos ativos */
 export async function getEventos(): Promise<Evento[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Evento>>(
     "/api/eventos",
@@ -268,6 +266,7 @@ export async function getEventos(): Promise<Evento[]> {
   return res.data;
 }
 
+/** Busca as configurações da página inicial */
 export async function getConfigHome(): Promise<ConfigHome | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigHome>>(
@@ -280,6 +279,7 @@ export async function getConfigHome(): Promise<ConfigHome | null> {
   }
 }
 
+/** Busca as configurações de contato */
 export async function getConfigContato(): Promise<ConfigContato | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigContato>>(
@@ -291,6 +291,7 @@ export async function getConfigContato(): Promise<ConfigContato | null> {
   }
 }
 
+/** Busca as competições em destaque */
 export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigCompeticoes>>(
@@ -305,6 +306,7 @@ export async function getConfigCompeticoes(): Promise<ConfigCompeticoes | null> 
   }
 }
 
+/** Busca as configurações e perguntas da página de Ajuda/FAQ */
 export async function getConfigAjuda(): Promise<ConfigAjuda | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<ConfigAjuda>>(
@@ -317,6 +319,7 @@ export async function getConfigAjuda(): Promise<ConfigAjuda | null> {
   }
 }
 
+/** Busca as entidades (Atlética, Bateria, Cheer, etc) e seus membros */
 export async function getEntidades(): Promise<Entidade[]> {
   try {
     const res = await fetchStrapi<StrapiCollectionResponse<Entidade>>(
@@ -335,6 +338,7 @@ export async function getEntidades(): Promise<Entidade[]> {
   }
 }
 
+/** Busca os cursos e suas respectivas modalidades */
 export async function getCursos(): Promise<Curso[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Curso>>(
     "/api/cursos",
@@ -349,6 +353,7 @@ export async function getCursos(): Promise<Curso[]> {
   return res.data;
 }
 
+/** Busca todas as modalidades esportivas */
 export async function getModalidades(): Promise<Modalidade[]> {
   const res = await fetchStrapi<StrapiCollectionResponse<Modalidade>>(
     "/api/modalidades",
@@ -363,6 +368,7 @@ export async function getModalidades(): Promise<Modalidade[]> {
   return res.data;
 }
 
+/** Busca os detalhes específicos de uma modalidade pelo seu ID */
 export async function getModalidadeDetalhe(documentId: string): Promise<Modalidade | null> {
   try {
     const res = await fetchStrapi<StrapiSingleResponse<Modalidade>>(
@@ -375,6 +381,7 @@ export async function getModalidadeDetalhe(documentId: string): Promise<Modalida
   }
 }
 
+/** Busca resultados de jogos anteriores para uma modalidade */
 export async function getResultados(modalidadeDocumentId: string): Promise<Resultado[]> {
   try {
     const res = await fetchStrapi<StrapiCollectionResponse<Resultado>>(
@@ -391,6 +398,7 @@ export async function getResultados(modalidadeDocumentId: string): Promise<Resul
   }
 }
 
+/** Busca os horários de treino de uma modalidade */
 export async function getTreinos(modalidadeDocumentId: string): Promise<Treino[]> {
   try {
     const diasOrdem = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
@@ -409,6 +417,7 @@ export async function getTreinos(modalidadeDocumentId: string): Promise<Treino[]
   }
 }
 
+/** Busca premiações, medalhas e títulos de uma modalidade */
 export async function getConquistas(modalidadeDocumentId: string): Promise<Conquista[]> {
   try {
     const res = await fetchStrapi<StrapiCollectionResponse<Conquista>>(
@@ -425,6 +434,7 @@ export async function getConquistas(modalidadeDocumentId: string): Promise<Conqu
   }
 }
 
+/** Busca a comissão técnica e o elenco de uma modalidade */
 export async function getMembrosModalidade(
   modalidadeDocumentId: string
 ): Promise<MembroModalidade[]> {

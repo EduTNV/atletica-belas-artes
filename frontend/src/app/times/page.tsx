@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: "Conheça os times e modalidades da Atlética Belas Artes.",
 };
 
+/** Página de Times/Modalidades, exibindo filtros e a listagem de todas as equipes */
 export default async function TimesPage() {
   const modalidades = await getModalidades().catch(() => [] as Modalidade[]);
 

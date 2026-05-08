@@ -23,6 +23,7 @@ interface ModalidadeDetailProps {
   onClose: () => void;
 }
 
+/** Painel de visualização detalhada para uma modalidade (Resultados, Treinos, etc) */
 export function ModalidadeDetail({ modalidade, cursoColor, onClose }: ModalidadeDetailProps) {
   const [activeTab, setActiveTab] = useState<InnerTab>("resultados");
   const [resultados, setResultados] = useState<Resultado[]>([]);
@@ -51,8 +52,6 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
         setTreinos(resTre || []);
         setConquistas(resCon || []);
         setMembros(resMem || []);
-      } catch {
-        // fail silently
       } finally {
         setLoading(false);
       }
@@ -195,6 +194,7 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
   );
 }
 
+/** Renderiza uma célula única de estatística */
 function StatCell({ value, label, color }: { value: number; label: string; color?: string }) {
   return (
     <div className="flex flex-col items-center py-4">
@@ -211,6 +211,7 @@ function StatCell({ value, label, color }: { value: number; label: string; color
   );
 }
 
+/** Aba com o conteúdo de resultados de jogos */
 function TabResultados({ resultados }: { resultados: Resultado[] }) {
   if (resultados.length === 0) {
     return <EmptyState text="Nenhum resultado registrado." />;
@@ -273,6 +274,7 @@ const diasLabels: Record<string, string> = {
   domingo: "Domingo",
 };
 
+/** Aba com o cronograma e horários de treino */
 function TabTreinos({ treinos }: { treinos: Treino[] }) {
   if (treinos.length === 0) {
     return <EmptyState text="Nenhum horário de treino cadastrado." />;
@@ -326,6 +328,7 @@ const medalhaConfig: Record<string, { emoji: string; label: string; color: strin
   premio: { emoji: "⭐", label: "PRÊMIO", color: "#e02c2c", bg: "rgba(224,44,44,0.1)", border: "rgba(224,44,44,0.3)" },
 };
 
+/** Aba com conquistas, títulos e medalhas da modalidade */
 function TabConquistas({ conquistas }: { conquistas: Conquista[] }) {
   if (conquistas.length === 0) {
     return <EmptyState text="Nenhuma conquista registrada ainda." />;
@@ -378,18 +381,15 @@ function TabElenco({
     return null;
   }
 
-  // Hierarquia de cargos
   const tecnico = membros.find(m => m.cargo === "técnico");
   const capitais = membros.filter(m => m.cargo === "capitão");
   const coTecnicos = membros.filter(m => m.cargo === "co-técnico");
   
-  // O resto segue ordem alfabética
   const outrosCargos = ["co-capitão", "atleta", "atleta reserva"];
   const restante = membros
     .filter(m => outrosCargos.includes(m.cargo || "") || (!m.cargo && m.nome))
     .sort((a, b) => a.nome.localeCompare(b.nome));
 
-  // Função auxiliar para renderizar card de membro
   const renderMembroCard = (m: MembroModalidade, isFullWidth = false, customLabel?: string) => {
     const fotoUrl = getStrapiMedia(m.foto?.url);
     const label = customLabel || m.cargo || "Atleta";
@@ -453,17 +453,13 @@ function TabElenco({
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-      {/* 1. Técnico (Topo Solitário) */}
       {tecnico && renderMembroCard(tecnico, true)}
 
-      {/* 2. Capitão e Co-Técnico (Lado a Lado) */}
       {capitais[0] && renderMembroCard(capitais[0])}
       {coTecnicos[0] && renderMembroCard(coTecnicos[0])}
 
-      {/* 3. Restante (Ordem Alfabética) */}
       {restante.map(m => renderMembroCard(m))}
 
-      {/* Fallback apenas se não houver NENHUM membro cadastrado via relação */}
       {membros.length === 0 && modalidade.capitao_nome && (
         <div
           style={{
@@ -489,6 +485,7 @@ function TabElenco({
   );
 }
 
+/** Componente auxiliar para exibir mensagens de ausência de dados */
 function EmptyState({ text }: { text: string }) {
   return (
     <div className="text-center py-12">
@@ -497,6 +494,7 @@ function EmptyState({ text }: { text: string }) {
   );
 }
 
+/** Utilitário para extrair até duas iniciais de um nome string */
 function getInitials(name: string): string {
   return name
     .split(" ")

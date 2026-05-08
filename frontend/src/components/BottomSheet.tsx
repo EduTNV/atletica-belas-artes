@@ -7,6 +7,7 @@ interface BottomSheetProps {
   onClose: () => void;
 }
 
+/** Menu lateral flutuante (Bottom Sheet) para navegação em dispositivos móveis */
 export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
   const handleOverlayClick = () => {
     onClose();

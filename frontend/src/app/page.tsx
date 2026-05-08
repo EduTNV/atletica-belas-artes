@@ -4,6 +4,7 @@ import { ExpandableText, Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
 import { JogosCard } from "@/components/JogosCard";
 
+/** Página principal (Home) da Atlética, listando banner, quem somos, próximos jogos e eventos */
 export default async function HomePage() {
   const [todosEventos, configHome, configCompeticoes, jogos] = await Promise.all([
     getEventos().catch(() => [] as Evento[]),
@@ -25,8 +26,7 @@ export default async function HomePage() {
   const linkProdutos = configHome?.link_produtos || "#";
   const linkContato = configHome?.link_whatsapp_contato || "#";
 
-  const heroImgUrl = getStrapiMedia(configHome?.foto_hero?.url) || 
-    "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop";
+  const heroImgUrl = getStrapiMedia(configHome?.foto_hero?.url);
 
   return (
     <>
@@ -38,7 +38,8 @@ export default async function HomePage() {
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `url('${heroImgUrl}')`,
+              backgroundImage: heroImgUrl ? `url('${heroImgUrl}')` : undefined,
+              backgroundColor: heroImgUrl ? undefined : "var(--surface2)",
               backgroundSize: "cover",
               backgroundPosition: "center top",
             }}
@@ -60,17 +61,19 @@ export default async function HomePage() {
                   color: "#ffffff",
                 }}
               >
-                ATLÉTICA{" "}
+                ATLÉTICA
+                <br />
                 <span style={{ color: "var(--crimson)" }}>BELAS ARTES</span>
               </h1>
 
-              <p
-                className="text-[15px] md:text-[18px] font-medium"
-                style={{ color: "rgba(255,255,255,0.75)", maxWidth: "520px" }}
-              >
-                A fúria do design, a força da arquitetura e a garra das artes.
-                Junte-se à nossa matilha!
-              </p>
+              {configHome?.subtitulo_hero && (
+                <p
+                  className="text-[15px] md:text-[18px] font-medium"
+                  style={{ color: "rgba(255,255,255,0.75)", maxWidth: "520px" }}
+                >
+                  {configHome.subtitulo_hero}
+                </p>
+              )}
             </div>
           </div>
         </div>

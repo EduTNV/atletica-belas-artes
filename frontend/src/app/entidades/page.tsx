@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description: "Conheça as entidades e organizações da Atlética Belas Artes.",
 };
 
+/** Página das Entidades parceiras, listando Bateria, Cheerleading, Diretoria, etc */
 export default async function EntidadesPage() {
   const entidades = await getEntidades();
 

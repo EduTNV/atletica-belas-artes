@@ -9,16 +9,13 @@ interface TimesListProps {
   modalidades: Modalidade[];
 }
 
+/** Componente principal para listar e filtrar as modalidades */
 export function TimesList({ modalidades }: TimesListProps) {
   const [selectedMod, setSelectedMod] = useState<Modalidade | null>(null);
   
-  // TAREFA 12.1 — Barra de pesquisa
   const [busca, setBusca] = useState("");
-  
-  // TAREFA 12.2 — Lógica de filtragem com busca (Iniciando estados de filtro)
   const [filtroGenero, setFiltroGenero] = useState("Todos");
 
-  // TAREFA 12.3 — Paginação
   const ITENS_POR_PAGINA = 10;
   const [paginaAtual, setPaginaAtual] = useState(1);
 
@@ -40,7 +37,6 @@ export function TimesList({ modalidades }: TimesListProps) {
     return matchBusca && matchGenero;
   });
 
-  // Resetar para página 1 sempre que qualquer filtro ou busca mudar
   useEffect(() => {
     setPaginaAtual(1);
   }, [busca, filtroGenero]);
@@ -54,12 +50,10 @@ export function TimesList({ modalidades }: TimesListProps) {
 
   return (
     <div className="content-wrapper py-6 md:py-10">
-      
-      {/* 12.1 — Barra de pesquisa e Filtros */}
-      <div className="flex flex-col gap-6 mb-10">
+      <div className="flex flex-col gap-6" style={{ marginBottom: "32px" }}>
         <div 
-          className="flex items-center gap-3 px-4 py-3 rounded-xl border transition-all focus-within:border-[var(--crimson)] focus-within:shadow-sm"
-          style={{ background: "#ffffff", borderColor: "var(--border)" }}
+          className="flex items-center rounded-xl border transition-all focus-within:border-[var(--crimson)] focus-within:shadow-sm"
+          style={{ background: "#ffffff", borderColor: "var(--border)", padding: "14px 20px", gap: "12px" }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6e6a64" strokeWidth="2.5" className="shrink-0">
             <circle cx="11" cy="11" r="8" />
@@ -98,8 +92,6 @@ export function TimesList({ modalidades }: TimesListProps) {
             </button>
           )}
         </div>
-
-        {/* Botões de Filtro de Gênero (Toggleable) */}
         <div className="flex flex-wrap gap-2">
           <FilterButton 
             label="Masculino" 
@@ -119,7 +111,6 @@ export function TimesList({ modalidades }: TimesListProps) {
         </div>
       </div>
 
-      {/* 12.5 — Mensagem quando busca não retorna resultados */}
       {modalidadesFiltradas.length === 0 && (
         <div className="text-center py-20">
           <p className="text-[15px]" style={{ color: "var(--text3)" }}>
@@ -128,7 +119,6 @@ export function TimesList({ modalidades }: TimesListProps) {
         </div>
       )}
 
-      {/* Grid com altura mínima para estabilizar paginação */}
       <div 
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
         style={{ minHeight: modalidadesFiltradas.length > 0 ? "500px" : "auto" }}
@@ -142,7 +132,6 @@ export function TimesList({ modalidades }: TimesListProps) {
         ))}
       </div>
 
-      {/* 12.4 — Controles de paginação (Posição Estabilizada) */}
       {totalPaginas > 1 && (
         <div className="flex items-center justify-center gap-4 mt-16 pt-8 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
           <button
@@ -199,6 +188,7 @@ export function TimesList({ modalidades }: TimesListProps) {
   );
 }
 
+/** Botão de filtro para seleção de gênero */
 function FilterButton({ label, active, onClick }: { label: string, active: boolean, onClick: () => void }) {
   return (
     <button
@@ -219,6 +209,7 @@ function FilterButton({ label, active, onClick }: { label: string, active: boole
   );
 }
 
+/** Renderiza o card individual de uma modalidade */
 function ModalidadeCard({
   modalidade,
   onClick,

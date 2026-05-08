@@ -9,6 +9,7 @@ const statusMap: Record<string, { label: string; color: "gold" | "green" | "neut
   esgotado: { label: "ESGOTADO", color: "neutral" },
 };
 
+/** Formata uma data ISO para o padrão brasileiro longo (ex: 15 de Outubro) */
 export function formatDate(isoDate: string): string {
   const date = new Date(isoDate);
   return date.toLocaleDateString("pt-BR", {
@@ -17,11 +18,7 @@ export function formatDate(isoDate: string): string {
   });
 }
 
-const placeholderImages = [
-  "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1540039155732-68ee23e15b51?q=80&w=1974&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop",
-];
+
 
 interface EventCardProps {
   evento: Evento;
@@ -29,8 +26,9 @@ interface EventCardProps {
   disableLink?: boolean;
 }
 
+/** Componente de Card para exibição resumida de um Evento (usado em listas) */
 export function EventCard({ evento, className = "", disableLink = false }: EventCardProps) {
-  const img = getStrapiMedia(evento.arte?.url) || placeholderImages[evento.id % placeholderImages.length];
+  const img = getStrapiMedia(evento.arte?.url);
 
   const status = evento.status_lote
     ? statusMap[evento.status_lote] || { label: "EM BREVE", color: "neutral" as const }
@@ -44,7 +42,8 @@ export function EventCard({ evento, className = "", disableLink = false }: Event
       <div
         className="h-[220px] relative flex items-end overflow-hidden"
         style={{
-          backgroundImage: `url('${img}')`,
+          backgroundImage: img ? `url('${img}')` : undefined,
+          backgroundColor: img ? undefined : "var(--surface2)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           padding: "clamp(20px, 4vw, 32px)",

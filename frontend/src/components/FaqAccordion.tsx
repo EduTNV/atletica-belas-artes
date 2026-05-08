@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Faq } from "@/lib/strapi";
 
+/** Componente de acordeão interativo para exibir perguntas frequentes (FAQ) */
 export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -24,6 +25,7 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
   );
 }
 
+/** Item individual do acordeão contendo a pergunta e a resposta expansível */
 function FaqItem({
   faq,
   isOpen,

@@ -71,6 +71,7 @@ interface BottomTabBarProps {
   menuOpen: boolean;
 }
 
+/** Barra de navegação inferior (Tab Bar) utilizada exclusivamente em dispositivos móveis */
 export default function BottomTabBar({ onMenuToggle, menuOpen }: BottomTabBarProps) {
   const pathname = usePathname();
 
