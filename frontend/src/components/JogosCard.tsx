@@ -6,7 +6,7 @@ interface JogosCardProps {
   jogos: Jogo[];
 }
 
-/** Componente que exibe os próximos jogos e os jogos em andamento */
+/** Componente que exibe o card de jogos na Home: Ao Vivo, Próximo Jogo e Último Resultado */
 export function JogosCard({ jogos }: JogosCardProps) {
   const emAndamento = jogos.find((j) => j.estado === "em_andamento") || null;
 
@@ -14,7 +14,11 @@ export function JogosCard({ jogos }: JogosCardProps) {
     .filter((j) => j.estado === "proximo")
     .sort((a, b) => new Date(a.data_hora).getTime() - new Date(b.data_hora).getTime())[0] || null;
 
-  if (!proximoJogo && !emAndamento) return null;
+  const ultimoResultado = jogos
+    .filter((j) => j.estado === "finalizado")
+    .sort((a, b) => new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime())[0] || null;
+
+  if (!proximoJogo && !emAndamento && !ultimoResultado) return null;
 
   const lateralPadding = "clamp(16px, 3vw, 24px)";
 
@@ -27,6 +31,7 @@ export function JogosCard({ jogos }: JogosCardProps) {
           boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
         }}
       >
+        {/* AO VIVO */}
         {emAndamento && (
           <div className="flex flex-col">
             <div style={{ paddingTop: "10px", paddingBottom: "0", paddingLeft: lateralPadding, paddingRight: lateralPadding }}>
@@ -34,7 +39,7 @@ export function JogosCard({ jogos }: JogosCardProps) {
                 className="inline-flex items-center gap-2 text-[11px] md:text-[12px] font-bold uppercase tracking-wider"
                 style={{ background: "#4caf50", color: "#ffffff", padding: "6px 12px", borderRadius: "6px" }}
               >
-        <span
+                <span
                   className="inline-block rounded-full animate-pulse"
                   style={{
                     width: "7px",
@@ -49,6 +54,7 @@ export function JogosCard({ jogos }: JogosCardProps) {
           </div>
         )}
 
+        {/* PRÓXIMO JOGO */}
         {proximoJogo && (
           <div className="flex flex-col" style={emAndamento ? { borderTop: "1px solid rgba(255,255,255,0.05)" } : undefined}>
             <div style={{ paddingTop: "10px", paddingBottom: "0", paddingLeft: lateralPadding, paddingRight: lateralPadding }}>
@@ -66,13 +72,32 @@ export function JogosCard({ jogos }: JogosCardProps) {
             <JogoRow jogo={proximoJogo} tipo={emAndamento ? "secundario" : "proximo"} lateralPadding={lateralPadding} />
           </div>
         )}
+
+        {/* ÚLTIMO RESULTADO */}
+        {ultimoResultado && (
+          <div className="flex flex-col" style={(emAndamento || proximoJogo) ? { borderTop: "1px solid rgba(255,255,255,0.05)" } : undefined}>
+            <div style={{ paddingTop: "10px", paddingBottom: "0", paddingLeft: lateralPadding, paddingRight: lateralPadding }}>
+              <span
+                className="inline-block text-[11px] md:text-[12px] font-bold uppercase tracking-wider"
+                style={
+                  (emAndamento || proximoJogo)
+                    ? { color: "rgba(255,255,255,0.5)" }
+                    : { background: "#7c84a4", color: "#ffffff", padding: "6px 12px", borderRadius: "6px" }
+                }
+              >
+                Último Resultado
+              </span>
+            </div>
+            <JogoRow jogo={ultimoResultado} tipo={(emAndamento || proximoJogo) ? "secundario" : "resultado"} lateralPadding={lateralPadding} />
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
 /** Renderiza a linha de um jogo contendo hora, placar e detalhes da partida */
-function JogoRow({ jogo, tipo, lateralPadding }: { jogo: Jogo; tipo: "proximo" | "ao_vivo" | "secundario"; lateralPadding: string }) {
+function JogoRow({ jogo, tipo, lateralPadding }: { jogo: Jogo; tipo: "proximo" | "ao_vivo" | "secundario" | "resultado"; lateralPadding: string }) {
   const dataObj = new Date(jogo.data_hora);
   const horaFormatada = dataObj.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
@@ -89,13 +114,18 @@ function JogoRow({ jogo, tipo, lateralPadding }: { jogo: Jogo; tipo: "proximo" |
   const siglaComp = jogo.competicao || nomeModalidade;
   const textoRodape = [siglaComp, jogo.fase, jogo.local].filter(Boolean).join(" • ");
 
-  const borderColor = tipo === "ao_vivo" ? "#4caf50" : tipo === "proximo" ? "var(--crimson)" : "transparent";
+  const borderColors: Record<string, string> = {
+    ao_vivo: "#4caf50",
+    proximo: "var(--crimson)",
+    resultado: "#7c84a4",
+    secundario: "transparent",
+  };
 
   return (
     <div
       className="flex relative"
       style={{
-        borderLeft: `2px solid ${borderColor}`,
+        borderLeft: `2px solid ${borderColors[tipo]}`,
         padding: `14px ${lateralPadding} 12px`,
         gap: "16px",
         alignItems: "center",

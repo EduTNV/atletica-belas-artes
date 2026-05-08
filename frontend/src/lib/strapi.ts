@@ -235,16 +235,15 @@ export interface Jogo {
   estado: "proximo" | "em_andamento" | "finalizado";
 }
 
-/** Busca jogos não finalizados para exibição no card da Home */
+/** Busca jogos para exibição no card da Home (todos os estados) */
 export async function getJogos(): Promise<Jogo[]> {
   try {
     const res = await fetchStrapi<StrapiCollectionResponse<Jogo>>(
       "/api/jogos",
       {
-        "filters[estado][$ne]": "finalizado",
-        "sort": "data_hora:asc",
+        "sort": "data_hora:desc",
         "populate[modalidade]": "true",
-        "pagination[pageSize]": "20",
+        "pagination[pageSize]": "50",
       }
     );
     return res.data || [];

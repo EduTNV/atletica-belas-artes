@@ -61,9 +61,9 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
 
   const finalizados = jogosModalidade.filter(j => j.estado === "finalizado");
   const totalJogos = finalizados.length;
-  const vitorias = finalizados.filter(j => j.placar_casa != null && j.placar_visitante != null && j.placar_casa > j.placar_visitante).length;
-  const derrotas = finalizados.filter(j => j.placar_casa != null && j.placar_visitante != null && j.placar_casa < j.placar_visitante).length;
-  const empates = finalizados.filter(j => j.placar_casa != null && j.placar_visitante != null && j.placar_casa === j.placar_visitante).length;
+  const vitorias = finalizados.filter(j => (j.placar_casa ?? 0) > (j.placar_visitante ?? 0)).length;
+  const derrotas = finalizados.filter(j => (j.placar_casa ?? 0) < (j.placar_visitante ?? 0)).length;
+  const empates = finalizados.filter(j => (j.placar_casa ?? 0) === (j.placar_visitante ?? 0)).length;
 
   const tabs: { id: InnerTab; label: string }[] = [
     { id: "jogos", label: "Jogos" },
@@ -117,10 +117,34 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
             </div>
           </div>
 
-          {!loading && totalJogos > 0 && (
+          <div
+            className="flex gap-2 overflow-x-auto sticky top-0 z-10"
+            style={{ 
+              padding: "12px clamp(24px, 5vw, 32px)",
+              background: "var(--bg)",
+              borderBottom: "1px solid var(--border)"
+            }}
+          >
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className="flex-1 min-w-[70px] py-2.5 text-[12px] md:text-[13px] font-semibold tracking-wide transition-all whitespace-nowrap text-center rounded-lg"
+                style={{
+                  background: activeTab === tab.id ? "#5c6484" : "transparent",
+                  color: activeTab === tab.id ? "#ffffff" : "var(--text3)",
+                  border: activeTab === tab.id ? "none" : "1px solid var(--border)",
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {!loading && totalJogos > 0 && activeTab === "jogos" && (
             <div
-              className="grid grid-cols-4 border-y"
-              style={{ borderColor: "var(--border)" }}
+              className="grid grid-cols-4 border-b"
+              style={{ padding: "0 clamp(24px, 5vw, 32px)", borderColor: "var(--border)" }}
             >
               <StatCell value={totalJogos} label="JOGOS" />
               <StatCell value={vitorias} label="VITÓRIAS" color="#4caf50" />
@@ -129,27 +153,8 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
             </div>
           )}
 
-          <div
-            className="flex border-b overflow-x-auto"
-            style={{ borderColor: "var(--border)" }}
-          >
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className="flex-1 min-w-[80px] py-3 text-[12px] md:text-[13px] font-medium border-b-2 transition-colors whitespace-nowrap text-center"
-                style={{
-                  color: activeTab === tab.id ? "var(--text)" : "var(--text3)",
-                  borderColor: activeTab === tab.id ? color : "transparent",
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
           <div 
-            className="detail-body py-6"
+            className="detail-body py-4"
             style={{ 
               paddingLeft: "clamp(24px, 5vw, 32px)", 
               paddingRight: "clamp(24px, 5vw, 32px)" 
