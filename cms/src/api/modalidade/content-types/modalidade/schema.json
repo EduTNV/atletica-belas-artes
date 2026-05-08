@@ -70,6 +70,12 @@
       "relation": "oneToMany",
       "target": "api::resultado.resultado",
       "mappedBy": "modalidade"
+    },
+    "jogos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jogo.jogo",
+      "mappedBy": "modalidade"
     }
   }
 }

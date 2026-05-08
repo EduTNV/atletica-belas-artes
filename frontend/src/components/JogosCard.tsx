@@ -6,19 +6,15 @@ interface JogosCardProps {
   jogos: Jogo[];
 }
 
-/** Componente que exibe os próximos jogos e os últimos resultados */
+/** Componente que exibe os próximos jogos e os jogos em andamento */
 export function JogosCard({ jogos }: JogosCardProps) {
-  const agora = new Date();
+  const emAndamento = jogos.find((j) => j.status === "em_andamento") || null;
 
   const proximoJogo = jogos
-    .filter((j) => new Date(j.data_hora) > agora)
+    .filter((j) => j.status === "proximo")
     .sort((a, b) => new Date(a.data_hora).getTime() - new Date(b.data_hora).getTime())[0] || null;
 
-  const ultimoJogo = jogos
-    .filter((j) => new Date(j.data_hora) <= agora)
-    .sort((a, b) => new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime())[0] || null;
-
-  if (!proximoJogo && !ultimoJogo) return null;
+  if (!proximoJogo && !emAndamento) return null;
 
   const lateralPadding = "clamp(16px, 3vw, 24px)";
 
@@ -31,28 +27,43 @@ export function JogosCard({ jogos }: JogosCardProps) {
           boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
         }}
       >
-        {proximoJogo && (
+        {emAndamento && (
           <div className="flex flex-col">
             <div style={{ paddingTop: "10px", paddingBottom: "0", paddingLeft: lateralPadding, paddingRight: lateralPadding }}>
               <span
+                className="inline-flex items-center gap-2 text-[11px] md:text-[12px] font-bold uppercase tracking-wider"
+                style={{ background: "#4caf50", color: "#ffffff", padding: "6px 12px", borderRadius: "6px" }}
+              >
+        <span
+                  className="inline-block rounded-full animate-pulse"
+                  style={{
+                    width: "7px",
+                    height: "7px",
+                    background: "#ffffff",
+                  }}
+                />
+                Ao Vivo
+              </span>
+            </div>
+            <JogoRow jogo={emAndamento} tipo="ao_vivo" lateralPadding={lateralPadding} />
+          </div>
+        )}
+
+        {proximoJogo && (
+          <div className="flex flex-col" style={emAndamento ? { borderTop: "1px solid rgba(255,255,255,0.05)" } : undefined}>
+            <div style={{ paddingTop: "10px", paddingBottom: "0", paddingLeft: lateralPadding, paddingRight: lateralPadding }}>
+              <span
                 className="inline-block text-[11px] md:text-[12px] font-bold uppercase tracking-wider"
-                style={{ background: "var(--crimson)", color: "#ffffff", padding: "6px 12px", borderRadius: "6px" }}
+                style={
+                  emAndamento
+                    ? { color: "rgba(255,255,255,0.5)" }
+                    : { background: "var(--crimson)", color: "#ffffff", padding: "6px 12px", borderRadius: "6px" }
+                }
               >
                 Próximo Jogo
               </span>
             </div>
-            <JogoRow jogo={proximoJogo} tipo="proximo" lateralPadding={lateralPadding} />
-          </div>
-        )}
-
-        {ultimoJogo && (
-          <div className="flex flex-col mt-2">
-            <div style={{ paddingTop: "10px", paddingBottom: "0", paddingLeft: lateralPadding, paddingRight: lateralPadding, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-              <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Último Resultado
-              </span>
-            </div>
-            <JogoRow jogo={ultimoJogo} tipo="ultimo" lateralPadding={lateralPadding} />
+            <JogoRow jogo={proximoJogo} tipo={emAndamento ? "secundario" : "proximo"} lateralPadding={lateralPadding} />
           </div>
         )}
       </div>
@@ -61,7 +72,7 @@ export function JogosCard({ jogos }: JogosCardProps) {
 }
 
 /** Renderiza a linha de um jogo contendo hora, placar e detalhes da partida */
-function JogoRow({ jogo, tipo, lateralPadding }: { jogo: Jogo; tipo: "proximo" | "ultimo"; lateralPadding: string }) {
+function JogoRow({ jogo, tipo, lateralPadding }: { jogo: Jogo; tipo: "proximo" | "ao_vivo" | "secundario"; lateralPadding: string }) {
   const dataObj = new Date(jogo.data_hora);
   const horaFormatada = dataObj.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
@@ -74,14 +85,17 @@ function JogoRow({ jogo, tipo, lateralPadding }: { jogo: Jogo; tipo: "proximo" |
 
   const temPlacar = jogo.placar_casa !== null && jogo.placar_visitante !== null;
 
-  const siglaComp = jogo.competicao || jogo.modalidade_nome;
+  const nomeModalidade = jogo.modalidade?.nome || "";
+  const siglaComp = jogo.competicao || nomeModalidade;
   const textoRodape = [siglaComp, jogo.fase, jogo.local].filter(Boolean).join(" • ");
+
+  const borderColor = tipo === "ao_vivo" ? "#4caf50" : tipo === "proximo" ? "var(--crimson)" : "transparent";
 
   return (
     <div
       className="flex relative"
       style={{
-        borderLeft: tipo === "proximo" ? "2px solid var(--crimson)" : "2px solid transparent",
+        borderLeft: `2px solid ${borderColor}`,
         padding: `14px ${lateralPadding} 12px`,
         gap: "16px",
         alignItems: "center",

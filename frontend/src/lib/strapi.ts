@@ -225,25 +225,44 @@ export interface Jogo {
   documentId: string;
   time_casa: string;
   time_visitante: string;
-  modalidade_nome: string;
+  modalidade?: Pick<Modalidade, "id" | "documentId" | "nome"> | null;
   competicao: string | null;
   fase: string | null;
   data_hora: string;
   local: string | null;
   placar_casa: number | null;
   placar_visitante: number | null;
-  ativo: boolean;
+  status: "proximo" | "em_andamento" | "finalizado";
 }
 
-/** Busca jogos ativos ordenados pela data mais próxima */
+/** Busca jogos não finalizados para exibição no card da Home */
 export async function getJogos(): Promise<Jogo[]> {
   try {
     const res = await fetchStrapi<StrapiCollectionResponse<Jogo>>(
       "/api/jogos",
       {
-        "filters[ativo][$eq]": "true",
+        "filters[status][$ne]": "finalizado",
         "sort": "data_hora:asc",
+        "populate[modalidade]": "true",
         "pagination[pageSize]": "20",
+      }
+    );
+    return res.data || [];
+  } catch {
+    return [];
+  }
+}
+
+/** Busca todos os jogos vinculados a uma modalidade específica */
+export async function getJogosModalidade(modalidadeDocumentId: string): Promise<Jogo[]> {
+  try {
+    const res = await fetchStrapi<StrapiCollectionResponse<Jogo>>(
+      "/api/jogos",
+      {
+        "filters[modalidade][documentId][$eq]": modalidadeDocumentId,
+        "sort": "data_hora:desc",
+        "populate[modalidade]": "true",
+        "pagination[pageSize]": "100",
       }
     );
     return res.data || [];
