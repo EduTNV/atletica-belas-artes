@@ -43,7 +43,7 @@
     "placar_visitante": {
       "type": "integer"
     },
-    "status": {
+    "estado": {
       "type": "enumeration",
       "enum": ["proximo", "em_andamento", "finalizado"],
       "default": "proximo",

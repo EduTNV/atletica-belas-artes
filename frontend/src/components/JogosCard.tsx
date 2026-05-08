@@ -8,10 +8,10 @@ interface JogosCardProps {
 
 /** Componente que exibe os próximos jogos e os jogos em andamento */
 export function JogosCard({ jogos }: JogosCardProps) {
-  const emAndamento = jogos.find((j) => j.status === "em_andamento") || null;
+  const emAndamento = jogos.find((j) => j.estado === "em_andamento") || null;
 
   const proximoJogo = jogos
-    .filter((j) => j.status === "proximo")
+    .filter((j) => j.estado === "proximo")
     .sort((a, b) => new Date(a.data_hora).getTime() - new Date(b.data_hora).getTime())[0] || null;
 
   if (!proximoJogo && !emAndamento) return null;

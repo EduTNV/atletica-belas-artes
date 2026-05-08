@@ -59,7 +59,7 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
     fetchData();
   }, [modalidade.documentId]);
 
-  const finalizados = jogosModalidade.filter(j => j.status === "finalizado");
+  const finalizados = jogosModalidade.filter(j => j.estado === "finalizado");
   const totalJogos = finalizados.length;
   const vitorias = finalizados.filter(j => j.placar_casa != null && j.placar_visitante != null && j.placar_casa > j.placar_visitante).length;
   const derrotas = finalizados.filter(j => j.placar_casa != null && j.placar_visitante != null && j.placar_casa < j.placar_visitante).length;
@@ -218,9 +218,9 @@ function TabJogos({ jogos }: { jogos: Jogo[] }) {
     return <EmptyState text="Nenhum jogo registrado." />;
   }
 
-  const proximos = jogos.filter(j => j.status === "proximo" || j.status === "em_andamento")
+  const proximos = jogos.filter(j => j.estado === "proximo" || j.estado === "em_andamento")
     .sort((a, b) => new Date(a.data_hora).getTime() - new Date(b.data_hora).getTime());
-  const finalizados = jogos.filter(j => j.status === "finalizado")
+  const finalizados = jogos.filter(j => j.estado === "finalizado")
     .sort((a, b) => new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime());
 
   const statusLabels: Record<string, { label: string; color: string }> = {
@@ -239,7 +239,7 @@ function TabJogos({ jogos }: { jogos: Jogo[] }) {
             const dataObj = new Date(j.data_hora);
             const dataStr = dataObj.toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
             const horaStr = dataObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-            const st = statusLabels[j.status];
+            const st = statusLabels[j.estado];
 
             return (
               <div
