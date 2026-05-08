@@ -22,9 +22,7 @@ export default async function HomePage() {
 
   const quemSomosCompleto = configHome?.texto_quem_somos_completo || null;
 
-  const linkSejaSocio = configHome?.link_seja_socio || "#";
-  const linkProdutos = configHome?.link_produtos || "#";
-  const linkContato = configHome?.link_whatsapp_contato || "#";
+
 
   const heroImgUrl = getStrapiMedia(configHome?.foto_hero?.url);
 
@@ -263,26 +261,8 @@ export default async function HomePage() {
 
           <div className="flex flex-wrap justify-center gap-6 md:gap-10">
             <FooterLink
-              href={linkSejaSocio}
-              label="Seja Sócio"
-              icon={
-                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-              }
-            />
-            <FooterLink
-              href={linkProdutos}
-              label="Nossos Produtos"
-              icon={
-                <>
-                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 0 1-8 0" />
-                </>
-              }
-            />
-            <FooterLink
-              href={linkContato}
-              label="Contato"
+              href="/contato"
+              label="Contato / Ajuda"
               icon={
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
               }
@@ -302,7 +282,7 @@ interface FooterLinkProps {
 
 function FooterLink({ href, label, icon }: FooterLinkProps) {
   return (
-    <a
+    <Link
       href={href}
       className="flex items-center gap-2 text-[13px] font-medium transition-colors group py-2"
       style={{ color: "var(--text3)" }}
@@ -320,6 +300,6 @@ function FooterLink({ href, label, icon }: FooterLinkProps) {
         {icon}
       </svg>
       {label}
-    </a>
+    </Link>
   );
 }

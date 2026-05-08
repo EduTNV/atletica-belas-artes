@@ -27,7 +27,7 @@
     "capitao_nome": {
       "type": "string"
     },
-    "capitao_whatsapp": {
+    "link_grupo_whatsapp": {
       "type": "string"
     },
     "foto_card": {

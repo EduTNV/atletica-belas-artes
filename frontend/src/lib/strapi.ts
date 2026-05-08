@@ -173,7 +173,7 @@ export interface Modalidade {
   nome_interno: string;
   nome: string;
   capitao_nome: string | null;
-  capitao_whatsapp: string | null;
+  link_grupo_whatsapp: string | null;
   foto_card: {
     url: string;
     formats?: {
