@@ -13,7 +13,7 @@
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/typography": "^0.5.19",
     "next": "15.2.8",
-    "next-sanity": "^12.4.5",
+    "next-sanity": "^11.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
