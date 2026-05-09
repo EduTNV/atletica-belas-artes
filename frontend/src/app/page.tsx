@@ -1,20 +1,29 @@
 import Link from "next/link";
-import { getEventos, getConfigHome, getConfigCompeticoes, getJogos, type Evento, type Jogo, getStrapiMedia } from "@/lib/strapi";
 import { ExpandableText, Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
 import { JogosCard } from "@/components/JogosCard";
+import { client } from "@/lib/sanity";
+import { urlFor } from "@/lib/sanity.image";
 
 /** Página principal (Home) da Atlética, listando banner, quem somos, próximos jogos e eventos */
 export default async function HomePage() {
   const [todosEventos, configHome, configCompeticoes, jogos] = await Promise.all([
-    getEventos().catch(() => [] as Evento[]),
-    getConfigHome(),
-    getConfigCompeticoes(),
-    getJogos().catch(() => [] as Jogo[]),
+    client.fetch(`*[_type == "evento" && ativo == true] | order(data asc){
+      _id, nome, data, local, endereco, arte, status_lote, link_ingresso
+    }`).catch(() => []),
+    client.fetch(`*[_type == "home"][0]{
+      subtitulo_hero, foto_hero, texto_quem_somos_resumo, texto_quem_somos_completo, frase_footer
+    }`).catch(() => null),
+    client.fetch(`*[_type == "competicoes"][0]{
+      competicoes[]{ nome, sigla, descricao, foto }
+    }`).catch(() => null),
+    client.fetch(`*[_type == "jogo"] | order(data_hora desc)[0...50]{
+      _id, time_casa, time_visitante, modalidade->{ nome }, competicao, fase, data_hora, local, placar_casa, placar_visitante, estado
+    }`).catch(() => []),
   ]);
 
   const agora = new Date();
-  const proximosEventos = todosEventos.filter((e) => new Date(e.data) >= agora);
+  const proximosEventos = todosEventos.filter((e: any) => new Date(e.data) >= agora);
 
   const quemSomosResumo =
     configHome?.texto_quem_somos_resumo ||
@@ -22,9 +31,9 @@ export default async function HomePage() {
 
   const quemSomosCompleto = configHome?.texto_quem_somos_completo || null;
 
-
-
-  const heroImgUrl = getStrapiMedia(configHome?.foto_hero?.url);
+  const heroImgUrl = configHome?.foto_hero?.asset 
+    ? urlFor(configHome.foto_hero).width(1600).url() 
+    : null;
 
   return (
     <>
@@ -111,7 +120,7 @@ export default async function HomePage() {
             <div className="mb-6">
               <Paragraphs text={quemSomosResumo} />
             </div>
-            <ExpandableText text={quemSomosCompleto} />
+            <ExpandableText text={null} value={quemSomosCompleto} />
           </div>
         </div>
       </section>
@@ -165,9 +174,9 @@ export default async function HomePage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-                {proximosEventos.slice(0, 3).map((evento, index) => (
+                {proximosEventos.slice(0, 3).map((evento: any, index: number) => (
                   <EventCard
-                    key={evento.documentId}
+                    key={evento._id}
                     evento={evento}
                     className={index === 2 ? "hidden lg:flex" : ""}
                   />
@@ -199,8 +208,10 @@ export default async function HomePage() {
               </p>
 
               <div className="flex flex-col gap-10 md:gap-14">
-                {configCompeticoes.competicoes.map((comp) => {
-                  const fotoUrl = getStrapiMedia(comp.foto?.url);
+                {configCompeticoes.competicoes.map((comp: any) => {
+                  const fotoUrl = comp.foto?.asset 
+                    ? urlFor(comp.foto).width(800).url() 
+                    : null;
                   return (
                     <div key={comp.sigla} className="flex flex-col gap-5">
                       <div className="flex flex-col md:flex-row gap-6 md:items-start">

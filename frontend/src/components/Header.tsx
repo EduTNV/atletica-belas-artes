@@ -18,19 +18,6 @@ const secondaryLinks = [
 /** Componente de cabeçalho (Header) principal exibido em telas de desktop */
 export default function Header() {
   const pathname = usePathname();
-  const [linkSocio, setLinkSocio] = useState<string | null>(null);
-
-  useEffect(() => {
-    const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-    fetch(`${STRAPI_URL}/api/home`)
-      .then((r) => r.json())
-      .then((res) => {
-        if (res?.data?.link_seja_socio) {
-          setLinkSocio(res.data.link_seja_socio);
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   return (
     <header className="desktop-header" id="desktop-header">
@@ -66,22 +53,6 @@ export default function Header() {
           </Link>
         ))}
       </nav>
-
-      {linkSocio ? (
-        <a
-          href={linkSocio}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="header-cta"
-          id="header-cta-socio"
-        >
-          Seja Sócio
-        </a>
-      ) : (
-        <button className="header-cta" id="header-cta-socio" disabled style={{ opacity: 0.5 }}>
-          Seja Sócio
-        </button>
-      )}
     </header>
   );
 }

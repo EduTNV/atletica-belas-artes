@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { getStrapiMedia } from "@/lib/strapi";
-import type { Evento } from "@/lib/strapi";
+import { urlFor } from "@/lib/sanity.image";
 
 const statusMap: Record<string, { label: string; color: "gold" | "green" | "neutral" }> = {
   vendas_abertas: { label: "À VENDA", color: "green" },
   lote_2: { label: "LOTE 2", color: "gold" },
   lote_3: { label: "LOTE 3", color: "gold" },
   esgotado: { label: "ESGOTADO", color: "neutral" },
+  encerrado: { label: "ENCERRADO", color: "neutral" },
+  breve: { label: "EM BREVE", color: "neutral" },
 };
 
 /** Formata uma data ISO para o padrão brasileiro longo (ex: 15 de Outubro) */
@@ -21,18 +22,22 @@ export function formatDate(isoDate: string): string {
 
 
 interface EventCardProps {
-  evento: Evento;
+  evento: Evento | any;
   className?: string;
   disableLink?: boolean;
 }
 
 /** Componente de Card para exibição resumida de um Evento (usado em listas) */
 export function EventCard({ evento, className = "", disableLink = false }: EventCardProps) {
-  const img = getStrapiMedia(evento.arte?.url);
+  const img = evento.arte?.asset 
+    ? urlFor(evento.arte).width(600).url() 
+    : null;
 
   const status = evento.status_lote
     ? statusMap[evento.status_lote] || { label: "EM BREVE", color: "neutral" as const }
     : { label: "EM BREVE", color: "neutral" as const };
+
+  const id = evento._id;
 
   const sharedClass = `flex flex-col rounded-[var(--radius)] overflow-hidden border group transition-all hover:border-[var(--crimson)] shadow-md hover:shadow-xl ${className}`;
   const sharedStyle = { background: "var(--surface)", borderColor: "var(--border)" };

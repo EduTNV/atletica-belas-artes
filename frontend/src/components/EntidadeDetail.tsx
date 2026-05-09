@@ -1,17 +1,19 @@
 "use client";
 
-import { getStrapiMedia } from "@/lib/strapi";
-import type { Entidade, MembroEntidade } from "@/lib/strapi";
+import { urlFor } from "@/lib/sanity.image";
 
 interface EntidadeDetailProps {
-  entidade: Entidade;
+  entidade: any;
   onClose: () => void;
 }
 
 export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
-  const logoUrl = getStrapiMedia(entidade.logo?.url);
+  const logoUrl = entidade.logo?.asset 
+    ? urlFor(entidade.logo).width(1200).url() 
+    : null;
+
   const membros = [...(entidade.membros || [])].sort(
-    (a, b) => (a.ordem ?? 99) - (b.ordem ?? 99)
+    (a: any, b: any) => (a.ordem ?? 99) - (b.ordem ?? 99)
   );
 
   return (
@@ -114,8 +116,8 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 
                 {/* TAREFA 3.3: Grid 2x2 nos membros */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                  {membros.map((membro) => (
-                    <MembroCard key={membro.documentId} membro={membro} />
+                  {membros.map((membro: any) => (
+                    <MembroCard key={membro._id || membro.documentId} membro={membro} />
                   ))}
                 </div>
               </>
@@ -127,8 +129,10 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
   );
 }
 
-function MembroCard({ membro }: { membro: MembroEntidade }) {
-  const fotoUrl = getStrapiMedia(membro.foto?.url);
+function MembroCard({ membro }: { membro: any }) {
+  const fotoUrl = membro.foto?.asset 
+    ? urlFor(membro.foto).width(100).height(100).url() 
+    : null;
 
   return (
     <div

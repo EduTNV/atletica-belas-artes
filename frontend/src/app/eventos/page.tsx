@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getEventos, type Evento } from "@/lib/strapi";
+import { client } from "@/lib/sanity";
 import { EventosList } from "@/components/EventosList";
 
 export const metadata: Metadata = {
@@ -9,12 +9,14 @@ export const metadata: Metadata = {
 
 /** Página de Eventos, listando festas e integrações disponíveis */
 export default async function EventosPage() {
-  const todosEventos = await getEventos().catch(() => [] as Evento[]);
+  const todosEventos = await client.fetch(`*[_type == "evento" && ativo == true] | order(data asc){
+    _id, nome, data, local, endereco, arte, status_lote, link_ingresso, aftermovie_url
+  }`).catch(() => []);
 
   const agora = new Date();
-  const proximos = todosEventos.filter((e) => new Date(e.data) >= agora);
+  const proximos = todosEventos.filter((e: any) => new Date(e.data) >= agora);
   const passados = todosEventos
-    .filter((e) => new Date(e.data) < agora)
+    .filter((e: any) => new Date(e.data) < agora)
     .reverse();
 
   return (

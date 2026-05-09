@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { getEntidades } from "@/lib/strapi";
 import { EntidadesList } from "@/components/EntidadesList";
+import { client } from "@/lib/sanity";
 
 export const revalidate = 60;
 
@@ -11,7 +11,22 @@ export const metadata: Metadata = {
 
 /** Página das Entidades parceiras, listando Bateria, Cheerleading, Diretoria, etc */
 export default async function EntidadesPage() {
-  const entidades = await getEntidades();
+  const entidades = await client.fetch(`*[_type == "entidade"] | order(nome asc){
+    _id,
+    nome,
+    descricao,
+    cor,
+    logo,
+    "membros": *[_type == "membroEntidade" && references(^._id)] | order(ordem asc){
+      _id,
+      nome,
+      cargo,
+      foto,
+      whatsapp,
+      ordem,
+      curso->{ nome, cor }
+    }
+  }`);
 
   return (
     <>

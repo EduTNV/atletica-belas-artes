@@ -6,11 +6,6 @@ CLAUDE.md
 node_modules/
 .pnp
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
 # Variáveis de Ambiente
 .env
@@ -51,10 +46,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-*.cab
-*.msi
-*.msm
-*.msp
 
 # Pacotes comprimidos
 *.7z
@@ -66,26 +57,15 @@ $RECYCLE.BIN/
 *.tar
 *.zip
 
-# Strapi (CMS) - regras gerais adicionais 
-.strapi/
-build/
-dist/
-exports/
-.strapi-updater.json
-.strapi-cloud.json
-.tmp/
-*.sqlite
-*.sqlite3
-*.db
-*.db-journal
-**/public/uploads/*
-!**/public/uploads/.gitkeep
-
 # Next.js (Frontend)
 .next/
 out/
 next-env.d.ts
 .vercel/
+
+# Sanity Studio
+studio-atletica-belas-artes/dist
+studio-atletica-belas-artes/.sanity
 
 # Testes e cobertura
 coverage/
@@ -102,8 +82,8 @@ lcov.info
 *.out
 results/
 
+# Gemini / Agents
 .agents/
 .geminiignore
 skills-lock.json
-gemini (1).md
-gemini (2).md
+gemini.md

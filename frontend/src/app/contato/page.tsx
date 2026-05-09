@@ -1,11 +1,11 @@
-import { getConfigContato, getConfigAjuda } from "@/lib/strapi";
+import { client } from "@/lib/sanity";
 import { FaqSection } from "./FaqSection";
 
 /** Página de Contato e Ajuda, exibindo redes sociais, email e FAQ */
 export default async function ContatoPage() {
   const [contato, configAjuda] = await Promise.all([
-    getConfigContato(),
-    getConfigAjuda()
+    client.fetch(`*[_type == "contato"][0]{ email, whatsapp, instagram }`),
+    client.fetch(`*[_type == "ajuda"][0]{ titulo_pagina, subtitulo, faqs[]{ pergunta, resposta, ordem } }`)
   ]);
 
   const hasAnyInfo = contato && (contato.email || contato.whatsapp || contato.instagram);

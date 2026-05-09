@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getModalidades, type Modalidade } from "@/lib/strapi";
+import { client } from "@/lib/sanity";
 import { TimesList } from "@/components/TimesList";
 
 export const metadata: Metadata = {
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 
 /** Página de Times/Modalidades, exibindo filtros e a listagem de todas as equipes */
 export default async function TimesPage() {
-  const modalidades = await getModalidades().catch(() => [] as Modalidade[]);
+  const modalidades = await client.fetch(`*[_type == "modalidade"] | order(nome asc){
+    _id, nome, slug, capitao_nome, link_grupo_whatsapp, foto_card, foto_banner
+  }`).catch(() => []);
 
   return (
     <>

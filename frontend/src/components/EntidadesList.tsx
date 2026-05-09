@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { getStrapiMedia } from "@/lib/strapi";
-import type { Entidade } from "@/lib/strapi";
 import { EntidadeDetail } from "@/components/EntidadeDetail";
+import { urlFor } from "@/lib/sanity.image";
 
 interface EntidadesListProps {
-  entidades: Entidade[];
+  entidades: any[];
 }
 
 export function EntidadesList({ entidades }: EntidadesListProps) {
-  const [selected, setSelected] = useState<Entidade | null>(null);
+  const [selected, setSelected] = useState<any | null>(null);
 
   if (entidades.length === 0) {
     return (
@@ -26,14 +25,16 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
     <>
       <div className="content-wrapper py-8 md:py-12" style={{ paddingBottom: "clamp(60px, 8vw, 100px)" }}>
         <div className="max-w-5xl mx-auto flex flex-col gap-12 md:gap-20">
-          {entidades.map((ent) => {
-            const logoUrl = getStrapiMedia(ent.logo?.url);
+          {entidades.map((ent: any) => {
+            const logoUrl = ent.logo?.asset 
+              ? urlFor(ent.logo).width(600).url() 
+              : null;
 
             return (
               <div
-                key={ent.documentId}
+                key={ent._id || ent.documentId}
                 className="flex flex-col"
-                id={`ent-${ent.documentId}`}
+                id={`ent-${ent._id || ent.documentId}`}
               >
                 <h3
                   className="tracking-tight mb-3"

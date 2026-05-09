@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
+import { PortableText } from "@/components/PortableText";
+
 export function Paragraphs({ text, className = "" }: { text: string; className?: string }) {
+  if (typeof text !== "string") return null;
   return text
     .split(/\n\n+/)
     .filter((p) => p.trim().length > 0)
@@ -17,21 +20,23 @@ export function Paragraphs({ text, className = "" }: { text: string; className?:
     ));
 }
 
-export function ExpandableText({ text }: { text?: string | null }) {
+export function ExpandableText({ text, value }: { text?: string | null; value?: any }) {
   const [open, setOpen] = useState(false);
 
-  const displayText =
-    text ||
-    "Desde a nossa fundação, construímos uma história de vitórias, amizades e momentos inesquecíveis. Nossos times competem em diversas modalidades, levando o nome da BA com orgulho por toda São Paulo e em jogos universitários por todo o estado. Mais do que esporte, somos comunidade.";
+  const hasValue = value && Array.isArray(value) && value.length > 0;
 
   return (
     <>
       <div
         className="overflow-hidden transition-all duration-500 ease-in-out"
-        style={{ maxHeight: open ? "800px" : "0px", opacity: open ? 1 : 0 }}
+        style={{ maxHeight: open ? "1000px" : "0px", opacity: open ? 1 : 0 }}
       >
         <div className="pt-1 pb-5">
-          <Paragraphs text={displayText} />
+          {hasValue ? (
+            <PortableText value={value} />
+          ) : (
+            <Paragraphs text={text || "Desde a nossa fundação, construímos uma história de vitórias, amizades e momentos inesquecíveis. Nossos times competem em diversas modalidades, levando o nome da BA com orgulho por toda São Paulo e em jogos universitários por todo o estado. Mais do que esporte, somos comunidade."} />
+          )}
         </div>
       </div>
 

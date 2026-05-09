@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getStrapiMedia } from "@/lib/strapi";
-import type { Modalidade } from "@/lib/strapi";
 import { ModalidadeDetail } from "@/components/ModalidadeDetail";
+import { urlFor } from "@/lib/sanity.image";
 
 interface TimesListProps {
-  modalidades: Modalidade[];
+  modalidades: any[];
 }
 
 /** Componente principal para listar e filtrar as modalidades */
 export function TimesList({ modalidades }: TimesListProps) {
-  const [selectedMod, setSelectedMod] = useState<Modalidade | null>(null);
+  const [selectedMod, setSelectedMod] = useState<any | null>(null);
   
   const [busca, setBusca] = useState("");
   const [filtroGenero, setFiltroGenero] = useState("Todos");
@@ -123,9 +122,9 @@ export function TimesList({ modalidades }: TimesListProps) {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
         style={{ minHeight: modalidadesFiltradas.length > 0 ? "500px" : "auto" }}
       >
-        {modalidadesPaginadas.map((mod) => (
+        {modalidadesPaginadas.map((mod: any) => (
           <ModalidadeCard 
-            key={mod.documentId} 
+            key={mod._id || mod.documentId} 
             modalidade={mod} 
             onClick={() => setSelectedMod(mod)} 
           />
@@ -214,7 +213,7 @@ function ModalidadeCard({
   modalidade,
   onClick,
 }: {
-  modalidade: Modalidade;
+  modalidade: any;
   onClick: () => void;
 }) {
   return (
@@ -224,7 +223,9 @@ function ModalidadeCard({
       style={{ borderColor: "var(--border)" }}
     >
       {(() => {
-        const fotoUrl = getStrapiMedia(modalidade.foto_card?.formats?.thumbnail?.url || modalidade.foto_card?.url);
+        const fotoUrl = modalidade.foto_card?.asset 
+          ? urlFor(modalidade.foto_card).width(200).height(200).url() 
+          : null;
         if (fotoUrl) {
           return (
             <img

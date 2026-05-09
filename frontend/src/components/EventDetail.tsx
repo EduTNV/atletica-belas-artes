@@ -1,16 +1,17 @@
 "use client";
 
-import { getStrapiMedia } from "@/lib/strapi";
-import type { Evento } from "@/lib/strapi";
+import { urlFor } from "@/lib/sanity.image";
 
 interface EventDetailProps {
-  evento: Evento;
+  evento: any;
   onClose: () => void;
 }
 
 /** Painel deslizante com os detalhes completos de um evento específico */
 export function EventDetail({ evento, onClose }: EventDetailProps) {
-  const img = getStrapiMedia(evento.arte?.url);
+  const img = evento.arte?.asset 
+    ? urlFor(evento.arte).width(1000).url() 
+    : null;
 
   const dataObj = new Date(evento.data);
   const dataFormatada = dataObj.toLocaleDateString("pt-BR", {
@@ -29,6 +30,8 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
     lote_2: "Lote 2",
     lote_3: "Lote 3",
     esgotado: "Esgotado",
+    encerrado: "Vendas Encerradas",
+    breve: "Em breve",
   };
 
   const statusLabel = evento.status_lote

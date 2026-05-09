@@ -1,20 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import type { Evento } from "@/lib/strapi";
 import { EventCard } from "@/components/EventCard";
 import { EventDetail } from "@/components/EventDetail";
 
 type TabId = "proximos" | "galeria";
 
 interface EventosListProps {
-  proximos: Evento[];
-  passados: Evento[];
+  proximos: Evento[] | any[];
+  passados: Evento[] | any[];
 }
 
 export function EventosList({ proximos, passados }: EventosListProps) {
   const [activeTab, setActiveTab] = useState<TabId>("proximos");
-  const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
+  const [selectedEvento, setSelectedEvento] = useState<Evento | any | null>(null);
 
   const tabs: { id: TabId; label: string; count: number }[] = [
     { id: "proximos", label: "Próximos", count: proximos.length },
@@ -84,9 +83,9 @@ export function EventosList({ proximos, passados }: EventosListProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-            {eventos.map((evento) => (
+            {eventos.map((evento: any) => (
               <div
-                key={evento.documentId}
+                key={evento._id || evento.documentId}
                 onClick={() => setSelectedEvento(evento)}
                 className="cursor-pointer"
               >

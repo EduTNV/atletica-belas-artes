@@ -1,23 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  type Modalidade, 
-  type Jogo,
-  type Treino, 
-  type Conquista, 
-  type MembroModalidade,
-  getJogosModalidade,
-  getTreinos,
-  getConquistas,
-  getMembrosModalidade,
-  getStrapiMedia
-} from "@/lib/strapi";
+import { client } from "@/lib/sanity";
+import { urlFor } from "@/lib/sanity.image";
 
 type InnerTab = "jogos" | "treinos" | "conquistas" | "elenco";
 
 interface ModalidadeDetailProps {
-  modalidade: Modalidade;
+  modalidade: any;
   cursoNome: string;
   cursoColor: string | null;
   onClose: () => void;
@@ -26,26 +16,31 @@ interface ModalidadeDetailProps {
 /** Painel de visualização detalhada para uma modalidade (Resultados, Treinos, etc) */
 export function ModalidadeDetail({ modalidade, cursoColor, onClose }: ModalidadeDetailProps) {
   const [activeTab, setActiveTab] = useState<InnerTab>("jogos");
-  const [jogosModalidade, setJogosModalidade] = useState<Jogo[]>([]);
-  const [treinos, setTreinos] = useState<Treino[]>([]);
-  const [conquistas, setConquistas] = useState<Conquista[]>([]);
-  const [membros, setMembros] = useState<MembroModalidade[]>([]);
+  const [jogosModalidade, setJogosModalidade] = useState<any[]>([]);
+  const [treinos, setTreinos] = useState<any[]>([]);
+  const [conquistas, setConquistas] = useState<any[]>([]);
+  const [membros, setMembros] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const color = cursoColor || "#8b1a1a";
-  const fotoBanner = getStrapiMedia(modalidade.foto_banner?.url);
+  const fotoBanner = modalidade.foto_banner?.asset 
+    ? urlFor(modalidade.foto_banner).width(1200).url() 
+    : null;
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
-        const docId = modalidade.documentId;
+        const id = modalidade._id;
 
         const [resJogos, resTre, resCon, resMem] = await Promise.all([
-          getJogosModalidade(docId),
-          getTreinos(docId),
-          getConquistas(docId),
-          getMembrosModalidade(docId),
+          client.fetch(`*[_type == "jogo" && modalidade._ref == $id] | order(data_hora desc)`, { id }),
+          client.fetch(`*[_type == "treino" && modalidade._ref == $id]`, { id }),
+          client.fetch(`*[_type == "conquista" && modalidade._ref == $id] | order(ano desc)`, { id }),
+          client.fetch(`*[_type == "membroModalidade" && modalidade._ref == $id] | order(ordem asc){
+            ...,
+            curso->{ nome, cor }
+          }`, { id }),
         ]);
 
         setJogosModalidade(resJogos || []);
@@ -57,7 +52,7 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
       }
     }
     fetchData();
-  }, [modalidade.documentId]);
+  }, [modalidade._id]);
 
   const finalizados = jogosModalidade.filter(j => j.estado === "finalizado");
   const totalJogos = finalizados.length;
@@ -218,7 +213,7 @@ function StatCell({ value, label, color }: { value: number; label: string; color
 }
 
 /** Aba de jogos: exibe próximos, em andamento e finalizados */
-function TabJogos({ jogos }: { jogos: Jogo[] }) {
+function TabJogos({ jogos }: { jogos: any[] }) {
   if (jogos.length === 0) {
     return <EmptyState text="Nenhum jogo registrado." />;
   }
@@ -248,7 +243,7 @@ function TabJogos({ jogos }: { jogos: Jogo[] }) {
 
             return (
               <div
-                key={j.documentId}
+                key={j._id || j.documentId}
                 className="flex items-center gap-3 py-3 border-b"
                 style={{ borderColor: "var(--border)" }}
               >
@@ -296,7 +291,7 @@ function TabJogos({ jogos }: { jogos: Jogo[] }) {
 
             return (
               <div
-                key={j.documentId}
+                key={j._id || j.documentId}
                 className="flex items-center gap-3 py-3 border-b"
                 style={{ borderColor: "var(--border)" }}
               >
@@ -341,7 +336,7 @@ const diasLabels: Record<string, string> = {
 };
 
 /** Aba com o cronograma e horários de treino */
-function TabTreinos({ treinos }: { treinos: Treino[] }) {
+function TabTreinos({ treinos }: { treinos: any[] }) {
   if (treinos.length === 0) {
     return <EmptyState text="Nenhum horário de treino cadastrado." />;
   }
@@ -351,7 +346,7 @@ function TabTreinos({ treinos }: { treinos: Treino[] }) {
       <div className="flex flex-col gap-1">
         {treinos.map((t) => (
           <div
-            key={t.documentId}
+            key={t._id || t.documentId}
             className="flex items-center justify-between py-3 border-b"
             style={{ borderColor: "var(--border)" }}
           >
@@ -395,7 +390,7 @@ const medalhaConfig: Record<string, { emoji: string; label: string; color: strin
 };
 
 /** Aba com conquistas, títulos e medalhas da modalidade */
-function TabConquistas({ conquistas }: { conquistas: Conquista[] }) {
+function TabConquistas({ conquistas }: { conquistas: any[] }) {
   if (conquistas.length === 0) {
     return <EmptyState text="Nenhuma conquista registrada ainda." />;
   }
@@ -406,7 +401,7 @@ function TabConquistas({ conquistas }: { conquistas: Conquista[] }) {
         const config = c.medalha ? medalhaConfig[c.medalha] : medalhaConfig.premio;
         return (
           <div
-            key={c.documentId}
+            key={c._id || c.documentId}
             className="flex items-center gap-3 py-3 border-b"
             style={{ borderColor: "var(--border)" }}
           >
@@ -439,8 +434,8 @@ function TabElenco({
   membros,
   color,
 }: {
-  modalidade: Modalidade;
-  membros: MembroModalidade[];
+  modalidade: any;
+  membros: any[];
   color: string;
 }) {
   if (membros.length === 0 && !modalidade.capitao_nome) {
@@ -454,15 +449,17 @@ function TabElenco({
   const outrosCargos = ["co-capitão", "atleta", "atleta reserva"];
   const restante = membros
     .filter(m => outrosCargos.includes(m.cargo || "") || (!m.cargo && m.nome))
-    .sort((a, b) => a.nome.localeCompare(b.nome));
+    .sort((a: any, b: any) => a.nome.localeCompare(b.nome));
 
-  const renderMembroCard = (m: MembroModalidade, isFullWidth = false, customLabel?: string) => {
-    const fotoUrl = getStrapiMedia(m.foto?.url);
+  const renderMembroCard = (m: any, isFullWidth = false, customLabel?: string) => {
+    const fotoUrl = m.foto?.asset 
+      ? urlFor(m.foto).width(100).height(100).url() 
+      : null;
     const label = customLabel || m.cargo || "Atleta";
     
     return (
       <div
-        key={m.documentId}
+        key={m._id || m.documentId}
         style={{
           display: "flex",
           alignItems: "center",

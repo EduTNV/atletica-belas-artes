@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Faq } from "@/lib/strapi";
 
-export function FaqSection({ faqs }: { faqs: Faq[] }) {
+export function FaqSection({ faqs }: { faqs: any[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   if (faqs.length === 0) return null;
@@ -29,7 +28,7 @@ function FaqItem({
   isOpen,
   onToggle,
 }: {
-  faq: Faq;
+  faq: any;
   isOpen: boolean;
   onToggle: () => void;
 }) {
