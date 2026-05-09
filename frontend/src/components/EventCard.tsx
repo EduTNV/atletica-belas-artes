@@ -22,22 +22,20 @@ export function formatDate(isoDate: string): string {
 
 
 interface EventCardProps {
-  evento: Evento | any;
+  evento: any;
   className?: string;
   disableLink?: boolean;
 }
 
 /** Componente de Card para exibição resumida de um Evento (usado em listas) */
 export function EventCard({ evento, className = "", disableLink = false }: EventCardProps) {
-  const img = evento.arte?.asset 
-    ? urlFor(evento.arte).width(600).url() 
+  const img = evento.arte?.asset
+    ? urlFor(evento.arte).width(600).url()
     : null;
 
   const status = evento.status_lote
     ? statusMap[evento.status_lote] || { label: "EM BREVE", color: "neutral" as const }
     : { label: "EM BREVE", color: "neutral" as const };
-
-  const id = evento._id;
 
   const sharedClass = `flex flex-col rounded-[var(--radius)] overflow-hidden border group transition-all hover:border-[var(--crimson)] shadow-md hover:shadow-xl ${className}`;
   const sharedStyle = { background: "var(--surface)", borderColor: "var(--border)" };
