@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { EntidadesList } from "@/components/EntidadesList";
 import { client } from "@/lib/sanity";
 
-export const revalidate = 60;
-
 export const metadata: Metadata = {
   title: "Entidades — Atlética Belas Artes",
   description: "Conheça as entidades e organizações da Atlética Belas Artes.",

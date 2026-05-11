@@ -5,8 +5,6 @@ import { JogosCard } from "@/components/JogosCard";
 import { client } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity.image";
 
-export const revalidate = 60;
-
 /** Página principal (Home) da Atlética, listando banner, quem somos, próximos jogos e eventos */
 export default async function HomePage() {
   const [todosEventos, configHome, configCompeticoes, jogos] = await Promise.all([
