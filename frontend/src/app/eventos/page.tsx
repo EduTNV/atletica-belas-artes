@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { client } from "@/lib/sanity";
 import { EventosList } from "@/components/EventosList";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Eventos — Atlética Belas Artes",
   description: "Confira os próximos eventos e a galeria da Atlética Belas Artes.",

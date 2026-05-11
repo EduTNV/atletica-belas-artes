@@ -1,6 +1,8 @@
 import { client } from "@/lib/sanity";
 import { FaqSection } from "./FaqSection";
 
+export const revalidate = 60;
+
 /** Página de Contato e Ajuda, exibindo redes sociais, email e FAQ */
 export default async function ContatoPage() {
   const [contato, configAjuda] = await Promise.all([

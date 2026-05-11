@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { client } from "@/lib/sanity";
 import { TimesList } from "@/components/TimesList";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Times — Atlética Belas Artes",
   description: "Conheça os times e modalidades da Atlética Belas Artes.",
