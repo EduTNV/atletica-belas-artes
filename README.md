@@ -18,36 +18,44 @@ Tudo isso é gerenciado pelos próprios diretores da Atlética de forma autônom
 Este repositório é um *monorepo* dividido em duas partes principais:
 
 1. **Frontend (PWA)**
-   - **Next.js / React**: Framework para construção da interface de forma rápida e otimizada.
+   - **Next.js (App Router)**: Framework para construção da interface de forma rápida, otimizada e SSR/SSG.
    - **TypeScript**: Para garantir a tipagem e segurança do código.
-   - **Vanilla CSS**: Estilização rica e flexível, garantindo designs premium com modo escuro e animações.
+   - **Tailwind CSS v4**: Estilização rica e flexível, garantindo designs premium.
+   - **Sanity Client**: Integração nativa para consumir a API de dados com suporte a *PortableText* e geração de URLs de imagens otimizadas.
    
 2. **Backend (CMS)**
-   - **Strapi**: Headless CMS em Node.js utilizado para gerenciar todo o conteúdo dinâmico (notícias, times, eventos, fotos).
-   - **Banco de Dados**: PostgreSQL.
+   - **Sanity Studio**: Headless CMS moderno, hospedado na nuvem, utilizado para gerenciar todo o conteúdo dinâmico e flexível (notícias, times, eventos, fotos) com modelagem de conteúdo via código (schemas).
 
 ## 📁 Estrutura do Repositório
 
 - `/frontend`: Contém todo o código da interface do usuário e a lógica do Next.js.
-- `/cms`: Contém a API e o painel administrativo gerados pelo Strapi.
-- `/prototipo`: Arquivos de prototipagem e design inicial do projeto.
+- `/studio-atletica-belas-artes`: Contém o painel administrativo do Sanity (Sanity Studio) com a definição dos schemas de conteúdo.
 
 ## 🚀 Como rodar o projeto localmente
 
 Para rodar este projeto na sua máquina, você precisará ter o **Node.js** instalado.
 
-### 1. Rodando o CMS (Backend)
-O CMS precisa estar rodando para que o frontend consiga buscar as informações (como textos e imagens).
+### 1. Configurando e Rodando o Sanity Studio (CMS)
+O CMS (Sanity) precisa estar configurado para que o frontend consiga buscar as informações. O Sanity é um banco de dados hospedado na nuvem, e o Studio é a interface de gerenciamento.
 
 ```bash
-cd cms
+cd studio-atletica-belas-artes
 npm install
-npm run develop
+npm run dev
 ```
-> O painel do Strapi estará disponível em `http://localhost:1337/admin`.
+> O painel do Sanity Studio estará disponível em `http://localhost:3333`.
 
-### 2. Rodando o Frontend
-Em um novo terminal, inicie o frontend:
+### 2. Configurando as Variáveis de Ambiente (Frontend)
+Na pasta `/frontend`, copie o arquivo `.env.example` ou crie um arquivo `.env.local` e configure as seguintes variáveis relacionadas ao seu projeto do Sanity:
+
+```env
+NEXT_PUBLIC_SANITY_PROJECT_ID=seu_project_id_do_sanity
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
+```
+
+### 3. Rodando o Frontend
+Em um terminal na pasta do frontend, inicie o aplicativo:
 
 ```bash
 cd frontend
