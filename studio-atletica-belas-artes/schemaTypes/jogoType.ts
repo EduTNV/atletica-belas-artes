@@ -70,4 +70,22 @@ export const jogoType = defineType({
       validation: (Rule) => Rule.required(),
     }),
   ],
+  preview: {
+    select: {
+      time_casa: 'time_casa',
+      time_visitante: 'time_visitante',
+      modalidade: 'modalidade.nome',
+      estado: 'estado',
+    },
+    prepare(selection) {
+      const { time_casa, time_visitante, modalidade, estado } = selection
+      
+      const estadoStr = estado === 'proximo' ? 'Próximo' : estado === 'em_andamento' ? 'Em Andamento' : estado === 'finalizado' ? 'Finalizado' : ''
+
+      return {
+        title: `${time_casa || 'Time Casa'} x ${time_visitante || 'Time Visitante'}`,
+        subtitle: `[${modalidade || 'Sem Modalidade'}] ${estadoStr}`,
+      }
+    },
+  },
 })

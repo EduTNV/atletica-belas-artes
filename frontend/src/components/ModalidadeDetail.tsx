@@ -341,6 +341,8 @@ function TabTreinos({ treinos }: { treinos: any[] }) {
     return <EmptyState text="Nenhum horário de treino cadastrado." />;
   }
 
+  const temTreinoAberto = treinos.some((t) => t.aberto_novos_atletas !== false);
+
   return (
     <div>
       <div className="flex flex-col gap-1">
@@ -368,25 +370,27 @@ function TabTreinos({ treinos }: { treinos: any[] }) {
           </div>
         ))}
       </div>
-      <div
-        className="mt-4 p-3 rounded-lg text-[12px] leading-relaxed"
-        style={{
-          background: "rgba(92, 100, 132, 0.06)",
-          border: "0.5px solid rgba(92, 100, 132, 0.2)",
-          color: "var(--text2)",
-        }}
-      >
-        Treinos abertos a novos atletas. Entre em contato com o capitão para mais informações.
-      </div>
+      {temTreinoAberto && (
+        <div
+          className="mt-4 p-3 rounded-lg text-[12px] leading-relaxed"
+          style={{
+            background: "rgba(92, 100, 132, 0.06)",
+            border: "0.5px solid rgba(92, 100, 132, 0.2)",
+            color: "var(--text2)",
+          }}
+        >
+          Treinos abertos a novos atletas. Entre em contato com o capitão para mais informações.
+        </div>
+      )}
     </div>
   );
 }
 
-const medalhaConfig: Record<string, { emoji: string; label: string; color: string; bg: string; border: string }> = {
-  ouro: { emoji: "🥇", label: "OURO", color: "#c9a84c", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.3)" },
-  prata: { emoji: "🥈", label: "PRATA", color: "#666666", bg: "rgba(0,0,0,0.05)", border: "rgba(0,0,0,0.1)" },
-  bronze: { emoji: "🏅", label: "BRONZE", color: "#cd7f32", bg: "rgba(205,127,50,0.1)", border: "rgba(205,127,50,0.3)" },
-  premio: { emoji: "⭐", label: "PRÊMIO", color: "#e02c2c", bg: "rgba(224,44,44,0.1)", border: "rgba(224,44,44,0.3)" },
+const medalhaConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  ouro: { label: "OURO", color: "#c9a84c", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.3)" },
+  prata: { label: "PRATA", color: "#666666", bg: "rgba(0,0,0,0.05)", border: "rgba(0,0,0,0.1)" },
+  bronze: { label: "BRONZE", color: "#cd7f32", bg: "rgba(205,127,50,0.1)", border: "rgba(205,127,50,0.3)" },
+  premio: { label: "PRÊMIO", color: "#e02c2c", bg: "rgba(224,44,44,0.1)", border: "rgba(224,44,44,0.3)" },
 };
 
 /** Aba com conquistas, títulos e medalhas da modalidade */
@@ -405,7 +409,6 @@ function TabConquistas({ conquistas }: { conquistas: any[] }) {
             className="flex items-center gap-3 py-3 border-b"
             style={{ borderColor: "var(--border)" }}
           >
-            <span className="text-[22px] w-9 text-center shrink-0">{config.emoji}</span>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-medium truncate" style={{ color: "#000000" }}>
                 {c.titulo}

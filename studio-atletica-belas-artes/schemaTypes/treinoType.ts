@@ -46,5 +46,30 @@ export const treinoType = defineType({
       to: [{ type: 'modalidade' }],
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: 'aberto_novos_atletas',
+      title: 'Aberto a novos atletas?',
+      description: 'Se marcado, exibe a mensagem de contato para novos atletas na página da modalidade.',
+      type: 'boolean',
+      initialValue: true,
+    }),
   ],
+  preview: {
+    select: {
+      dia: 'dia_semana',
+      hora: 'hora_inicio',
+      modalidade: 'modalidade.nome',
+    },
+    prepare(selection) {
+      const { dia, hora, modalidade } = selection
+      
+      const diaStr = dia ? dia.charAt(0).toUpperCase() + dia.slice(1) : 'Sem dia'
+      const horaStr = hora ? ` - ${hora}` : ''
+
+      return {
+        title: `${diaStr}${horaStr}`,
+        subtitle: `[${modalidade || 'Sem Modalidade'}]`,
+      }
+    },
+  },
 })

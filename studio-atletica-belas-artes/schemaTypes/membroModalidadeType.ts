@@ -58,4 +58,23 @@ export const membroModalidadeType = defineType({
       initialValue: 99,
     }),
   ],
+  preview: {
+    select: {
+      nome: 'nome',
+      cargo: 'cargo',
+      modalidade: 'modalidade.nome',
+      media: 'foto',
+    },
+    prepare(selection) {
+      const { nome, cargo, modalidade, media } = selection
+      
+      const cargoStr = cargo ? ` - ${cargo.charAt(0).toUpperCase() + cargo.slice(1)}` : ''
+
+      return {
+        title: nome || 'Sem Nome',
+        subtitle: `[${modalidade || 'Sem Modalidade'}]${cargoStr}`,
+        media: media,
+      }
+    },
+  },
 })

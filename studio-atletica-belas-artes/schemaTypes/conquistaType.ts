@@ -37,4 +37,23 @@ export const conquistaType = defineType({
       validation: (Rule) => Rule.required(),
     }),
   ],
+  preview: {
+    select: {
+      titulo: 'titulo',
+      ano: 'ano',
+      medalha: 'medalha',
+      modalidade: 'modalidade.nome',
+    },
+    prepare(selection) {
+      const { titulo, ano, medalha, modalidade } = selection
+      
+      const anoStr = ano ? ` (${ano})` : ''
+      const medalhaStr = medalha ? ` - ${medalha.charAt(0).toUpperCase() + medalha.slice(1)}` : ''
+
+      return {
+        title: titulo || 'Sem Título',
+        subtitle: `[${modalidade || 'Sem Modalidade'}]${medalhaStr}${anoStr}`,
+      }
+    },
+  },
 })
