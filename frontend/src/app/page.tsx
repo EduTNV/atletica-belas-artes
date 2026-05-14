@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExpandableText, Paragraphs } from "@/components/ExpandableText";
+import { Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
 import { JogosCard } from "@/components/JogosCard";
 import { client } from "@/lib/sanity";
@@ -7,18 +7,15 @@ import { urlFor } from "@/lib/sanity.image";
 
 /** Página principal (Home) da Atlética, listando banner, quem somos, próximos jogos e eventos */
 export default async function HomePage() {
-  const [todosEventos, configHome, jogos, competicoesDocs] = await Promise.all([
+  const [todosEventos, configHome, jogos] = await Promise.all([
     client.fetch(`*[_type == "evento" && ativo == true] | order(data asc){
       _id, nome, data, local, endereco, arte, status_lote, link_ingresso
     }`).catch(() => []),
     client.fetch(`*[_type == "home"][0]{
-      subtitulo_hero, foto_hero, texto_quem_somos_resumo, texto_quem_somos_completo, frase_footer
+      subtitulo_hero, foto_hero, texto_quem_somos_resumo, frase_footer
     }`).catch(() => null),
     client.fetch(`*[_type == "jogo"] | order(data_hora desc)[0...50]{
       _id, time_casa, time_visitante, modalidade->{ nome }, competicao, fase, data_hora, local, placar_casa, placar_visitante, estado
-    }`).catch(() => []),
-    client.fetch(`*[_type == "competicao"] | order(ordem asc){
-      _id, nome, sigla, slug, descricao, foto
     }`).catch(() => []),
   ]);
 
@@ -29,10 +26,10 @@ export default async function HomePage() {
     configHome?.texto_quem_somos_resumo ||
     "A Atlética Belas Artes é a entidade esportiva oficial da Faculdade Belas Artes de São Paulo. Fundada por alunos apaixonados, representamos a BA nas principais competições universitárias com muito suor, tinta e determinação.";
 
-  const quemSomosCompleto = configHome?.texto_quem_somos_completo || null;
 
-  const heroImgUrl = configHome?.foto_hero?.asset 
-    ? urlFor(configHome.foto_hero).width(1600).url() 
+
+  const heroImgUrl = configHome?.foto_hero?.asset
+    ? urlFor(configHome.foto_hero).width(1600).url()
     : null;
 
   return (
@@ -117,17 +114,26 @@ export default async function HomePage() {
             >
               Quem Somos
             </h2>
-            <div className="mb-6">
+            <div className="mb-6 text-justify w-full">
               <Paragraphs text={quemSomosResumo} />
             </div>
-            <ExpandableText text={null} value={quemSomosCompleto} />
+            <Link
+              href="/sobre"
+              className="flex items-center gap-2 font-semibold transition-opacity hover:opacity-70"
+              style={{ color: "var(--crimson)", fontSize: "15px" }}
+            >
+              Saiba mais sobre a Atlética
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
 
       {proximosEventos.length > 0 && (
-        <section 
-          className="w-full" 
+        <section
+          className="w-full"
           style={{ paddingTop: "32px", paddingBottom: "60px" }}
         >
           <div className="content-wrapper">
@@ -244,6 +250,13 @@ export default async function HomePage() {
               label="Contato / Ajuda"
               icon={
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+              }
+            />
+            <FooterLink
+              href="/sobre"
+              label="Sobre a Atlética"
+              icon={
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               }
             />
           </div>

@@ -36,7 +36,7 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
           </div>
 
           <Link 
-            href="/" 
+            href="/sobre" 
             className="sheet-item" 
             id="menu-sobre"
             onClick={onClose}

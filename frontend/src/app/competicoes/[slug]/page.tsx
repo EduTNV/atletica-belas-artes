@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { client } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity.image";
-import { CarrosselGaleria } from "./CarrosselGaleria";
+import { CarrosselGaleria } from "@/components/CarrosselGaleria";
 import { TimelineEdicoes } from "./TimelineEdicoes";
 
 interface FotoGaleria {

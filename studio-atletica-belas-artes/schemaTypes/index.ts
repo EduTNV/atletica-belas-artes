@@ -13,6 +13,7 @@ import { conquistaType } from './conquistaType'
 import { treinoType } from './treinoType'
 import { competicaoType } from './competicaoType'
 import { edicaoCompeticaoType } from './edicaoCompeticaoType'
+import { sobreType } from './sobreType'
 
 export const schemaTypes = [
   // Documentos principais
@@ -32,6 +33,7 @@ export const schemaTypes = [
   ajudaType,
   homeType,
   contatoType,
+  sobreType,
 
   // Objetos auxiliares
   faqType,
