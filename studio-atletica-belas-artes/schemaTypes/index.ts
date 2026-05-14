@@ -8,11 +8,11 @@ import { jogoType } from './jogoType'
 import { ajudaType } from './ajudaType'
 import { faqType } from './faqType'
 import { homeType } from './homeType'
-import { competicaoObjectType } from './competicaoObjectType'
-import { competicoesType } from './competicoesType'
 import { contatoType } from './contatoType'
 import { conquistaType } from './conquistaType'
 import { treinoType } from './treinoType'
+import { competicaoType } from './competicaoType'
+import { edicaoCompeticaoType } from './edicaoCompeticaoType'
 
 export const schemaTypes = [
   // Documentos principais
@@ -25,14 +25,14 @@ export const schemaTypes = [
   jogoType,
   conquistaType,
   treinoType,
+  competicaoType,
+  edicaoCompeticaoType,
 
   // Singletons (Configurações)
   ajudaType,
   homeType,
-  competicoesType,
   contatoType,
 
   // Objetos auxiliares
   faqType,
-  competicaoObjectType,
 ]

@@ -7,18 +7,18 @@ import { urlFor } from "@/lib/sanity.image";
 
 /** Página principal (Home) da Atlética, listando banner, quem somos, próximos jogos e eventos */
 export default async function HomePage() {
-  const [todosEventos, configHome, configCompeticoes, jogos] = await Promise.all([
+  const [todosEventos, configHome, jogos, competicoesDocs] = await Promise.all([
     client.fetch(`*[_type == "evento" && ativo == true] | order(data asc){
       _id, nome, data, local, endereco, arte, status_lote, link_ingresso
     }`).catch(() => []),
     client.fetch(`*[_type == "home"][0]{
       subtitulo_hero, foto_hero, texto_quem_somos_resumo, texto_quem_somos_completo, frase_footer
     }`).catch(() => null),
-    client.fetch(`*[_type == "competicoes"][0]{
-      competicoes[]{ nome, sigla, descricao, foto }
-    }`).catch(() => null),
     client.fetch(`*[_type == "jogo"] | order(data_hora desc)[0...50]{
       _id, time_casa, time_visitante, modalidade->{ nome }, competicao, fase, data_hora, local, placar_casa, placar_visitante, estado
+    }`).catch(() => []),
+    client.fetch(`*[_type == "competicao"] | order(ordem asc){
+      _id, nome, sigla, slug, descricao, foto
     }`).catch(() => []),
   ]);
 
@@ -187,74 +187,42 @@ export default async function HomePage() {
         </section>
       )}
 
-      {configCompeticoes?.competicoes && configCompeticoes.competicoes.length > 0 && (
-        <section 
-          className="w-full"
-          style={{ paddingTop: "32px", paddingBottom: "clamp(48px, 6vw, 80px)" }}
-        >
-          <div className="content-wrapper">
-            <div className="max-w-5xl mx-auto">
-              <h2
-                className="font-heading mb-3"
-                style={{ fontSize: "clamp(28px, 3.5vw, 44px)", color: "var(--text)" }}
-              >
-                Onde Competimos
-              </h2>
-              <p
-                className="text-[14px] md:text-[16px] mb-10 md:mb-16"
-                style={{ color: "var(--text-main)" }}
-              >
-                Representando a Belas Artes nos maiores palcos universitários
-              </p>
-
-              <div className="flex flex-col gap-10 md:gap-14">
-                {configCompeticoes.competicoes.map((comp: any) => {
-                  const fotoUrl = comp.foto?.asset 
-                    ? urlFor(comp.foto).width(800).url() 
-                    : null;
-                  return (
-                    <div key={comp.sigla} className="flex flex-col gap-5">
-                      <div className="flex flex-col md:flex-row gap-6 md:items-start">
-                        {fotoUrl ? (
-                          <img
-                            src={fotoUrl}
-                            alt={comp.nome}
-                            className="w-full md:w-[280px] lg:w-[320px] aspect-[16/9] rounded-2xl object-cover shrink-0"
-                          />
-                        ) : (
-                          <div
-                            className="w-full md:w-[280px] lg:w-[320px] aspect-[16/9] rounded-2xl flex items-center justify-center font-heading text-[44px] shrink-0"
-                            style={{
-                              background: "var(--surface2)",
-                              color: "var(--text3)",
-                            }}
-                          >
-                            {comp.sigla}
-                          </div>
-                        )}
-
-                        <div className="flex-1">
-                          <div className="flex items-baseline gap-4 mb-3">
-                            <span className="font-heading text-[32px] md:text-[44px]" style={{ color: "var(--crimson)" }}>
-                              {comp.sigla}
-                            </span>
-                            <h3 className="text-[18px] md:text-[22px] font-bold" style={{ color: "var(--text-main)" }}>
-                              {comp.nome}
-                            </h3>
-                          </div>
-                          <p className="text-[15px] md:text-[16px] leading-[1.7]" style={{ color: "var(--text2)" }}>
-                            {comp.descricao}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+      <section
+        className="w-full"
+        style={{ paddingTop: "clamp(32px, 5vw, 60px)", paddingBottom: "clamp(32px, 5vw, 60px)" }}
+      >
+        <div className="content-wrapper">
+          <div className="max-w-5xl mx-auto flex flex-col items-center">
+            <h2
+              className="font-heading mb-4 text-center"
+              style={{ fontSize: "clamp(28px, 3.5vw, 44px)", color: "var(--text)" }}
+            >
+              Onde Competimos
+            </h2>
+            <p
+              className="text-[15px] md:text-[16px] leading-[1.7] mb-8 text-justify"
+              style={{ color: "var(--text2)", maxWidth: "560px" }}
+            >
+              Representamos a Belas Artes em três grandes competições universitárias:
+              JUCA, NDU e Liga Paulista. Cada uma com sua história, suas regras e seu
+              peso para os nossos times.
+            </p>
+            <Link
+              href="/competicoes"
+              className="inline-block font-semibold transition-opacity hover:opacity-80 text-center"
+              style={{
+                background: "var(--crimson)",
+                color: "#f4f4f4",
+                borderRadius: "8px",
+                padding: "12px 28px",
+                fontSize: "14px",
+              }}
+            >
+              Ver Competições
+            </Link>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       <div
         className="w-full border-t"

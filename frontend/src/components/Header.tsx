@@ -7,6 +7,7 @@ const navLinks = [
   { href: "/", label: "Início" },
   { href: "/eventos", label: "Eventos" },
   { href: "/times", label: "Times" },
+  { href: "/competicoes", label: "Competições" },
 ];
 
 const secondaryLinks = [
