@@ -44,9 +44,9 @@ export function TimelineEdicoes({ edicoes }: TimelineEdicoesProps) {
       </h2>
 
       <div className="relative">
-        {/* Linha vertical — apenas desktop */}
+        {/* Linha vertical central — mobile e desktop */}
         <div
-          className="hidden md:block absolute"
+          className="absolute"
           style={{
             left: "50%",
             top: 0,
@@ -57,69 +57,16 @@ export function TimelineEdicoes({ edicoes }: TimelineEdicoesProps) {
           }}
         />
 
-        {/* Linha vertical — mobile, à esquerda */}
-        <div
-          className="md:hidden absolute"
-          style={{
-            left: "8px",
-            top: 0,
-            bottom: 0,
-            width: "2px",
-            background: "var(--border)",
-          }}
-        />
-
-        <div className="flex flex-col gap-10 md:gap-12">
+        <div className="flex flex-col gap-8 md:gap-12">
           {edicoes.map((edicao, index) => {
             const config = resultadoConfig[edicao.resultado] ?? resultadoConfig.participacao;
             const ladoEsquerdo = index % 2 === 0; // desktop: alterna lados
 
             return (
               <div key={edicao._id} className="relative flex items-start">
-                {/* Layout MOBILE: tudo à direita da linha */}
-                <div className="md:hidden flex items-start w-full pl-7">
-                  {/* Círculo mobile */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: "0px",
-                      top: "4px",
-                      width: "18px",
-                      height: "18px",
-                      borderRadius: "50%",
-                      background: config.color,
-                      border: "2px solid var(--bg)",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <div style={{ maxWidth: "520px" }}>
-                    <p
-                      className="font-heading leading-none mb-2"
-                      style={{ fontSize: "clamp(18px, 2vw, 24px)", color: "var(--text-main)" }}
-                    >
-                      {edicao.titulo}
-                    </p>
-                    <span
-                      className="inline-block mb-3 font-semibold"
-                      style={{
-                        fontSize: "11px",
-                        padding: "3px 10px",
-                        borderRadius: "20px",
-                        background: config.bg,
-                        color: config.color,
-                        letterSpacing: "0.4px",
-                      }}
-                    >
-                      {config.label}
-                    </span>
-                    <p style={{ fontSize: "14px", lineHeight: "1.7", color: "var(--text2)" }}>
-                      {edicao.descricao}
-                    </p>
-                  </div>
-                </div>
 
-                {/* Layout DESKTOP: alternado */}
-                <div className="hidden md:flex w-full items-start">
+                {/* Layout alternado — mobile e desktop */}
+                <div className="flex w-full items-start">
                   {ladoEsquerdo ? (
                     <>
                       {/* Texto à esquerda */}

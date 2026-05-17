@@ -33,7 +33,7 @@ const COMPETICAO_QUERY = `*[_type == "competicao" && slug.current == $slug][0]{
   fotos_galeria[]{ ..., asset-> }
 }`;
 
-const EDICOES_QUERY = `*[_type == "edicaoCompeticao" && competicao._ref == $id] | order(ano asc){
+const EDICOES_QUERY = `*[_type == "edicaoCompeticao" && competicao._ref == $id] | order(ano desc){
   _id, ano, titulo, resultado, descricao
 }`;
 
