@@ -3,17 +3,18 @@
 import { useState } from "react";
 import { EventCard } from "@/components/EventCard";
 import { EventDetail } from "@/components/EventDetail";
+import type { EventoDTO } from "@/types/sanity";
 
 type TabId = "proximos" | "galeria";
 
 interface EventosListProps {
-  proximos: Evento[] | any[];
-  passados: Evento[] | any[];
+  proximos: EventoDTO[];
+  passados: EventoDTO[];
 }
 
 export function EventosList({ proximos, passados }: EventosListProps) {
   const [activeTab, setActiveTab] = useState<TabId>("proximos");
-  const [selectedEvento, setSelectedEvento] = useState<Evento | any | null>(null);
+  const [selectedEvento, setSelectedEvento] = useState<EventoDTO | null>(null);
 
   const tabs: { id: TabId; label: string; count: number }[] = [
     { id: "proximos", label: "Próximos", count: proximos.length },
@@ -83,9 +84,9 @@ export function EventosList({ proximos, passados }: EventosListProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-            {eventos.map((evento: any) => (
+            {eventos.map((evento) => (
               <div
-                key={evento._id || evento.documentId}
+                key={evento._id}
                 onClick={() => setSelectedEvento(evento)}
                 className="cursor-pointer"
               >

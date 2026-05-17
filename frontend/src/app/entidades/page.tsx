@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { EntidadesList } from "@/components/EntidadesList";
 import { client } from "@/lib/sanity";
+import type { EntidadeDTO } from "@/types/sanity";
 
 export const metadata: Metadata = {
   title: "Entidades — Atlética Belas Artes",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 /** Página das Entidades parceiras, listando Bateria, Cheerleading, Diretoria, etc */
 export default async function EntidadesPage() {
-  const entidades = await client.fetch(`*[_type == "entidade"] | order(nome asc){
+  const entidades = await client.fetch<EntidadeDTO[]>(`*[_type == "entidade"] | order(nome asc){
     _id,
     nome,
     descricao,

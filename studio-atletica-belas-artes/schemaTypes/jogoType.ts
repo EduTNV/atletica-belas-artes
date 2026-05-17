@@ -18,6 +18,21 @@ export const jogoType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'belas_artes_posicao',
+      title: 'A Belas Artes é qual time?',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Time da Casa', value: 'casa' },
+          { title: 'Time Visitante', value: 'visitante' },
+          { title: 'Nenhum (Jogo Terceirizado)', value: 'nenhum' },
+        ],
+        layout: 'radio',
+      },
+      validation: (Rule) => Rule.required(),
+      initialValue: 'casa',
+    }),
+    defineField({
       name: 'modalidade',
       title: 'Modalidade',
       type: 'reference',

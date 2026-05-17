@@ -1,15 +1,9 @@
 "use client";
 
-interface Edicao {
-  _id: string;
-  ano: number;
-  titulo: string;
-  resultado: string;
-  descricao: string;
-}
+import type { EdicaoCompeticaoDTO } from "@/types/sanity";
 
 interface TimelineEdicoesProps {
-  edicoes: Edicao[];
+  edicoes: EdicaoCompeticaoDTO[];
 }
 
 const resultadoConfig: Record<string, { label: string; color: string; bg: string }> = {

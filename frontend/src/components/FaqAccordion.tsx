@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import type { FaqDTO } from "@/types/sanity";
 
 /** Componente de acordeão interativo para exibir perguntas frequentes (FAQ) */
-export function FaqAccordion({ faqs }: { faqs: any[] }) {
+export function FaqAccordion({ faqs }: { faqs: FaqDTO[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   if (!faqs || faqs.length === 0) return null;
@@ -30,7 +31,7 @@ function FaqItem({
   isOpen,
   onToggle,
 }: {
-  faq: any;
+  faq: FaqDTO;
   isOpen: boolean;
   onToggle: () => void;
 }) {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { client } from "@/lib/sanity";
 import { TimesList } from "@/components/TimesList";
+import type { ModalidadeListDTO } from "@/types/sanity";
 
 export const metadata: Metadata = {
   title: "Times — Atlética Belas Artes",
@@ -9,9 +10,9 @@ export const metadata: Metadata = {
 
 /** Página de Times/Modalidades, exibindo filtros e a listagem de todas as equipes */
 export default async function TimesPage() {
-  const modalidades = await client.fetch(`*[_type == "modalidade"] | order(nome asc){
+  const modalidades = await client.fetch<ModalidadeListDTO[]>(`*[_type == "modalidade"] | order(nome asc){
     _id, nome, slug, capitao_nome, link_grupo_whatsapp, foto_card, foto_banner
-  }`).catch(() => []);
+  }`).catch(() => [] as ModalidadeListDTO[]);
 
   return (
     <>

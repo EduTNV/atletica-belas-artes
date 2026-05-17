@@ -3,11 +3,16 @@
 import { useState, useEffect } from "react";
 import { client } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity.image";
-
+import type { ModalidadeListDTO, JogoModalidadeDTO, TreinoDTO, ConquistaDTO, MembroModalidadeDTO } from "@/types/sanity";
+import { TabJogos } from "./TabJogos";
+import { TabTreinos } from "./TabTreinos";
+import { TabConquistas } from "./TabConquistas";
+import { TabElenco } from "./TabElenco";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 type InnerTab = "jogos" | "treinos" | "conquistas" | "elenco";
 
 interface ModalidadeDetailProps {
-  modalidade: any;
+  modalidade: ModalidadeListDTO;
   cursoNome: string;
   cursoColor: string | null;
   onClose: () => void;
@@ -15,11 +20,12 @@ interface ModalidadeDetailProps {
 
 /** Painel de visualização detalhada para uma modalidade (Resultados, Treinos, etc) */
 export function ModalidadeDetail({ modalidade, cursoColor, onClose }: ModalidadeDetailProps) {
+  const panelRef = useFocusTrap(true);
   const [activeTab, setActiveTab] = useState<InnerTab>("jogos");
-  const [jogosModalidade, setJogosModalidade] = useState<any[]>([]);
-  const [treinos, setTreinos] = useState<any[]>([]);
-  const [conquistas, setConquistas] = useState<any[]>([]);
-  const [membros, setMembros] = useState<any[]>([]);
+  const [jogosModalidade, setJogosModalidade] = useState<JogoModalidadeDTO[]>([]);
+  const [treinos, setTreinos] = useState<TreinoDTO[]>([]);
+  const [conquistas, setConquistas] = useState<ConquistaDTO[]>([]);
+  const [membros, setMembros] = useState<MembroModalidadeDTO[]>([]);
   const [loading, setLoading] = useState(true);
 
   const color = cursoColor || "#8b1a1a";
@@ -34,11 +40,17 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
         const id = modalidade._id;
 
         const [resJogos, resTre, resCon, resMem] = await Promise.all([
-          client.fetch(`*[_type == "jogo" && modalidade._ref == $id] | order(data_hora desc)`, { id }),
-          client.fetch(`*[_type == "treino" && modalidade._ref == $id]`, { id }),
-          client.fetch(`*[_type == "conquista" && modalidade._ref == $id] | order(ano desc)`, { id }),
+          client.fetch(`*[_type == "jogo" && modalidade._ref == $id] | order(data_hora desc){
+            _id, time_casa, time_visitante, belas_artes_posicao, competicao, fase, data_hora, local, placar_casa, placar_visitante, estado
+          }`, { id }),
+          client.fetch(`*[_type == "treino" && modalidade._ref == $id]{
+            _id, dia_semana, hora_inicio, hora_fim, local, aberto_novos_atletas
+          }`, { id }),
+          client.fetch(`*[_type == "conquista" && modalidade._ref == $id] | order(ano desc){
+            _id, titulo, ano, medalha
+          }`, { id }),
           client.fetch(`*[_type == "membroModalidade" && modalidade._ref == $id] | order(ordem asc){
-            ...,
+            _id, nome, cargo, foto, ordem,
             curso->{ nome, cor }
           }`, { id }),
         ]);
@@ -55,10 +67,34 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
   }, [modalidade._id]);
 
   const finalizados = jogosModalidade.filter(j => j.estado === "finalizado");
-  const totalJogos = finalizados.length;
-  const vitorias = finalizados.filter(j => (j.placar_casa ?? 0) > (j.placar_visitante ?? 0)).length;
-  const derrotas = finalizados.filter(j => (j.placar_casa ?? 0) < (j.placar_visitante ?? 0)).length;
-  const empates = finalizados.filter(j => (j.placar_casa ?? 0) === (j.placar_visitante ?? 0)).length;
+  
+  let vitorias = 0;
+  let derrotas = 0;
+  let empates = 0;
+
+  finalizados.forEach(j => {
+    const pCasa = j.placar_casa ?? 0;
+    const pVis = j.placar_visitante ?? 0;
+    
+    // Fallback: se não estiver preenchido, assume "casa" por retrocompatibilidade
+    const isCasa = j.belas_artes_posicao === "casa" || !j.belas_artes_posicao;
+    const isVisitante = j.belas_artes_posicao === "visitante";
+    const isNenhum = j.belas_artes_posicao === "nenhum";
+
+    if (isNenhum) return; // Se for jogo neutro (ex: terceirizado), não afeta stats da Atlética
+
+    if (pCasa === pVis) {
+      empates++;
+    } else if (pCasa > pVis) {
+      if (isCasa) vitorias++;
+      if (isVisitante) derrotas++;
+    } else { // pVis > pCasa
+      if (isVisitante) vitorias++;
+      if (isCasa) derrotas++;
+    }
+  });
+
+  const totalJogos = vitorias + derrotas + empates;
 
   const tabs: { id: InnerTab; label: string }[] = [
     { id: "jogos", label: "Jogos" },
@@ -71,7 +107,7 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
     <>
       <div className="drawer-overlay open" onClick={onClose} style={{ zIndex: 9998 }} />
 
-      <div className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
+      <div ref={panelRef} className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="mod-detail-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -210,363 +246,4 @@ function StatCell({ value, label, color }: { value: number; label: string; color
       </span>
     </div>
   );
-}
-
-/** Aba de jogos: exibe próximos, em andamento e finalizados */
-function TabJogos({ jogos }: { jogos: any[] }) {
-  if (jogos.length === 0) {
-    return <EmptyState text="Nenhum jogo registrado." />;
-  }
-
-  const proximos = jogos.filter(j => j.estado === "proximo" || j.estado === "em_andamento")
-    .sort((a, b) => new Date(a.data_hora).getTime() - new Date(b.data_hora).getTime());
-  const finalizados = jogos.filter(j => j.estado === "finalizado")
-    .sort((a, b) => new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime());
-
-  const statusLabels: Record<string, { label: string; color: string }> = {
-    proximo: { label: "PRÓXIMO", color: "var(--crimson)" },
-    em_andamento: { label: "AO VIVO", color: "#4caf50" },
-  };
-
-  return (
-    <div className="flex flex-col gap-2">
-      {proximos.length > 0 && (
-        <>
-          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-1" style={{ color: "var(--text3)" }}>
-            Próximos
-          </p>
-          {proximos.map((j) => {
-            const dataObj = new Date(j.data_hora);
-            const dataStr = dataObj.toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
-            const horaStr = dataObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-            const st = statusLabels[j.estado];
-
-            return (
-              <div
-                key={j._id || j.documentId}
-                className="flex items-center gap-3 py-3 border-b"
-                style={{ borderColor: "var(--border)" }}
-              >
-                <div
-                  className="w-[3px] h-10 rounded-full shrink-0"
-                  style={{ background: st.color }}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium truncate" style={{ color: "#000000" }}>
-                    {j.time_casa} vs {j.time_visitante}
-                  </p>
-                  <p className="text-[11px] truncate" style={{ color: "var(--text3)" }}>
-                    {[j.competicao, j.fase, j.local].filter(Boolean).join(" · ") || dataStr}
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-[12px] font-semibold" style={{ color: "var(--text2)" }}>
-                    {dataStr} · {horaStr}
-                  </p>
-                  <p className="text-[9px] font-bold tracking-wider" style={{ color: st.color }}>
-                    {st.label}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </>
-      )}
-
-      {finalizados.length > 0 && (
-        <>
-          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-1" style={{ color: "var(--text3)", marginTop: proximos.length > 0 ? "16px" : "0" }}>
-            Resultados
-          </p>
-          {finalizados.map((j) => {
-            const nos = j.placar_casa ?? 0;
-            const adv = j.placar_visitante ?? 0;
-            const outcome = nos > adv ? "win" : nos < adv ? "loss" : "draw";
-            const outcomeLabel = nos > adv ? "VITÓRIA" : nos < adv ? "DERROTA" : "EMPATE";
-            const colors = {
-              win: { indicator: "#4caf50", text: "#4caf50" },
-              loss: { indicator: "#f44336", text: "#f44336" },
-              draw: { indicator: "#9e9e9e", text: "var(--text3)" },
-            };
-
-            return (
-              <div
-                key={j._id || j.documentId}
-                className="flex items-center gap-3 py-3 border-b"
-                style={{ borderColor: "var(--border)" }}
-              >
-                <div
-                  className="w-[3px] h-10 rounded-full shrink-0"
-                  style={{ background: colors[outcome].indicator }}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium truncate" style={{ color: "#000000" }}>
-                    {j.time_casa} vs {j.time_visitante}
-                  </p>
-                  <p className="text-[11px] truncate" style={{ color: "var(--text3)" }}>
-                    {j.competicao || "Amistoso"}
-                    {j.data_hora && ` · ${new Date(j.data_hora).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })}`}
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-[15px] font-bold" style={{ color: colors[outcome].text }}>
-                    {nos}–{adv}
-                  </p>
-                  <p className="text-[9px] font-bold tracking-wider" style={{ color: colors[outcome].text }}>
-                    {outcomeLabel}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </>
-      )}
-    </div>
-  );
-}
-
-const diasLabels: Record<string, string> = {
-  segunda: "Segunda-feira",
-  terca: "Terça-feira",
-  quarta: "Quarta-feira",
-  quinta: "Quinta-feira",
-  sexta: "Sexta-feira",
-  sabado: "Sábado",
-  domingo: "Domingo",
-};
-
-/** Aba com o cronograma e horários de treino */
-function TabTreinos({ treinos }: { treinos: any[] }) {
-  if (treinos.length === 0) {
-    return <EmptyState text="Nenhum horário de treino cadastrado." />;
-  }
-
-  const temTreinoAberto = treinos.some((t) => t.aberto_novos_atletas !== false);
-
-  return (
-    <div>
-      <div className="flex flex-col gap-1">
-        {treinos.map((t) => (
-          <div
-            key={t._id || t.documentId}
-            className="flex items-center justify-between py-3 border-b"
-            style={{ borderColor: "var(--border)" }}
-          >
-            <span className="text-[13px] font-medium" style={{ color: "#000000" }}>
-              {diasLabels[t.dia_semana] || t.dia_semana}
-            </span>
-            <div className="text-right">
-              {t.local && (
-                <p className="text-[12px] font-medium" style={{ color: "var(--text2)" }}>
-                  {t.local}
-                </p>
-              )}
-              {t.hora_inicio && (
-                <p className="text-[11px]" style={{ color: "var(--text3)" }}>
-                  {t.hora_inicio}{t.hora_fim ? ` – ${t.hora_fim}` : ""}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {temTreinoAberto && (
-        <div
-          className="mt-4 p-3 rounded-lg text-[12px] leading-relaxed"
-          style={{
-            background: "rgba(92, 100, 132, 0.06)",
-            border: "0.5px solid rgba(92, 100, 132, 0.2)",
-            color: "var(--text2)",
-          }}
-        >
-          Treinos abertos a novos atletas. Entre em contato com o capitão para mais informações.
-        </div>
-      )}
-    </div>
-  );
-}
-
-const medalhaConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  ouro: { label: "OURO", color: "#c9a84c", bg: "rgba(201,168,76,0.1)", border: "rgba(201,168,76,0.3)" },
-  prata: { label: "PRATA", color: "#666666", bg: "rgba(0,0,0,0.05)", border: "rgba(0,0,0,0.1)" },
-  bronze: { label: "BRONZE", color: "#cd7f32", bg: "rgba(205,127,50,0.1)", border: "rgba(205,127,50,0.3)" },
-  premio: { label: "PRÊMIO", color: "#e02c2c", bg: "rgba(224,44,44,0.1)", border: "rgba(224,44,44,0.3)" },
-};
-
-/** Aba com conquistas, títulos e medalhas da modalidade */
-function TabConquistas({ conquistas }: { conquistas: any[] }) {
-  if (conquistas.length === 0) {
-    return <EmptyState text="Nenhuma conquista registrada ainda." />;
-  }
-
-  return (
-    <div className="flex flex-col gap-2">
-      {conquistas.map((c) => {
-        const config = c.medalha ? medalhaConfig[c.medalha] : medalhaConfig.premio;
-        return (
-          <div
-            key={c._id || c.documentId}
-            className="flex items-center gap-3 py-3 border-b"
-            style={{ borderColor: "var(--border)" }}
-          >
-            <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium truncate" style={{ color: "#000000" }}>
-                {c.titulo}
-              </p>
-              {c.ano && (
-                <p className="text-[11px]" style={{ color: "var(--text3)" }}>
-                  {c.ano}
-                </p>
-              )}
-            </div>
-            <span
-              className="text-[10px] font-bold px-2 py-1 rounded-lg shrink-0"
-              style={{ color: config.color, background: config.bg, border: `0.5px solid ${config.border}` }}
-            >
-              {config.label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function TabElenco({
-  modalidade,
-  membros,
-  color,
-}: {
-  modalidade: any;
-  membros: any[];
-  color: string;
-}) {
-  if (membros.length === 0 && !modalidade.capitao_nome) {
-    return null;
-  }
-
-  const tecnico = membros.find(m => m.cargo === "técnico");
-  const capitais = membros.filter(m => m.cargo === "capitão");
-  const coTecnicos = membros.filter(m => m.cargo === "co-técnico");
-  
-  const outrosCargos = ["co-capitão", "atleta", "atleta reserva"];
-  const restante = membros
-    .filter(m => outrosCargos.includes(m.cargo || "") || (!m.cargo && m.nome))
-    .sort((a: any, b: any) => a.nome.localeCompare(b.nome));
-
-  const renderMembroCard = (m: any, isFullWidth = false, customLabel?: string) => {
-    const fotoUrl = m.foto?.asset 
-      ? urlFor(m.foto).width(100).height(100).url() 
-      : null;
-    const label = customLabel || m.cargo || "Atleta";
-    
-    return (
-      <div
-        key={m._id || m.documentId}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          padding: "10px 12px",
-          background: "#ececec",
-          borderRadius: "10px",
-          overflow: "hidden",
-          gridColumn: isFullWidth ? "span 2" : "span 1",
-          border: m.cargo === "técnico" || m.cargo === "capitão" ? `1px solid ${color}33` : "none"
-        }}
-      >
-        {fotoUrl ? (
-          <img
-            src={fotoUrl}
-            alt={m.nome}
-            style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-          />
-        ) : (
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              background: m.cargo === "técnico" || m.cargo === "capitão" ? color : "#5c6484",
-              color: "#f4f4f4",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "13px",
-              fontWeight: 700,
-              flexShrink: 0,
-            }}
-          >
-            {getInitials(m.nome)}
-          </div>
-        )}
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <p style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {m.nome}
-          </p>
-          <p style={{ 
-            fontSize: "11px", 
-            color: m.cargo === "técnico" || m.cargo === "capitão" ? color : "#6e6a64", 
-            fontWeight: 600,
-            textTransform: "capitalize"
-          }}>
-            {label}
-          </p>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-      {tecnico && renderMembroCard(tecnico, true)}
-
-      {capitais[0] && renderMembroCard(capitais[0])}
-      {coTecnicos[0] && renderMembroCard(coTecnicos[0])}
-
-      {restante.map(m => renderMembroCard(m))}
-
-      {membros.length === 0 && modalidade.capitao_nome && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center", gap: "10px", padding: "10px 12px", background: "#ececec",
-            borderRadius: "10px", overflow: "hidden", gridColumn: "span 2", border: `1px solid ${color}44`
-          }}
-        >
-          <div style={{
-            width: "36px", height: "36px", borderRadius: "50%", background: color,
-            color: "#f4f4f4", display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "13px", fontWeight: 700, flexShrink: 0
-          }}>
-            {getInitials(modalidade.capitao_nome)}
-          </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ fontSize: "13px", fontWeight: 700, color: "#1a1a1a" }}>{modalidade.capitao_nome}</p>
-            <p style={{ fontSize: "11px", color: color, fontWeight: 600 }}>Capitão</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** Componente auxiliar para exibir mensagens de ausência de dados */
-function EmptyState({ text }: { text: string }) {
-  return (
-    <div className="text-center py-12">
-      <p className="text-[14px]" style={{ color: "var(--text3)" }}>{text}</p>
-    </div>
-  );
-}
-
-/** Utilitário para extrair até duas iniciais de um nome string */
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((p) => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 }

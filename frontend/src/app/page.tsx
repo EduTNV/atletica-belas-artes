@@ -1,26 +1,28 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Paragraphs } from "@/components/ExpandableText";
 import { EventCard } from "@/components/EventCard";
 import { JogosCard } from "@/components/JogosCard";
 import { client } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity.image";
+import type { EventoDTO, HomeConfig, JogoDTO } from "@/types/sanity";
 
 /** Página principal (Home) da Atlética, listando banner, quem somos, próximos jogos e eventos */
 export default async function HomePage() {
   const [todosEventos, configHome, jogos] = await Promise.all([
-    client.fetch(`*[_type == "evento" && ativo == true] | order(data asc){
+    client.fetch<EventoDTO[]>(`*[_type == "evento" && ativo == true] | order(data asc){
       _id, nome, data, local, endereco, arte, status_lote, link_ingresso
-    }`).catch(() => []),
-    client.fetch(`*[_type == "home"][0]{
+    }`).catch(() => [] as EventoDTO[]),
+    client.fetch<HomeConfig | null>(`*[_type == "home"][0]{
       subtitulo_hero, foto_hero, texto_quem_somos_resumo, frase_footer
     }`).catch(() => null),
-    client.fetch(`*[_type == "jogo"] | order(data_hora desc)[0...50]{
+    client.fetch<JogoDTO[]>(`*[_type == "jogo"] | order(data_hora desc)[0...50]{
       _id, time_casa, time_visitante, modalidade->{ nome }, competicao, fase, data_hora, local, placar_casa, placar_visitante, estado
-    }`).catch(() => []),
+    }`).catch(() => [] as JogoDTO[]),
   ]);
 
   const agora = new Date();
-  const proximosEventos = todosEventos.filter((e: any) => new Date(e.data) >= agora);
+  const proximosEventos = todosEventos.filter((e) => new Date(e.data) >= agora);
 
   const quemSomosResumo =
     configHome?.texto_quem_somos_resumo ||
@@ -39,15 +41,17 @@ export default async function HomePage() {
           className="w-full relative"
           style={{ minHeight: "clamp(420px, 60vh, 680px)" }}
         >
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: heroImgUrl ? `url('${heroImgUrl}')` : undefined,
-              backgroundColor: heroImgUrl ? undefined : "var(--surface2)",
-              backgroundSize: "cover",
-              backgroundPosition: "center top",
-            }}
-          />
+          {heroImgUrl ? (
+            <Image
+              src={heroImgUrl}
+              alt="Atlética Belas Artes Hero"
+              fill
+              priority
+              style={{ objectFit: "cover", objectPosition: "center top" }}
+            />
+          ) : (
+            <div className="absolute inset-0" style={{ backgroundColor: "var(--surface2)" }} />
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#0f0f0f]" />
 
           <div
@@ -180,7 +184,7 @@ export default async function HomePage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
-                {proximosEventos.slice(0, 3).map((evento: any, index: number) => (
+                {proximosEventos.slice(0, 3).map((evento, index) => (
                   <EventCard
                     key={evento._id}
                     evento={evento}

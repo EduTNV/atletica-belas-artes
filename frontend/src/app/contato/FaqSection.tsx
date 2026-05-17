@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import type { FaqDTO } from "@/types/sanity";
 
-export function FaqSection({ faqs }: { faqs: any[] }) {
+export function FaqSection({ faqs }: { faqs: FaqDTO[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   if (faqs.length === 0) return null;
@@ -28,7 +29,7 @@ function FaqItem({
   isOpen,
   onToggle,
 }: {
-  faq: any;
+  faq: FaqDTO;
   isOpen: boolean;
   onToggle: () => void;
 }) {

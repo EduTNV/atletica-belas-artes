@@ -1,7 +1,9 @@
 "use client";
 
+import type { JogoDTO } from "@/types/sanity";
+
 interface JogosCardProps {
-  jogos: any[];
+  jogos: JogoDTO[];
 }
 
 /** Componente que exibe o card de jogos na Home: Ao Vivo, Próximo Jogo e Último Resultado */
@@ -95,7 +97,7 @@ export function JogosCard({ jogos }: JogosCardProps) {
 }
 
 /** Renderiza a linha de um jogo contendo hora, placar e detalhes da partida */
-function JogoRow({ jogo, tipo, lateralPadding }: { jogo: any; tipo: "proximo" | "ao_vivo" | "secundario" | "resultado"; lateralPadding: string }) {
+function JogoRow({ jogo, tipo, lateralPadding }: { jogo: JogoDTO; tipo: "proximo" | "ao_vivo" | "secundario" | "resultado"; lateralPadding: string }) {
   const dataObj = new Date(jogo.data_hora);
   const horaFormatada = dataObj.toLocaleTimeString("pt-BR", {
     hour: "2-digit",

@@ -1,11 +1,12 @@
 import { client } from "@/lib/sanity";
 import { FaqSection } from "./FaqSection";
+import type { ContatoDTO, AjudaDTO } from "@/types/sanity";
 
 /** Página de Contato e Ajuda, exibindo redes sociais, email e FAQ */
 export default async function ContatoPage() {
   const [contato, configAjuda] = await Promise.all([
-    client.fetch(`*[_type == "contato"][0]{ email, whatsapp, instagram }`),
-    client.fetch(`*[_type == "ajuda"][0]{ titulo_pagina, subtitulo, faqs[]{ pergunta, resposta, ordem } }`)
+    client.fetch<ContatoDTO | null>(`*[_type == "contato"][0]{ email, whatsapp, instagram }`),
+    client.fetch<AjudaDTO | null>(`*[_type == "ajuda"][0]{ titulo_pagina, subtitulo, faqs[]{ pergunta, resposta, ordem } }`)
   ]);
 
   const hasAnyInfo = contato && (contato.email || contato.whatsapp || contato.instagram);
@@ -54,17 +55,7 @@ export default async function ContatoPage() {
                     href={`https://wa.me/55${contato.whatsapp.replace(/\D/g, "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full md:w-auto text-center transition-opacity hover:opacity-85"
-                    style={{
-                      background: "#e02c2c",
-                      color: "#f4f4f4",
-                      borderRadius: "8px",
-                      padding: "12px 32px",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      textDecoration: "none",
-                      display: "inline-block",
-                    }}
+                    className="btn-primary"
                   >
                     Falar pelo WhatsApp
                   </a>
@@ -75,17 +66,7 @@ export default async function ContatoPage() {
                     href={`mailto:${contato.email}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full md:w-auto text-center transition-opacity hover:opacity-85"
-                    style={{
-                      background: "#e02c2c",
-                      color: "#f4f4f4",
-                      borderRadius: "8px",
-                      padding: "12px 32px",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      textDecoration: "none",
-                      display: "inline-block",
-                    }}
+                    className="btn-primary"
                   >
                     Enviar E-mail
                   </a>
@@ -96,17 +77,7 @@ export default async function ContatoPage() {
                     href={`https://instagram.com/${contato.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full md:w-auto text-center transition-opacity hover:opacity-85"
-                    style={{
-                      background: "#e02c2c",
-                      color: "#f4f4f4",
-                      borderRadius: "8px",
-                      padding: "12px 32px",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      textDecoration: "none",
-                      display: "inline-block",
-                    }}
+                    className="btn-primary"
                   >
                     Seguir no Instagram
                   </a>

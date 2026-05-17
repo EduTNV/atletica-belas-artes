@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { client } from "@/lib/sanity";
 import { EventosList } from "@/components/EventosList";
+import type { EventoDTO } from "@/types/sanity";
 
 export const metadata: Metadata = {
   title: "Eventos — Atlética Belas Artes",
@@ -9,14 +10,14 @@ export const metadata: Metadata = {
 
 /** Página de Eventos, listando festas e integrações disponíveis */
 export default async function EventosPage() {
-  const todosEventos = await client.fetch(`*[_type == "evento" && ativo == true] | order(data asc){
+  const todosEventos = await client.fetch<EventoDTO[]>(`*[_type == "evento" && ativo == true] | order(data asc){
     _id, nome, data, local, endereco, arte, status_lote, link_ingresso, aftermovie_url
-  }`).catch(() => []);
+  }`).catch(() => [] as EventoDTO[]);
 
   const agora = new Date();
-  const proximos = todosEventos.filter((e: any) => new Date(e.data) >= agora);
+  const proximos = todosEventos.filter((e) => new Date(e.data) >= agora);
   const passados = todosEventos
-    .filter((e: any) => new Date(e.data) < agora)
+    .filter((e) => new Date(e.data) < agora)
     .reverse();
 
   return (

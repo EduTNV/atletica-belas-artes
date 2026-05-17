@@ -1,26 +1,29 @@
 "use client";
 
 import { urlFor } from "@/lib/sanity.image";
+import type { EntidadeDTO, MembroEntidadeDTO } from "@/types/sanity";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface EntidadeDetailProps {
-  entidade: any;
+  entidade: EntidadeDTO;
   onClose: () => void;
 }
 
 export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
+  const panelRef = useFocusTrap(true);
   const logoUrl = entidade.logo?.asset 
     ? urlFor(entidade.logo).width(1200).url() 
     : null;
 
   const membros = [...(entidade.membros || [])].sort(
-    (a: any, b: any) => (a.ordem ?? 99) - (b.ordem ?? 99)
+    (a, b) => (a.ordem ?? 99) - (b.ordem ?? 99)
   );
 
   return (
     <>
       <div className="drawer-overlay open" onClick={onClose} style={{ zIndex: 9998 }} />
 
-      <div className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
+      <div ref={panelRef} className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="ent-detail-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -116,8 +119,8 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
 
                 {/* TAREFA 3.3: Grid 2x2 nos membros */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                  {membros.map((membro: any) => (
-                    <MembroCard key={membro._id || membro.documentId} membro={membro} />
+                  {membros.map((membro) => (
+                    <MembroCard key={membro._id} membro={membro} />
                   ))}
                 </div>
               </>
@@ -129,7 +132,7 @@ export function EntidadeDetail({ entidade, onClose }: EntidadeDetailProps) {
   );
 }
 
-function MembroCard({ membro }: { membro: any }) {
+function MembroCard({ membro }: { membro: MembroEntidadeDTO }) {
   const fotoUrl = membro.foto?.asset 
     ? urlFor(membro.foto).width(100).height(100).url() 
     : null;

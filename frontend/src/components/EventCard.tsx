@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { urlFor } from "@/lib/sanity.image";
+import type { EventoDTO } from "@/types/sanity";
 
 const statusMap: Record<string, { label: string; color: "gold" | "green" | "neutral" }> = {
   vendas_abertas: { label: "À VENDA", color: "green" },
@@ -22,7 +23,7 @@ export function formatDate(isoDate: string): string {
 
 
 interface EventCardProps {
-  evento: any;
+  evento: EventoDTO;
   className?: string;
   disableLink?: boolean;
 }

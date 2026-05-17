@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { PortableTextBlock } from "@portabletext/react";
 
 import { PortableText } from "@/components/PortableText";
 
@@ -20,7 +21,7 @@ export function Paragraphs({ text, className = "" }: { text: string; className?:
     ));
 }
 
-export function ExpandableText({ text, value }: { text?: string | null; value?: any }) {
+export function ExpandableText({ text, value }: { text?: string | null; value?: PortableTextBlock[] }) {
   const [open, setOpen] = useState(false);
 
   const hasValue = value && Array.isArray(value) && value.length > 0;

@@ -14,9 +14,10 @@ export async function POST(req: NextRequest) {
     revalidatePath("/", "layout");
 
     return NextResponse.json({ revalidated: true, now: Date.now() });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Erro desconhecido";
     return NextResponse.json(
-      { message: "Erro ao revalidar", error: err.message },
+      { message: "Erro ao revalidar", error: message },
       { status: 500 }
     );
   }

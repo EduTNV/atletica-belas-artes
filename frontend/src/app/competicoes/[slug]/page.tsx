@@ -1,32 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { client } from "@/lib/sanity";
 import { urlFor } from "@/lib/sanity.image";
 import { CarrosselGaleria } from "@/components/CarrosselGaleria";
 import { TimelineEdicoes } from "./TimelineEdicoes";
 
-interface FotoGaleria {
-  asset: { _ref: string; url?: string };
-  caption?: string;
-}
-
-interface CompeticaoDetalhe {
-  _id: string;
-  nome: string;
-  sigla: string;
-  descricao: string;
-  foto?: { asset: { _ref: string } };
-  fotos_galeria?: FotoGaleria[];
-}
-
-interface EdicaoCompeticao {
-  _id: string;
-  ano: number;
-  titulo: string;
-  resultado: string;
-  descricao: string;
-}
+import type { CompeticaoDetalheDTO, EdicaoCompeticaoDTO } from "@/types/sanity";
 
 const COMPETICAO_QUERY = `*[_type == "competicao" && slug.current == $slug][0]{
   _id, nome, sigla, descricao, foto,
@@ -51,19 +32,33 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const comp = await client
-    .fetch<Pick<CompeticaoDetalhe, "nome" | "sigla"> | null>(
-      `*[_type == "competicao" && slug.current == $slug][0]{ nome, sigla }`,
+    .fetch<Pick<CompeticaoDetalheDTO, "nome" | "sigla" | "descricao" | "foto"> | null>(
+      `*[_type == "competicao" && slug.current == $slug][0]{ nome, sigla, descricao, foto }`,
       { slug }
     )
     .catch(() => null);
 
+  const title = comp ? `${comp.sigla} | Atlética Belas Artes` : "Competição | Atlética Belas Artes";
+  const description = comp?.descricao || "Conheça a participação da Atlética Belas Artes nesta competição.";
+  
+  const ogImageUrl = comp?.foto?.asset 
+    ? urlFor(comp.foto).width(1200).height(630).fit("crop").url() 
+    : undefined;
+
   return {
-    title: comp
-      ? `${comp.sigla} — Atlética Belas Artes`
-      : "Competição — Atlética Belas Artes",
-    description: comp
-      ? `Conheça a participação da Atlética Belas Artes na ${comp.nome}.`
-      : undefined,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : [],
+    },
   };
 }
 
@@ -75,23 +70,8 @@ export default async function CompeticaoPage({
 }) {
   const { slug } = await params;
 
-  const [competicao, edicoes] = await Promise.all([
-    client
-      .fetch<CompeticaoDetalhe | null>(COMPETICAO_QUERY, { slug })
-      .catch(() => null),
-    // As edições são buscadas após ter o _id da competição
-    client
-      .fetch<{ _id: string } | null>(
-        `*[_type == "competicao" && slug.current == $slug][0]{ _id }`,
-        { slug }
-      )
-      .then((c) =>
-        c
-          ? client.fetch<EdicaoCompeticao[]>(EDICOES_QUERY, { id: c._id }).catch(() => [])
-          : []
-      )
-      .catch(() => [] as EdicaoCompeticao[]),
-  ]);
+  const competicao = await client.fetch<CompeticaoDetalheDTO | null>(COMPETICAO_QUERY, { slug }).catch(() => null);
+  const edicoes = competicao ? await client.fetch<EdicaoCompeticaoDTO[]>(EDICOES_QUERY, { id: competicao._id }).catch(() => []) : [];
 
   if (!competicao) {
     notFound();
@@ -111,28 +91,25 @@ export default async function CompeticaoPage({
         {heroBgUrl && (
           <>
             {/* Fundo Desfocado (Layer inferior) */}
-            <img
+            <Image
               src={heroBgUrl}
               alt=""
               aria-hidden="true"
+              fill
+              priority
               style={{
-                position: "absolute",
-                inset: "-10%",
-                width: "120%",
-                height: "120%",
                 objectFit: "cover",
                 filter: "blur(24px) brightness(0.6)",
+                transform: "scale(1.2)",
               }}
             />
             {/* Imagem Principal (Sem distorção) */}
-            <img
+            <Image
               src={heroBgUrl}
               alt={competicao.nome}
+              fill
+              priority
               style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
                 objectFit: "contain",
               }}
             />

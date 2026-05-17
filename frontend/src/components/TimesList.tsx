@@ -3,14 +3,15 @@
 import { useState, useEffect } from "react";
 import { ModalidadeDetail } from "@/components/ModalidadeDetail";
 import { urlFor } from "@/lib/sanity.image";
+import type { ModalidadeListDTO } from "@/types/sanity";
 
 interface TimesListProps {
-  modalidades: any[];
+  modalidades: ModalidadeListDTO[];
 }
 
 /** Componente principal para listar e filtrar as modalidades */
 export function TimesList({ modalidades }: TimesListProps) {
-  const [selectedMod, setSelectedMod] = useState<any | null>(null);
+  const [selectedMod, setSelectedMod] = useState<ModalidadeListDTO | null>(null);
   
   const [busca, setBusca] = useState("");
   const [filtroGenero, setFiltroGenero] = useState("Todos");
@@ -122,9 +123,9 @@ export function TimesList({ modalidades }: TimesListProps) {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
         style={{ minHeight: modalidadesFiltradas.length > 0 ? "500px" : "auto" }}
       >
-        {modalidadesPaginadas.map((mod: any) => (
+        {modalidadesPaginadas.map((mod) => (
           <ModalidadeCard 
-            key={mod._id || mod.documentId} 
+            key={mod._id} 
             modalidade={mod} 
             onClick={() => setSelectedMod(mod)} 
           />
@@ -213,7 +214,7 @@ function ModalidadeCard({
   modalidade,
   onClick,
 }: {
-  modalidade: any;
+  modalidade: ModalidadeListDTO;
   onClick: () => void;
 }) {
   return (

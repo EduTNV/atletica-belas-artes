@@ -1,13 +1,14 @@
 import { createClient } from "next-sanity";
 import { revalidatePath } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
+import type { JogoCronDTO } from "@/types/sanity";
 
 // Client com token de escrita — usado APENAS nesta rota server-side
 const writeClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
-  useCdn: false,
+  useCdn: process.env.NODE_ENV === "production",
   token: process.env.SANITY_API_TOKEN!, // Token com permissão de escrita (Editor ou superior)
 });
 
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
     const treHorasMs = 3 * 60 * 60 * 1000;
 
     // Busca todos os jogos que NÃO estão finalizados
-    const jogosAtivos = await writeClient.fetch(
+    const jogosAtivos = await writeClient.fetch<JogoCronDTO[]>(
       `*[_type == "jogo" && estado != "finalizado"]{ _id, estado, data_hora }`
     );
 
@@ -58,9 +59,10 @@ export async function GET(req: NextRequest) {
       message: `${atualizados} jogo(s) atualizado(s) de ${jogosAtivos.length} ativo(s).`,
       timestamp: agora.toISOString(),
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Erro desconhecido";
     return NextResponse.json(
-      { message: "Erro no cron de jogos", error: err.message },
+      { message: "Erro no cron de jogos", error: message },
       { status: 500 }
     );
   }

@@ -1,14 +1,17 @@
 "use client";
 
 import { urlFor } from "@/lib/sanity.image";
+import type { EventoDTO } from "@/types/sanity";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface EventDetailProps {
-  evento: any;
+  evento: EventoDTO;
   onClose: () => void;
 }
 
 /** Painel deslizante com os detalhes completos de um evento específico */
 export function EventDetail({ evento, onClose }: EventDetailProps) {
+  const panelRef = useFocusTrap(true);
   const img = evento.arte?.asset 
     ? urlFor(evento.arte).width(1000).url() 
     : null;
@@ -42,7 +45,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
     <>
       <div className="drawer-overlay open" onClick={onClose} style={{ zIndex: 9998 }} />
 
-      <div className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
+      <div ref={panelRef} className="slide-panel open" style={{ zIndex: 9999, top: 0, bottom: 0 }}>
         <div className="panel-header">
           <button className="back-btn" onClick={onClose} id="event-detail-back">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

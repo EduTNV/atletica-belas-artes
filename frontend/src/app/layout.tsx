@@ -18,22 +18,35 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Atlética Belas Artes",
+  title: {
+    template: "%s | Atlética Belas Artes",
+    default: "Atlética Belas Artes",
+  },
   description:
-    "Plataforma oficial da Atlética Belas Artes — eventos, times, entidades e muito mais.",
+    "Plataforma oficial da Associação Atlética Acadêmica Belas Artes. Eventos, competições, times e muito mais.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Atlética BA",
   },
+  openGraph: {
+    title: "Atlética Belas Artes",
+    description: "Plataforma oficial da Associação Atlética Acadêmica Belas Artes.",
+    siteName: "Atlética Belas Artes",
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Atlética Belas Artes",
+    description: "Plataforma oficial da Associação Atlética Acadêmica Belas Artes.",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: "#0f0f0f",
 };
 

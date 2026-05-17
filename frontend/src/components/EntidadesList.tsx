@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { EntidadeDetail } from "@/components/EntidadeDetail";
 import { urlFor } from "@/lib/sanity.image";
+import type { EntidadeDTO } from "@/types/sanity";
 
 interface EntidadesListProps {
-  entidades: any[];
+  entidades: EntidadeDTO[];
 }
 
 export function EntidadesList({ entidades }: EntidadesListProps) {
-  const [selected, setSelected] = useState<any | null>(null);
+  const [selected, setSelected] = useState<EntidadeDTO | null>(null);
 
   if (entidades.length === 0) {
     return (
@@ -25,16 +26,16 @@ export function EntidadesList({ entidades }: EntidadesListProps) {
     <>
       <div className="content-wrapper py-8 md:py-12" style={{ paddingBottom: "clamp(60px, 8vw, 100px)" }}>
         <div className="max-w-5xl mx-auto flex flex-col gap-12 md:gap-20">
-          {entidades.map((ent: any) => {
+          {entidades.map((ent) => {
             const logoUrl = ent.logo?.asset 
               ? urlFor(ent.logo).width(600).url() 
               : null;
 
             return (
               <div
-                key={ent._id || ent.documentId}
+                key={ent._id}
                 className="flex flex-col"
-                id={`ent-${ent._id || ent.documentId}`}
+                id={`ent-${ent._id}`}
               >
                 <h3
                   className="tracking-tight mb-3"
