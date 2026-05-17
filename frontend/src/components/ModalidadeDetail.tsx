@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { client } from "@/lib/sanity";
+import type { ModalidadeApiResponse } from "@/app/api/modalidade/[id]/route";
 import { urlFor } from "@/lib/sanity.image";
 import type { ModalidadeListDTO, JogoModalidadeDTO, TreinoDTO, ConquistaDTO, MembroModalidadeDTO } from "@/types/sanity";
 import { TabJogos } from "./TabJogos";
@@ -37,28 +37,14 @@ export function ModalidadeDetail({ modalidade, cursoColor, onClose }: Modalidade
     async function fetchData() {
       setLoading(true);
       try {
-        const id = modalidade._id;
+        const res = await fetch(`/api/modalidade/${modalidade._id}`);
+        if (!res.ok) throw new Error(`Erro ${res.status} ao buscar dados da modalidade`);
+        const data: ModalidadeApiResponse = await res.json();
 
-        const [resJogos, resTre, resCon, resMem] = await Promise.all([
-          client.fetch(`*[_type == "jogo" && modalidade._ref == $id] | order(data_hora desc){
-            _id, time_casa, time_visitante, belas_artes_posicao, competicao, fase, data_hora, local, placar_casa, placar_visitante, estado
-          }`, { id }),
-          client.fetch(`*[_type == "treino" && modalidade._ref == $id]{
-            _id, dia_semana, hora_inicio, hora_fim, local, aberto_novos_atletas
-          }`, { id }),
-          client.fetch(`*[_type == "conquista" && modalidade._ref == $id] | order(ano desc){
-            _id, titulo, ano, medalha
-          }`, { id }),
-          client.fetch(`*[_type == "membroModalidade" && modalidade._ref == $id] | order(ordem asc){
-            _id, nome, cargo, foto, ordem,
-            curso->{ nome, cor }
-          }`, { id }),
-        ]);
-
-        setJogosModalidade(resJogos || []);
-        setTreinos(resTre || []);
-        setConquistas(resCon || []);
-        setMembros(resMem || []);
+        setJogosModalidade(data.jogos);
+        setTreinos(data.treinos);
+        setConquistas(data.conquistas);
+        setMembros(data.membros);
       } finally {
         setLoading(false);
       }

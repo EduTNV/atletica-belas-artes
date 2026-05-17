@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -9,6 +9,9 @@ export async function POST(req: NextRequest) {
     if (secret !== process.env.SANITY_WEBHOOK_SECRET) {
       return NextResponse.json({ message: "Token inválido" }, { status: 401 });
     }
+
+    // Invalida o cache global do painel de modalidades (compartilhado entre todos os usuários)
+    revalidateTag("modalidades");
 
     // Revalida a aplicação toda (todas as rotas e filhos)
     revalidatePath("/", "layout");

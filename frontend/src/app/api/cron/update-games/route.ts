@@ -1,5 +1,5 @@
 import { createClient } from "next-sanity";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 import type { JogoCronDTO } from "@/types/sanity";
 
@@ -51,6 +51,7 @@ export async function GET(req: NextRequest) {
 
     // Se houve alguma alteração, limpa o cache das páginas afetadas
     if (atualizados > 0) {
+      revalidateTag("modalidades"); // invalida o cache global do painel de modalidades
       revalidatePath("/", "layout");
     }
 
