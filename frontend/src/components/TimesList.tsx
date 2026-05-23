@@ -121,7 +121,6 @@ export function TimesList({ modalidades }: TimesListProps) {
 
       <div 
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
-        style={{ minHeight: modalidadesFiltradas.length > 0 ? "500px" : "auto" }}
       >
         {modalidadesPaginadas.map((mod) => (
           <ModalidadeCard 
@@ -133,7 +132,7 @@ export function TimesList({ modalidades }: TimesListProps) {
       </div>
 
       {totalPaginas > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-16 pt-8 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
+        <div className="flex items-center justify-center gap-4 mt-8 pt-6 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
           <button
             onClick={() => setPaginaAtual((p) => Math.max(1, p - 1))}
             disabled={paginaAtual === 1}

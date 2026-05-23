@@ -209,9 +209,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="w-full border-t border-border" />
-
-      <section className="content-wrapper pt-16 pb-10 md:pt-24 md:pb-16 border-t border-black/5">
+      <section className="content-wrapper py-6 border-t border-black/5">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
           <span
             className="font-heading text-[18px] md:text-[20px] tracking-wide text-text-muted"
