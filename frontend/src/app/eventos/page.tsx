@@ -22,21 +22,12 @@ export default async function EventosPage() {
 
   return (
     <>
-      <section
-        className="relative overflow-hidden"
-        style={{ background: "#5c6484", marginBottom: "clamp(20px, 3vw, 32px)" }}
-      >
+      <section className="page-hero">
         <div className="content-wrapper py-10 md:py-16 lg:py-20">
-          <h1 
-            className="font-heading text-[32px] md:text-[48px] tracking-[0.5px]" 
-            style={{ color: "#f4f4f4" }}
-          >
+          <h1 className="font-heading text-[32px] md:text-[48px] tracking-[0.5px]">
             Eventos
           </h1>
-          <p
-            className="text-[14px] md:text-[16px] mt-2"
-            style={{ color: "rgba(244, 244, 244, 0.75)" }}
-          >
+          <p className="page-hero-subtitle text-[14px] md:text-[16px] mt-2">
             Festas, campeonatos e tudo que rola na BA
           </p>
         </div>

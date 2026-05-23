@@ -47,10 +47,10 @@ export default async function HomePage() {
               alt="Atlética Belas Artes Hero"
               fill
               priority
-              style={{ objectFit: "cover", objectPosition: "center top" }}
+              className="object-cover object-top"
             />
           ) : (
-            <div className="absolute inset-0" style={{ backgroundColor: "var(--surface2)" }} />
+            <div className="absolute inset-0 bg-surface-2" />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#0f0f0f]" />
 
@@ -63,21 +63,17 @@ export default async function HomePage() {
               style={{ maxWidth: "1400px", paddingLeft: "clamp(32px, 8vw, 120px)", paddingRight: "clamp(32px, 8vw, 120px)" }}
             >
               <h1
-                className="font-heading leading-[0.92] tracking-[1px] mb-5 drop-shadow-2xl"
-                style={{
-                  fontSize: "clamp(48px, 8vw, 100px)",
-                  color: "#ffffff",
-                }}
+                className="font-heading leading-[0.92] tracking-[1px] mb-5 drop-shadow-2xl text-[clamp(48px,8vw,100px)] text-white"
               >
                 ATLÉTICA
                 <br />
-                <span style={{ color: "var(--crimson)" }}>BELAS ARTES</span>
+                <span className="text-crimson">BELAS ARTES</span>
               </h1>
 
               {configHome?.subtitulo_hero && (
                 <p
-                  className="text-[15px] md:text-[18px] font-medium"
-                  style={{ color: "rgba(255,255,255,0.75)", maxWidth: "520px" }}
+                
+                  className="text-[15px] md:text-[18px] font-medium text-white/75 max-w-[520px]"
                 >
                   {configHome.subtitulo_hero}
                 </p>
@@ -89,7 +85,7 @@ export default async function HomePage() {
 
       <JogosCard jogos={jogos} />
 
-      <section className="content-wrapper" style={{ paddingTop: "clamp(32px, 5vw, 60px)", paddingBottom: "clamp(32px, 5vw, 60px)" }}>
+      <section className="content-wrapper py-[clamp(32px,5vw,60px)]">
         <div className="max-w-5xl mx-auto md:flex gap-14 lg:gap-20 items-start">
           <div className="hidden md:flex shrink-0">
             <div
@@ -110,11 +106,7 @@ export default async function HomePage() {
 
           <div className="flex-1">
             <h2
-              className="font-heading tracking-wide mb-5"
-              style={{
-                fontSize: "clamp(28px, 3.5vw, 44px)",
-                color: "var(--text)",
-              }}
+              className="font-heading tracking-wide mb-5 text-[clamp(28px,3.5vw,44px)] text-text-main"
             >
               Quem Somos
             </h2>
@@ -123,8 +115,8 @@ export default async function HomePage() {
             </div>
             <Link
               href="/sobre"
-              className="flex items-center gap-2 font-semibold transition-opacity hover:opacity-70"
-              style={{ color: "var(--crimson)", fontSize: "15px" }}
+              
+              className="flex items-center gap-2 font-semibold transition-opacity hover:opacity-70 text-crimson text-[15px]"
             >
               Saiba mais sobre a Atlética
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -137,33 +129,28 @@ export default async function HomePage() {
 
       {proximosEventos.length > 0 && (
         <section
-          className="w-full"
-          style={{ paddingTop: "32px", paddingBottom: "60px" }}
+          
+          className="w-full pt-8 pb-[60px]"
         >
           <div className="content-wrapper">
             <div className="max-w-6xl mx-auto">
               <div className="flex justify-between items-end mb-10 md:mb-14">
                 <div>
                   <h2
-                    className="font-heading leading-none mb-2 pl-2 md:pl-4"
-                    style={{
-                      fontSize: "clamp(30px, 4vw, 48px)",
-                      color: "var(--text)",
-                    }}
+                    className="font-heading leading-none mb-2 pl-2 md:pl-4 text-[clamp(30px,4vw,48px)] text-text-main"
                   >
                     Próximos Eventos
                   </h2>
                   <p
-                    className="text-[14px] md:text-[16px] hidden md:block"
-                    style={{ color: "var(--text-main)" }}
+                    className="text-[14px] md:text-[16px] hidden md:block text-text-main"
                   >
                     Fique por dentro das melhores festas e campeonatos
                   </p>
                 </div>
                 <Link
                   href="/eventos"
-                  className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 py-2 px-1 transition-opacity hover:opacity-70"
-                  style={{ color: "var(--crimson)" }}
+                  
+                  className="text-[13px] md:text-[14px] font-semibold flex items-center gap-1.5 shrink-0 ml-4 py-2 px-1 transition-opacity hover:opacity-70 text-crimson"
                 >
                   Ver todos
                   <svg
@@ -197,21 +184,16 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section
-        className="w-full"
-        style={{ paddingTop: "clamp(32px, 5vw, 60px)", paddingBottom: "clamp(32px, 5vw, 60px)" }}
-      >
+      <section className="w-full py-[clamp(32px,5vw,60px)]">
         <div className="content-wrapper">
           <div className="max-w-5xl mx-auto flex flex-col items-center">
             <h2
-              className="font-heading mb-4 text-center"
-              style={{ fontSize: "clamp(28px, 3.5vw, 44px)", color: "var(--text)" }}
+              className="font-heading mb-4 text-center text-[clamp(28px,3.5vw,44px)] text-text-main"
             >
               Onde Competimos
             </h2>
             <p
-              className="text-[15px] md:text-[16px] leading-[1.7] mb-8 text-justify"
-              style={{ color: "var(--text2)", maxWidth: "560px" }}
+              className="text-[15px] md:text-[16px] leading-[1.7] mb-8 text-justify text-text-secondary max-w-[560px]"
             >
               Representamos a Belas Artes em três grandes competições universitárias:
               JUCA, NDU e Liga Paulista. Cada uma com sua história, suas regras e seu
@@ -219,14 +201,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/competicoes"
-              className="inline-block font-semibold transition-opacity hover:opacity-80 text-center"
-              style={{
-                background: "var(--crimson)",
-                color: "#f4f4f4",
-                borderRadius: "8px",
-                padding: "12px 28px",
-                fontSize: "14px",
-              }}
+              className="inline-block font-semibold transition-opacity hover:opacity-80 text-center bg-crimson text-white rounded-lg py-3 px-7 text-[14px]"
             >
               Ver Competições
             </Link>
@@ -234,16 +209,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div
-        className="w-full border-t"
-        style={{ borderColor: "var(--border)" }}
-      />
+      <div className="w-full border-t border-border" />
 
-      <section className="content-wrapper pt-16 pb-10 md:pt-24 md:pb-16 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
+      <section className="content-wrapper pt-16 pb-10 md:pt-24 md:pb-16 border-t border-black/5">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
           <span
-            className="font-heading text-[18px] md:text-[20px] tracking-wide"
-            style={{ color: "var(--text3)" }}
+            className="font-heading text-[18px] md:text-[20px] tracking-wide text-text-muted"
           >
             {configHome?.frase_footer || "Venha defender as cores da BA"}
           </span>
@@ -280,8 +251,7 @@ function FooterLink({ href, label, icon }: FooterLinkProps) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 text-[13px] font-medium transition-colors group py-2"
-      style={{ color: "var(--text3)" }}
+      className="flex items-center gap-2 text-[13px] font-medium transition-colors group py-2 text-text-muted"
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
     >

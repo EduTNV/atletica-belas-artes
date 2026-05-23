@@ -117,7 +117,7 @@ export default function BottomSheet({ isOpen, onClose }: BottomSheetProps) {
             </div>
           </Link>
 
-          <div className="divider !mx-5 !my-[6px]" />
+          <div className="divider mx-5 my-[6px]" />
 
           <Link 
             href="/contato" 

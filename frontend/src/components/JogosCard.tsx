@@ -23,9 +23,9 @@ export function JogosCard({ jogos }: JogosCardProps) {
   const lateralPadding = "clamp(16px, 3vw, 24px)";
 
   return (
-    <section className="content-wrapper flex justify-center" style={{ paddingTop: "clamp(24px, 4vw, 40px)" }}>
+    <section className="content-wrapper" style={{ paddingTop: "clamp(24px, 4vw, 40px)" }}>
       <div
-        className="w-full max-w-3xl flex flex-col rounded-md overflow-hidden"
+        className="w-full max-w-3xl flex flex-col rounded-md overflow-hidden mx-auto"
         style={{
           background: "#404559",
           boxShadow: "0 10px 30px rgba(0,0,0,0.2)",

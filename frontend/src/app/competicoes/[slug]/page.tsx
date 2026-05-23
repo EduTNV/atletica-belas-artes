@@ -85,8 +85,7 @@ export default async function CompeticaoPage({
     <>
       {/* Bloco 1 — Hero Banner com foto */}
       <section
-        className="relative w-full overflow-hidden"
-        style={{ height: "clamp(280px, 45vh, 480px)" }}
+        className="relative w-full overflow-hidden h-[clamp(280px,45vh,480px)]"
       >
         {heroBgUrl && (
           <>
@@ -97,10 +96,9 @@ export default async function CompeticaoPage({
               aria-hidden="true"
               fill
               priority
+              className="object-cover scale-[1.2]"
               style={{
-                objectFit: "cover",
                 filter: "blur(24px) brightness(0.6)",
-                transform: "scale(1.2)",
               }}
             />
             {/* Imagem Principal (Sem distorção) */}
@@ -109,67 +107,41 @@ export default async function CompeticaoPage({
               alt={competicao.nome}
               fill
               priority
-              style={{
-                objectFit: "contain",
-              }}
+              className="object-contain"
             />
           </>
         )}
         {/* Overlay gradiente */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70" />
         {/* Texto sobre o overlay */}
         <div
-          className="relative z-10 flex flex-col justify-end h-full content-wrapper"
-          style={{ paddingBottom: "clamp(24px, 4vw, 48px)" }}
+          className="relative z-10 flex flex-col justify-end h-full content-wrapper pb-[clamp(24px,4vw,48px)]"
         >
           <span
-            className="font-heading leading-none block"
-            style={{
-              fontSize: "clamp(56px, 10vw, 120px)",
-              color: "#ffffff",
-              textShadow: "0 4px 24px rgba(0,0,0,0.4)",
-            }}
+            className="font-heading leading-none block text-[clamp(56px,10vw,120px)] text-white"
+            style={{ textShadow: "0 4px 24px rgba(0,0,0,0.4)" }}
           >
             {competicao.sigla}
           </span>
-          <span
-            style={{
-              fontSize: "clamp(16px, 2vw, 22px)",
-              color: "rgba(255,255,255,0.8)",
-              marginTop: "4px",
-            }}
-          >
+          <span className="text-[clamp(16px,2vw,22px)] text-white/80 mt-1">
             {competicao.nome}
           </span>
         </div>
       </section>
 
       {/* Bloco 2 — Descrição */}
-      <section className="content-wrapper" style={{ paddingTop: "clamp(32px, 5vw, 64px)" }}>
-        <div style={{ maxWidth: "720px" }}>
+      <section className="content-wrapper pt-[clamp(32px,5vw,64px)]">
+        <div className="max-w-[720px]">
           <Link
             href="/competicoes"
-            className="inline-flex items-center gap-1 mb-6 transition-opacity hover:opacity-70"
-            style={{ fontSize: "13px", color: "var(--text3)" }}
+            className="inline-flex items-center gap-1 mb-6 transition-opacity hover:opacity-70 text-[13px] text-text-muted"
           >
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Voltar para Competições
           </Link>
-          <p
-            style={{
-              fontSize: "clamp(15px, 1.5vw, 17px)",
-              lineHeight: "1.8",
-              color: "var(--text2)",
-            }}
-          >
+          <p className="text-[clamp(15px,1.5vw,17px)] leading-[1.8] text-text-secondary">
             {competicao.descricao}
           </p>
         </div>
@@ -183,7 +155,7 @@ export default async function CompeticaoPage({
         <TimelineEdicoes edicoes={edicoes} />
 
         {/* Espaço inferior */}
-        <div style={{ height: "clamp(48px, 6vw, 80px)" }} />
+        <div className="h-[clamp(48px,6vw,80px)]" />
       </section>
     </>
   );

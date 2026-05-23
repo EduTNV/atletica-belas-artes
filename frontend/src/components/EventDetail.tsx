@@ -136,7 +136,7 @@ export function EventDetail({ evento, onClose }: EventDetailProps) {
               </div>
             </div>
 
-            <div className="divider !mx-0 !my-6" />
+            <div className="divider mx-0 my-6" />
 
             {evento.aftermovie_url && (
               <a
